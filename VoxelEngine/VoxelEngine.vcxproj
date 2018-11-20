@@ -81,6 +81,7 @@
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/gl/GLFW/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,7 +122,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
+    <ClCompile Include="GraphicEngine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphicEngine.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="src\utils\Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
