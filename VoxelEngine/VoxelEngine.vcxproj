@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)/gl/GLFW/include;$(SolutionDir)/gl/GLAD/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/gl/GLM;$(SolutionDir)/gl/GLFW/include;$(SolutionDir)/gl/STB;$(SolutionDir)/gl/GLAD/include;$(SolutionDir)/VoxelEngine/src/core;$(SolutionDir)/VoxelEngine/src/utils;$(SolutionDir)/VoxelEngine/src/graphic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/gl/GLFW/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -122,13 +122,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
-    <ClCompile Include="GraphicEngine.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="..\gl\STB\stb_image.cpp" />
+    <ClCompile Include="src\core\Component.cpp" />
+    <ClCompile Include="src\core\main.cpp" />
+    <ClCompile Include="src\core\Object.cpp" />
+    <ClCompile Include="src\graphic\Camera.cpp" />
+    <ClCompile Include="src\graphic\GraphicEngine.cpp" />
+    <ClCompile Include="src\graphic\Shader.cpp" />
+    <ClCompile Include="src\graphic\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GraphicEngine.h" />
-    <ClInclude Include="Shader.h" />
+    <ClInclude Include="..\gl\STB\stb_image.h" />
+    <ClInclude Include="src\core\Component.h" />
+    <ClInclude Include="src\core\ComponentType.h" />
+    <ClInclude Include="src\core\Object.h" />
+    <ClInclude Include="src\graphic\Camera.h" />
+    <ClInclude Include="src\graphic\GraphicEngine.h" />
+    <ClInclude Include="src\graphic\Shader.h" />
+    <ClInclude Include="src\graphic\Texture.h" />
     <ClInclude Include="src\utils\Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
