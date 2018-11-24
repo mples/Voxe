@@ -2,11 +2,11 @@
 #include<glad/glad.h>
 #include <iostream>
 
-Texture::Texture(std::string & imageFile) {
+Texture::Texture(const std::string & imageFile) {
 	loadFromFile(imageFile);
 }
 
-void Texture::loadFromFile(std::string & imageFile)
+void Texture::loadFromFile(const std::string & imageFile)
 {
 	int image_height, image_width;
 	int ncolor_channels;

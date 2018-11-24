@@ -5,6 +5,10 @@
 #include <glfw3.h>
 #include <glm/glm.hpp>
 
+#include "Block.h"
+#include "BlockType.h"
+#include "Shader.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int height, int width) {
 	glViewport(0, 0, height, width);
 }
@@ -33,9 +37,17 @@ void GraphicEngine::draw() {
 	glViewport(0, 0, windowHeight_, windowWidth_);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+	Shader shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
+	shader.activate();
+	shader.setInt("texture1", 0);
+	
+	Block block(glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass);
+
 	while (!glfwWindowShouldClose(window)) {
 		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		block.draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

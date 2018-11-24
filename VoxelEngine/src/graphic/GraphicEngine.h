@@ -11,5 +11,7 @@ private:
 	int windowHeight_ = 800;
 	int windowWidth_ = 600;
 	std::string windowTitle_ = "Voxel Engine";
+
+
 };
 

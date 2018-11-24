@@ -10,6 +10,6 @@ public:
 	~Camera();
 private:
 	glm::vec3 Position_;
-
+	glm::vec3 LookAt_;
 };
 

@@ -7,7 +7,7 @@ class Component
 {
 public:
 	Component(ComponentType type);
-	virtual ~Component() = 0;
+	virtual ~Component();
 	virtual void update(float dt) = 0;
 	
 	void setParent(Object * obj);

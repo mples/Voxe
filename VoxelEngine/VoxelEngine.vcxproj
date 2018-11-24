@@ -124,23 +124,37 @@
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
+    <ClCompile Include="src\core\components\GraphicComponent.cpp" />
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\Object.cpp" />
+    <ClCompile Include="src\graphic\Block.cpp" />
     <ClCompile Include="src\graphic\Camera.cpp" />
     <ClCompile Include="src\graphic\GraphicEngine.cpp" />
+    <ClCompile Include="src\graphic\GraphicModel.cpp" />
     <ClCompile Include="src\graphic\Shader.cpp" />
     <ClCompile Include="src\graphic\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
     <ClInclude Include="src\core\Component.h" />
+    <ClInclude Include="src\core\components\GraphicComponent.h" />
     <ClInclude Include="src\core\ComponentType.h" />
     <ClInclude Include="src\core\Object.h" />
+    <ClInclude Include="src\graphic\Block.h" />
+    <ClInclude Include="src\graphic\BlockType.h" />
     <ClInclude Include="src\graphic\Camera.h" />
     <ClInclude Include="src\graphic\GraphicEngine.h" />
+    <ClInclude Include="src\graphic\GraphicModel.h" />
     <ClInclude Include="src\graphic\Shader.h" />
     <ClInclude Include="src\graphic\Texture.h" />
     <ClInclude Include="src\utils\Singleton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\grass.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\shaders\frag_shader.glsl" />
+    <None Include="src\shaders\vert_shader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
