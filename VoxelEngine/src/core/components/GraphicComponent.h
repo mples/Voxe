@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Block.h"
 
 class GraphicComponent : public Component {
 public:
@@ -10,5 +11,5 @@ public:
 	virtual void update(float dt);
 	void draw();
 private:
-
+	
 };

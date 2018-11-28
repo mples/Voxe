@@ -4,7 +4,11 @@ layout (location = 1) in vec2 inTextCoord;
 
 out vec2 TextCoord;
 
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projMatrix;
+
 void main() {
-	gl_Position = vec4(inPos,1.0f);
+	gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(inPos,1.0f);
 	TextCoord = vec2(inTextCoord.x, inTextCoord.y);
 }

@@ -125,6 +125,7 @@
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
     <ClCompile Include="src\core\components\GraphicComponent.cpp" />
+    <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\Object.cpp" />
     <ClCompile Include="src\graphic\Block.cpp" />
@@ -136,9 +137,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
+    <ClInclude Include="input_const.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\GraphicComponent.h" />
     <ClInclude Include="src\core\ComponentType.h" />
+    <ClInclude Include="src\core\Input.h" />
     <ClInclude Include="src\core\Object.h" />
     <ClInclude Include="src\graphic\Block.h" />
     <ClInclude Include="src\graphic\BlockType.h" />

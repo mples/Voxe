@@ -2,10 +2,13 @@
 #include<glfw3.h>
 
 #include "GraphicEngine.h"
+#include "Input.h"
 
 int main() {
 	
 	GraphicEngine::createInstance();
+
+	Input::createInstance();
 
 	GraphicEngine::getInstance().draw();
 

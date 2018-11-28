@@ -2,8 +2,9 @@
 
 
 
-Block::Block(glm::vec3 pos, glm::vec3 dim, BlockType type) : position_(pos), type_(type) {
+Block::Block(glm::vec3 pos, glm::vec3 rot, glm::vec3 dim, BlockType type) : position_(pos), rotation_(rot), type_(type) {
 	quadModel_ = genQuadModel(dim, type);
+	makeModelMatrix();
 }
 
 
@@ -18,6 +19,14 @@ void Block::draw() {
 	texture.bind();
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void Block::makeModelMatrix() {
+	modelMatrix_ = glm::mat4(1);
+	modelMatrix_ = glm::translate(modelMatrix_, position_);
+	modelMatrix_ = glm::rotate(modelMatrix_, glm::radians(rotation_.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	modelMatrix_ = glm::rotate(modelMatrix_, glm::radians(rotation_.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix_ = glm::rotate(modelMatrix_, glm::radians(rotation_.z), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 GraphicModel & Block::genQuadModel(glm::vec3 dim, BlockType type) {
@@ -115,6 +124,10 @@ GraphicModel & Block::genQuadModel(glm::vec3 dim, BlockType type) {
 	GraphicModel model;
 	model.loadData(vertices,text_cord);
 	return model;
+}
+
+glm::mat4& Block::getModelMatrix() {
+	return modelMatrix_;
 }
 
 
