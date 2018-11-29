@@ -28,6 +28,12 @@ struct MappedInput {
 	}
 };
 
+enum Priority {
+	HIGH = 3,
+	MEDIUM = 2,
+	LOW = 1
+};
+
 class InputMapper {
 	using Callback = std::function<void(MappedInput& input)>;
 public:
@@ -40,7 +46,7 @@ public:
 	void setRawAxis(RawAxis axis);
 
 //Callback
-	void addCallback(Callback callback);
+	void addCallback(Callback callback, Priority priority);
 	void dispatch();
 //Context
 	void pushBackContext(InputContext* input_context);
@@ -49,10 +55,11 @@ public:
 	void moveFrontContext(InputContext* input_context);
 	void moveBackContext(InputContext* input_context);
 private:
-	void mapButtonToAction(RawButton button, Action& out);
-	void mapButtonToState(RawButton button, State& out);
+	bool mapButtonToAction(RawButton button, Action& out);
+	bool mapButtonToState(RawButton button, State& out);
 
 	std::list<InputContext*> activeContexts_;
-
+	MappedInput currentInput_;
+	std::multimap<int, Callback> callbacks_;
 };
 
