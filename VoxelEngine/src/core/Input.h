@@ -8,12 +8,14 @@
 
 #include "GraphicEngine.h"
 #include "Singleton.h"
+#include "InputMapper.h"
 
 class Input : public Singleton<Input> {
 public:
 	Input();
-	void processInput(GLFWwindow *window);
+	void processInput();
+	InputMapper& getMapper();
 private:
-	std::unordered_map<int, std::function<void()> > keybinds_;
+	InputMapper mapper_;
 };
 

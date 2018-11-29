@@ -27,34 +27,27 @@ GraphicEngine::GraphicEngine() : Singleton<GraphicEngine>(){
 	glViewport(0, 0, windowHeight_, windowWidth_);
 	glEnable(GL_DEPTH_TEST);
 	glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
+	Block::blockShader_ = new Shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
+}
+
+GraphicEngine::~GraphicEngine() {
+	glfwTerminate();
 }
 
 void GraphicEngine::draw() {
+	glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	Shader shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
-	shader.activate();
-	shader.setInt("texture1", 0);
-	
-	Block block(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass);
-
-	Camera camera(glm::vec3(0.0f, 1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), 45.0f);
-
-	while (!glfwWindowShouldClose(window_)) {
-		glClearColor(0.2f, 0.3f, 0.4f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		shader.setMat4("modelMatrix", block.getModelMatrix());
-		shader.setMat4("viewMatrix", camera.getViewMatrix());
-		shader.setMat4("projMatrix", camera.getProjMatrix());
-		block.draw();
-
-		glfwSwapBuffers(window_);
-		glfwPollEvents();
+	for (auto comp : components_) {
+		comp->draw();
 	}
 
-	glfwTerminate();
-	return;
+	glfwSwapBuffers(window_);
+	glfwPollEvents();
+
+	if (glfwWindowShouldClose(window_)) {
+		exit(0);
+	}
 }
 
 int GraphicEngine::getWindowHeight() {
@@ -67,4 +60,26 @@ int GraphicEngine::getWindowWidth() {
 
 GLFWwindow* GraphicEngine::getWindow() {
 	return window_;
+}
+
+void GraphicEngine::registerComponent(GraphicComponent * g_comp) {
+	auto found = std::find(components_.begin(), components_.end(), g_comp);
+	if (found == components_.end()) {
+		components_.push_back(g_comp);
+	}
+}
+
+void GraphicEngine::unregisterComponent(GraphicComponent * g_comp) {
+	auto found = std::find(components_.begin(), components_.end(), g_comp);
+	if (found != components_.end()) {
+		components_.erase(found);
+	}
+}
+
+void GraphicEngine::setActiveCamera(Camera * camera) {
+	activeCamera_ = camera;
+}
+
+Camera * GraphicEngine::getActiveCamera() {
+	return activeCamera_;
 }

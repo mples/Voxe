@@ -7,6 +7,8 @@ class InputContext {
 public:
 	InputContext();
 	~InputContext();
+	InputContext(const InputContext& other) = default;
+	InputContext& operator=(const InputContext& other) = default;
 
 	bool mapButtonToAction(RawButton button, Action& out);
 	bool mapButtonToState(RawButton button, State& out);

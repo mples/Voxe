@@ -123,11 +123,12 @@
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
-    <ClCompile Include="InputContext.cpp" />
-    <ClCompile Include="InputMapper.cpp" />
+    <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
     <ClCompile Include="src\core\components\GraphicComponent.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
+    <ClCompile Include="src\core\InputContext.cpp" />
+    <ClCompile Include="src\core\InputMapper.cpp" />
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\Object.cpp" />
     <ClCompile Include="src\graphic\Block.cpp" />
@@ -139,15 +140,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
-    <ClInclude Include="InputContext.h" />
-    <ClInclude Include="InputMapper.h" />
-    <ClInclude Include="input_const.h" />
-    <ClInclude Include="RawInput.h" />
+    <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\GraphicComponent.h" />
     <ClInclude Include="src\core\ComponentType.h" />
     <ClInclude Include="src\core\Input.h" />
+    <ClInclude Include="src\core\InputContext.h" />
+    <ClInclude Include="src\core\InputMapper.h" />
+    <ClInclude Include="src\core\input_const.h" />
     <ClInclude Include="src\core\Object.h" />
+    <ClInclude Include="src\core\RawInput.h" />
     <ClInclude Include="src\graphic\Block.h" />
     <ClInclude Include="src\graphic\BlockType.h" />
     <ClInclude Include="src\graphic\Camera.h" />

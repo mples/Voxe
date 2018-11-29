@@ -1,16 +1,16 @@
 #pragma once
 
-enum class Action {
+enum Action {
 	MOVE_RIGHT,
 	MOVE_LEFT,
 	MOVE_FRONT,
 	MOVE_BACK
 };
 
-enum class State {
+enum State {
 
 };
 
-enum class Range {
+enum Range {
 
 };

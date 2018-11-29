@@ -12,7 +12,7 @@ InputMapper::~InputMapper() {
 void InputMapper::clear() {
 }
 
-void InputMapper::setRawButtons(RawButton button) {
+void InputMapper::setRawButtons(RawButton& button) {
 	if (button.action_ == GLFW_PRESS) {
 		Action out_action;
 		if (mapButtonToAction(button, out_action)) {
@@ -30,7 +30,7 @@ void InputMapper::setRawButtons(RawButton button) {
 
 }
 
-void InputMapper::setRawAxis(RawAxis axis) {
+void InputMapper::setRawAxis(RawAxis& axis) {
 }
 
 void InputMapper::addCallback(Callback callback, Priority priority) {

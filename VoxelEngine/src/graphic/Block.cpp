@@ -1,6 +1,7 @@
 #include "Block.h"
+#include "GraphicEngine.h"
 
-
+Shader* Block::blockShader_ = nullptr;
 
 Block::Block(glm::vec3 pos, glm::vec3 rot, glm::vec3 dim, BlockType type) : position_(pos), rotation_(rot), type_(type) {
 	quadModel_ = genQuadModel(dim, type);
@@ -13,10 +14,19 @@ Block::~Block() {
 }
 
 void Block::draw() {
-	quadModel_.bindVAO();
-
+	
+	blockShader_->activate();
+	blockShader_->setInt("texture1", 0);
+	
 	Texture texture(blockTypeToTextFile(type_));
 	texture.bind();
+
+	Camera * camera = GraphicEngine::getInstance().getActiveCamera();
+	blockShader_->setMat4("modelMatrix", getModelMatrix());
+	blockShader_->setMat4("viewMatrix", camera->getViewMatrix());
+	blockShader_->setMat4("projMatrix", camera->getProjMatrix());
+
+	quadModel_.bindVAO();
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 }

@@ -42,8 +42,8 @@ public:
 
 //Raw input
 	void clear();
-	void setRawButtons(RawButton button);
-	void setRawAxis(RawAxis axis);
+	void setRawButtons(RawButton& button);
+	void setRawAxis(RawAxis& axis);
 
 //Callback
 	void addCallback(Callback callback, Priority priority);

@@ -54,10 +54,13 @@
     <ClCompile Include="src\core\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputContext.cpp">
+    <ClCompile Include="src\core\InputContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputMapper.cpp">
+    <ClCompile Include="src\core\InputMapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,16 +107,19 @@
     <ClInclude Include="src\core\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="input_const.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputContext.h">
+    <ClInclude Include="src\core\input_const.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RawInput.h">
+    <ClInclude Include="src\core\InputContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputMapper.h">
+    <ClInclude Include="src\core\InputMapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\RawInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

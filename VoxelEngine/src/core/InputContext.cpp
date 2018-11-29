@@ -3,11 +3,12 @@
 
 
 InputContext::InputContext() {
+	//RawButton button(87, 17, 1, 0);
+	RawButton button(87);
+	actionMap_.insert(std::make_pair(button, Action::MOVE_FRONT) );
 }
 
-
-InputContext::~InputContext() {
-}
+InputContext::~InputContext() {}
 
 bool InputContext::mapButtonToAction(RawButton button, Action & out) {
 	auto found = actionMap_.find(button);
