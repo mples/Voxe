@@ -12,7 +12,7 @@
 struct MappedInput {
 	std::set<Action> actions_;
 	std::set<State> states_;
-	std::map<Range, float> ranges_;
+	std::map<Range, double> ranges_;
 
 	void eatAction(Action action) {
 		actions_.erase(action);

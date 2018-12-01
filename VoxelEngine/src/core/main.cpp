@@ -13,6 +13,12 @@ void handleInput(MappedInput& input) {
 		std::cout << "move front" << std::endl;
 		input.eatAction(Action::MOVE_FRONT);
 	}
+
+	auto found2 = input.ranges_.find(Range::LOOK_X);
+	if (found2 != input.ranges_.end()) {
+		std::cout << "Look x: " << found2->second << std::endl;
+		input.eatRange(Range::LOOK_X);
+	}
 }
 
 int main() {

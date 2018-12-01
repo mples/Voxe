@@ -12,5 +12,6 @@ enum State {
 };
 
 enum Range {
-
+	LOOK_X,
+	LOOK_Y
 };

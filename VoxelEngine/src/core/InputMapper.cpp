@@ -31,6 +31,13 @@ void InputMapper::setRawButtons(RawButton& button) {
 }
 
 void InputMapper::setRawAxis(RawAxis& axis) {
+	for (auto it = activeContexts_.begin(); it != activeContexts_.end(); ++it) {
+		Range range;
+		if ((*it)->mapAxisToRange(axis, range)) {
+			currentInput_.ranges_[range] = (*it)->convert(range, axis.value_);
+			return;
+		}
+	}
 }
 
 void InputMapper::addCallback(Callback callback, Priority priority) {

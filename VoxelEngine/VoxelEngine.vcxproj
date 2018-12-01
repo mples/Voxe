@@ -131,6 +131,7 @@
     <ClCompile Include="src\core\InputMapper.cpp" />
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\Object.cpp" />
+    <ClCompile Include="src\core\RangeConverter.cpp" />
     <ClCompile Include="src\graphic\Block.cpp" />
     <ClCompile Include="src\graphic\Camera.cpp" />
     <ClCompile Include="src\graphic\GraphicEngine.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="src\core\InputMapper.h" />
     <ClInclude Include="src\core\input_const.h" />
     <ClInclude Include="src\core\Object.h" />
+    <ClInclude Include="src\core\RangeConverter.h" />
     <ClInclude Include="src\core\RawInput.h" />
     <ClInclude Include="src\graphic\Block.h" />
     <ClInclude Include="src\graphic\BlockType.h" />
