@@ -13,6 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{d8b496bd-af6e-4b6a-8889-53bdff1c1f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{73c00e49-b0f1-4fb8-8dc0-e231f2abd632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{76be1e03-efab-46ad-85b7-00c4920c4a13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\components">
+      <UniqueIdentifier>{8801946d-76c1-4a64-9065-fc4b0d8835a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\input">
+      <UniqueIdentifier>{bc642a03-8abb-40f4-93b7-fbe562486c2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\graphics">
+      <UniqueIdentifier>{781ae604-c03d-40cd-9bc1-e91aae339d6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c">
@@ -21,112 +39,136 @@
     <ClCompile Include="..\gl\STB\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\GraphicEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphic\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\components\GraphicComponent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\core\Application.cpp">
+      <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="src\graphic\Block.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>core\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\BlockRenderer.cpp">
+      <Filter>core\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\Camera.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Component.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\GraphicEngine.cpp">
+      <Filter>core\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphic\GraphicModel.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>core\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Object.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\Player.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\Shader.cpp">
+      <Filter>core\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\Texture.cpp">
+      <Filter>core\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\components\CameraComponent.cpp">
+      <Filter>core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\components\GraphicComponent.cpp">
+      <Filter>core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\components\InputComponent.cpp">
+      <Filter>core\components</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Input.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>core\input</Filter>
     </ClCompile>
     <ClCompile Include="src\core\InputContext.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>core\input</Filter>
     </ClCompile>
     <ClCompile Include="src\core\InputMapper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\Application.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>core\input</Filter>
     </ClCompile>
     <ClCompile Include="src\core\RangeConverter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>core\input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphic\Texture.h">
+      <Filter>core\graphics</Filter>
+    </ClInclude>
     <ClInclude Include="src\utils\Singleton.h">
-      <Filter>Header Files</Filter>
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\Shader.h">
+      <Filter>core\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Player.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Object.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\GraphicModel.h">
+      <Filter>core\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\GraphicEngine.h">
+      <Filter>core\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\Camera.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\BlockType.h">
+      <Filter>core\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\BlockRenderer.h">
+      <Filter>core\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\Block.h">
+      <Filter>core\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Application.h">
+      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\gl\STB\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Component.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\core\components\CameraComponent.h">
+      <Filter>core\components</Filter>
     </ClInclude>
     <ClInclude Include="src\core\ComponentType.h">
-      <Filter>Header Files</Filter>
+      <Filter>core\components</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\GraphicEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\Texture.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\core\components\InputComponent.h">
+      <Filter>core\components</Filter>
     </ClInclude>
     <ClInclude Include="src\core\components\GraphicComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\Block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\BlockType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\GraphicModel.h">
-      <Filter>Header Files</Filter>
+      <Filter>core\components</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Input.h">
-      <Filter>Header Files</Filter>
+      <Filter>core\input</Filter>
     </ClInclude>
     <ClInclude Include="src\core\input_const.h">
-      <Filter>Header Files</Filter>
+      <Filter>core\input</Filter>
     </ClInclude>
     <ClInclude Include="src\core\InputContext.h">
-      <Filter>Header Files</Filter>
+      <Filter>core\input</Filter>
     </ClInclude>
     <ClInclude Include="src\core\InputMapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\RawInput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\Application.h">
-      <Filter>Header Files</Filter>
+      <Filter>core\input</Filter>
     </ClInclude>
     <ClInclude Include="src\core\RangeConverter.h">
-      <Filter>Header Files</Filter>
+      <Filter>core\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\RawInput.h">
+      <Filter>core\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Component.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +177,11 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\frag_shader.glsl" />
-    <None Include="src\shaders\vert_shader.glsl" />
+    <None Include="src\shaders\frag_shader.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="src\shaders\vert_shader.glsl">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

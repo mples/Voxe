@@ -22,10 +22,11 @@ void Block::draw() {
 	texture.bind();
 
 	Camera * camera = GraphicEngine::getInstance().getActiveCamera();
-	blockShader_->setMat4("modelMatrix", getModelMatrix());
-	blockShader_->setMat4("viewMatrix", camera->getViewMatrix());
-	blockShader_->setMat4("projMatrix", camera->getProjMatrix());
-
+		blockShader_->setMat4("modelMatrix", getModelMatrix());
+	if (camera) {
+		blockShader_->setMat4("viewMatrix", camera->getViewMatrix());
+		blockShader_->setMat4("projMatrix", camera->getProjMatrix());
+	}
 	quadModel_.bindVAO();
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);

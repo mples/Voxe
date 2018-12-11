@@ -40,13 +40,21 @@ void InputMapper::setRawAxis(RawAxis& axis) {
 	}
 }
 
-void InputMapper::addCallback(Callback callback, Priority priority) {
+void InputMapper::addCallback(InputCallback callback, InputCallbackPriority priority) {
 	callbacks_.insert(std::make_pair(priority, callback) );
+}
+
+void InputMapper::removeCallback(InputCallback  callback) {
+	for (auto it = callbacks_.begin(); it != callbacks_.end(); ++it) {
+		/*if (it->second.target_type == callback.target_type) {
+			callbacks_.erase(it);
+		}*/
+	}
 }
 
 void InputMapper::dispatch() {
 	for (auto it = callbacks_.begin(); it != callbacks_.end(); ++it) {
-		it->second(currentInput_);
+		(it->second)(currentInput_);
 	}
 }
 

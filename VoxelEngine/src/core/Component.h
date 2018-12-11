@@ -9,7 +9,7 @@ public:
 	Component(ComponentType type);
 	virtual ~Component();
 	virtual void update(float dt) = 0;
-	
+	virtual void activate();
 	void setParent(Object * obj);
 
 	bool toDelete;

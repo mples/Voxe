@@ -2,6 +2,11 @@
 #include "GraphicEngine.h"
 
 
+Camera::Camera() : position_(glm::vec3(0.0f, 0.0f, 0.0f)), lookAt_(glm::vec3(0.0f, 0.0f, 0.0f)), fieldOfView_(45.0f) {
+	makeProjMatrix();
+	makeViewMatrix();
+}
+
 Camera::Camera(glm::vec3 pos, glm::vec3 look_at, float fov) : position_(pos), lookAt_(look_at), fieldOfView_(fov){
 	makeProjMatrix();
 	makeViewMatrix();
@@ -10,6 +15,18 @@ Camera::Camera(glm::vec3 pos, glm::vec3 look_at, float fov) : position_(pos), lo
 
 Camera::~Camera()
 {
+}
+
+void Camera::setPosition(glm::vec3 pos) {
+	position_ = pos;
+	makeProjMatrix();
+	makeViewMatrix();
+}
+
+void Camera::setLookAt(glm::vec3 look_at) {
+	lookAt_ = look_at;
+	makeProjMatrix();
+	makeViewMatrix();
 }
 
 glm::mat4 & Camera::getViewMatrix() {

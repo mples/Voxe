@@ -6,8 +6,12 @@
 class Camera
 {
 public:
+	Camera();
 	Camera(glm::vec3 pos, glm::vec3 look_at, float fov);
 	~Camera();
+	
+	void setPosition(glm::vec3 pos);
+	void setLookAt(glm::vec3 look_at);
 
 	glm::mat4 & getViewMatrix();
 	glm::mat4 & getProjMatrix();

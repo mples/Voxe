@@ -48,6 +48,22 @@ void Object::removeComponent(Component* component) {
 	(*found)->toDelete = true;
 }
 
+glm::vec3 Object::getPosition() {
+	return position_;
+}
+
+glm::vec3 Object::getRotation() {
+	return rotation_;
+}
+
+void Object::setPosition(glm::vec3 pos) {
+	position_ = pos;
+}
+
+void Object::setRotation(glm::vec3 rot) {
+	rotation_ = rot;
+}
+
 void Object::removeAllComponents() {
 	CompIter end_it = components_.end();
 	for (CompIter it = components_.begin(); it != end_it; ++it) {

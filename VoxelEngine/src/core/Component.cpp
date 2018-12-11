@@ -9,6 +9,9 @@ Component::Component(ComponentType type) : toDelete(false), parent_(nullptr), ty
 Component::~Component() {
 }
 
+void Component::activate() {
+}
+
 void Component::setParent(Object * obj) {
 	parent_ = obj;
 }
