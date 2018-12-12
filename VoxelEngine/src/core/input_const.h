@@ -8,6 +8,10 @@ enum Action {
 };
 
 enum State {
+	MOVING_FRONT,
+	MOVING_BACK,
+	MOVING_LEFT,
+	MOVING_RIGHT
 
 };
 

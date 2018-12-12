@@ -15,8 +15,15 @@ public:
 	bool mapButtonToState(RawButton button, State& out);
 	bool mapAxisToRange(RawAxis axis, Range& out);
 
+	void addActionMapping(Action action, RawButton button);
+	void addStateMapping(State state, RawButton button);
+	void addRangeMapping(Range range, RawAxis axis);
+
+	void addRangeConverter(Range range, RangeConverter range_converter);
+
 	double convert(Range range, double value);
 private:
+	//TODO change to keycod insted of RawButton objects
 	std::unordered_map<RawButton, Action> actionMap_;
 	std::unordered_map<RawButton, State> stateMap_;
 	std::unordered_map<RawAxis, Range> rangeMap_;

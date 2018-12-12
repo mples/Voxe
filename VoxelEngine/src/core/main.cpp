@@ -31,8 +31,8 @@ int main() {
 	
 	Application app;
 
-	Player player;
-	player.setPosition(glm::vec3(0.0f, 1.0f, -3.0f));
+	//Player player;
+	//player.setPosition(glm::vec3(0.0f, 1.0f, -3.0f));
 
 	Object block;
 	block.addComponent(new GraphicComponent(new Block(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
@@ -48,7 +48,7 @@ int main() {
 
 
 	while (1) {
-		player.update(10.f);
+		//player.update(10.f);
 		app.run();
 	}
 
