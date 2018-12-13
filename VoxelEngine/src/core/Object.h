@@ -21,19 +21,20 @@ public:
 	virtual void setPosition(glm::vec3& pos);
 	virtual void setRotation(glm::vec3& rot);
 
+	bool toDelete_;
 protected:
 	glm::vec3 position_;
 	glm::vec3 rotation_;
 
 private:
-	void removeAllComponents();
-	 
+	const int START_COMPVEC_SIZE = 5; 
 	using CompVec = std::vector<Component*>;
 	using CompIter = CompVec::iterator;
-	CompVec components_;
-	const int START_COMPVEC_SIZE = 5;
 
+	CompVec components_;
 	int id_;
 	static int objectIdCount_;
+
+	void removeAllComponents();
 };
 

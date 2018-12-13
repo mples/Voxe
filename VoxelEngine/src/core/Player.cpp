@@ -14,16 +14,11 @@ Player::Player() : frontVec_(glm::vec3(0.0f, 0.0f, -1.0f)), rightVec_(glm::vec3(
 	InputCallback callback = [=](MappedInput& input) {
 		this->handleInput(input);
 	};
-		//std::bind(&Player::handleInput, this, _1)  ;
+
 	auto pair = std::make_pair(callback, InputCallbackPriority::HIGH);
 	input_com->addCallback(pair);
 
 	InputContext * input_context = new InputContext();
-	/*
-	input_context->addActionMapping(Action::MOVE_FRONT, RawButton(GLFW_KEY_W));
-	input_context->addActionMapping(Action::MOVE_BACK, RawButton(GLFW_KEY_S));
-	input_context->addActionMapping(Action::MOVE_LEFT, RawButton(GLFW_KEY_A));
-	input_context->addActionMapping(Action::MOVE_RIGHT, RawButton(GLFW_KEY_D));*/
 
 	input_context->addStateMapping(State::MOVING_FRONT, RawButton(GLFW_KEY_W));
 	input_context->addStateMapping(State::MOVING_BACK, RawButton(GLFW_KEY_S));
@@ -63,7 +58,7 @@ void Player::handleInput(MappedInput& input) {
 	}
 	auto found_left = input.states_.find(State::MOVING_LEFT);
 	if (found_left != input.states_.end()) {
-		//std::cout << "move left" << std::endl;
+		std::cout << "move left" << std::endl;
 		new_velocity -= rightVec_ * speed;
 
 		input.eatState(State::MOVING_LEFT);
@@ -89,7 +84,6 @@ void Player::handleInput(MappedInput& input) {
 		//std::cout << "Look x: " << foundx->second << std::endl;
 		rotation_.y += foundx->second;
 		updateVectors();
-		//setRotation(rotation_ - glm::vec3(0.0f, foundx->second, 0.0f));
 
 		input.eatRange(Range::LOOK_X);
 	}
@@ -97,8 +91,8 @@ void Player::handleInput(MappedInput& input) {
 	auto foundy = input.ranges_.find(Range::LOOK_Y);
 	if (foundy != input.ranges_.end()) {
 		//std::cout << "Look y: " << foundy->second << std::endl;
-		//setRotation(rotation_ - glm::vec3(foundy->second, 0.0f, 0.0f));
 		rotation_.x += foundy->second;
+		updateVectors();
 
 		input.eatRange(Range::LOOK_Y);
 	}

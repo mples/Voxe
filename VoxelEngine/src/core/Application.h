@@ -1,4 +1,8 @@
 #pragma once
+#include "StageManager.h"
+#include "ObjectManager.h"
+#include "Player.h"
+
 class Application {
 public:
 	Application();

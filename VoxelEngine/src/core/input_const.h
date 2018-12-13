@@ -4,7 +4,8 @@ enum Action {
 	MOVE_RIGHT,
 	MOVE_LEFT,
 	MOVE_FRONT,
-	MOVE_BACK
+	MOVE_BACK,
+	QUIT
 };
 
 enum State {

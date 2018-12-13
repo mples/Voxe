@@ -5,7 +5,7 @@
 
 int Object::objectIdCount_ = 0;
 
-Object::Object() : id_(++objectIdCount_), position_(0,0,0), rotation_(0, 0, 0), components_() {
+Object::Object() : id_(++objectIdCount_), position_(0,0,0), rotation_(0, 0, 0), components_(), toDelete_(false) {
 	components_.reserve(START_COMPVEC_SIZE);
 }
 

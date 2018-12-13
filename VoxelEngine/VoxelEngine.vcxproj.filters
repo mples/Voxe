@@ -96,6 +96,15 @@
     <ClCompile Include="src\core\RangeConverter.cpp">
       <Filter>core\input</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\StageManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\ObjectManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="MyStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\graphic\Texture.h">
@@ -169,6 +178,18 @@
     </ClInclude>
     <ClInclude Include="src\core\Component.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\ObjectManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Stage.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\StageManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="MyStage.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
+    <ClCompile Include="MyStage.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
     <ClCompile Include="src\core\components\CameraComponent.cpp" />
@@ -133,8 +134,10 @@
     <ClCompile Include="src\core\InputMapper.cpp" />
     <ClCompile Include="src\core\main.cpp" />
     <ClCompile Include="src\core\Object.cpp" />
+    <ClCompile Include="src\core\ObjectManager.cpp" />
     <ClCompile Include="src\core\Player.cpp" />
     <ClCompile Include="src\core\RangeConverter.cpp" />
+    <ClCompile Include="src\core\StageManager.cpp" />
     <ClCompile Include="src\graphic\Block.cpp" />
     <ClCompile Include="src\graphic\BlockRenderer.cpp" />
     <ClCompile Include="src\graphic\Camera.cpp" />
@@ -145,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
+    <ClInclude Include="MyStage.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\CameraComponent.h" />
@@ -156,9 +160,12 @@
     <ClInclude Include="src\core\InputMapper.h" />
     <ClInclude Include="src\core\input_const.h" />
     <ClInclude Include="src\core\Object.h" />
+    <ClInclude Include="src\core\ObjectManager.h" />
     <ClInclude Include="src\core\Player.h" />
     <ClInclude Include="src\core\RangeConverter.h" />
     <ClInclude Include="src\core\RawInput.h" />
+    <ClInclude Include="src\core\Stage.h" />
+    <ClInclude Include="src\core\StageManager.h" />
     <ClInclude Include="src\graphic\Block.h" />
     <ClInclude Include="src\graphic\BlockRenderer.h" />
     <ClInclude Include="src\graphic\BlockType.h" />
