@@ -53,6 +53,7 @@ template<>
 class std::hash<RawAxis> {
 public:
 	std::size_t operator()(const RawAxis& axis) const {
-		return std::hash<int>()(axis.value_) ^ std::hash<int>()(static_cast<int>(axis.type_));
+		//return std::hash<int>()(axis.value_) ^ std::hash<int>()(static_cast<int>(axis.type_));
+		return std::hash<int>()(static_cast<int>(axis.type_));
 	}
 };

@@ -5,7 +5,7 @@
 
 int Object::objectIdCount_ = 0;
 
-Object::Object() : id_(++objectIdCount_), position_(0,0,0), components_() {
+Object::Object() : id_(++objectIdCount_), position_(0,0,0), rotation_(0, 0, 0), components_() {
 	components_.reserve(START_COMPVEC_SIZE);
 }
 
@@ -48,19 +48,19 @@ void Object::removeComponent(Component* component) {
 	(*found)->toDelete = true;
 }
 
-glm::vec3 Object::getPosition() {
+glm::vec3 & Object::getPosition() {
 	return position_;
 }
 
-glm::vec3 Object::getRotation() {
+glm::vec3 & Object::getRotation() {
 	return rotation_;
 }
 
-void Object::setPosition(glm::vec3 pos) {
+void Object::setPosition(glm::vec3& pos) {
 	position_ = pos;
 }
 
-void Object::setRotation(glm::vec3 rot) {
+void Object::setRotation(glm::vec3& rot) {
 	rotation_ = rot;
 }
 

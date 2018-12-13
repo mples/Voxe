@@ -26,6 +26,9 @@ GraphicEngine::GraphicEngine() : Singleton<GraphicEngine>(){
 
 	glViewport(0, 0, windowHeight_, windowWidth_);
 	glEnable(GL_DEPTH_TEST);
+
+	glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
 	Block::blockShader_ = new Shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
 }

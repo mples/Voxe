@@ -31,24 +31,16 @@ int main() {
 	
 	Application app;
 
-	//Player player;
-	//player.setPosition(glm::vec3(0.0f, 1.0f, -3.0f));
-
 	Object block;
+	block.addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
 	block.addComponent(new GraphicComponent(new Block(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-	//Camera camera(glm::vec3(0.0f, 1.0f, -3.0f), glm::vec3(0.0f, 0.0f, 0.0f), 45.0f);
-	///GraphicEngine::getInstance().setActiveCamera(&camera);
-
-	//input 
-	//InputContext* input_context = new InputContext();
-
-	//Input::getInstance().getMapper().addFrontContext(input_context);
-//	Input::getInstance().getMapper().addCallback(handleInput, InputCallbackPriority::HIGH);
-
-
+	block.addComponent(new GraphicComponent(new Block(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
+	block.addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
+	block.addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
+	block.addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
+	block.addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
 
 	while (1) {
-		//player.update(10.f);
 		app.run();
 	}
 

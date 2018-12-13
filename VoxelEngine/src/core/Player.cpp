@@ -2,7 +2,8 @@
 
 #include<glfw3.h>
 
-Player::Player() : Object() {
+Player::Player() : frontVec_(glm::vec3(0.0f, 0.0f, -1.0f)), rightVec_(glm::vec3(1.0f, 0.0f, 0.0f)), Object() {
+	rotation_.y = 90.0f;
 	CameraComponent* camera_com = new CameraComponent(this);
 	camera_com->setParent(this);
 	addComponent(camera_com);
@@ -28,7 +29,13 @@ Player::Player() : Object() {
 	input_context->addStateMapping(State::MOVING_BACK, RawButton(GLFW_KEY_S));
 	input_context->addStateMapping(State::MOVING_LEFT, RawButton(GLFW_KEY_A));
 	input_context->addStateMapping(State::MOVING_RIGHT, RawButton(GLFW_KEY_D));
-	
+
+	input_context->addRangeMapping(Range::LOOK_X, RawAxis(AxisType::MOUSE_X));
+	input_context->addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::MOUSE_Y));
+
+	input_context->addRangeConverter(Range::LOOK_X, RangeConverter(-10, 10, 0, 3, 1));
+	input_context->addRangeConverter(Range::LOOK_Y, RangeConverter(-10, 10, 0, 3, 1));
+
 	input_com->setContext(input_context);
 	input_com->activate();
 
@@ -40,76 +47,92 @@ Player::~Player() {
 
 void Player::update(float dt) {
 	Object::update(dt);
+	position_ += velocity_;
 }
 
 void Player::handleInput(MappedInput& input) {
-	/*
-	auto found = input.actions_.find(Action::MOVE_FRONT);
-	if (found != input.actions_.end()) {
-		std::cout << "move front" << std::endl;
-		setPosition(getPosition() + glm::vec3(0.01f, 0.0f, -0.1f));
 
-		input.eatAction(Action::MOVE_FRONT);
-	}
-
-	auto found_back = input.actions_.find(Action::MOVE_BACK);
-	if (found_back != input.actions_.end()) {
-		std::cout << "move back" << std::endl;
-		setPosition(getPosition() + glm::vec3(0.0f, 0.0f, 0.1f));
-
-		input.eatAction(Action::MOVE_BACK);
-	}
-
-	auto found_left = input.actions_.find(Action::MOVE_LEFT);
-	if (found_left != input.actions_.end()) {
-		std::cout << "move left" << std::endl;
-		setPosition(getPosition() + glm::vec3(-0.1f, 0.0f, 0.0f));
-
-		input.eatAction(Action::MOVE_LEFT);
-	}
-
-	auto found_right = input.actions_.find(Action::MOVE_RIGHT);
-	if (found_right != input.actions_.end()) {
-		std::cout << "move right" << std::endl;
-		setPosition(getPosition() + glm::vec3(0.1f, 0.0f, 0.0f));
-
-		input.eatAction(Action::MOVE_RIGHT);
-	}*/
-
+	float speed = 0.5f;
+	glm::vec3 new_velocity(0.0f, 0.0f,0.0f);
 	auto found_right = input.states_.find(State::MOVING_RIGHT);
 	if (found_right != input.states_.end()) {
-		std::cout << "move right" << std::endl;
-		setPosition(getPosition() + glm::vec3(0.1f, 0.0f, 0.0f));
+		//std::cout << "move right" << std::endl;
+		new_velocity += rightVec_ * speed;
 
 		input.eatState(State::MOVING_RIGHT);
 	}
 	auto found_left = input.states_.find(State::MOVING_LEFT);
 	if (found_left != input.states_.end()) {
-		std::cout << "move left" << std::endl;
-		setPosition(getPosition() + glm::vec3(-0.1f, 0.0f, 0.0f));
+		//std::cout << "move left" << std::endl;
+		new_velocity -= rightVec_ * speed;
 
 		input.eatState(State::MOVING_LEFT);
 	}
 	auto found_front = input.states_.find(State::MOVING_FRONT);
 	if (found_front != input.states_.end()) {
-		std::cout << "move front" << std::endl;
-		setPosition(getPosition() + glm::vec3(0.0f, 0.0f, -0.1f));
+		//std::cout << "move front" << std::endl;
+		new_velocity += frontVec_ * speed;
 
 		input.eatState(State::MOVING_FRONT);
 	}
 	auto found_back = input.states_.find(State::MOVING_BACK);
 	if (found_back != input.states_.end()) {
-		std::cout << "move back" << std::endl;
-		setPosition(getPosition() + glm::vec3(0.0f, 0.0f, -0.1f));
+		//std::cout << "move back" << std::endl;
+		new_velocity -= frontVec_ * speed;
 
 		input.eatState(State::MOVING_BACK);
 	}
 
 
-	auto found2 = input.ranges_.find(Range::LOOK_X);
-	if (found2 != input.ranges_.end()) {
-		std::cout << "Look x: " << found2->second << std::endl;
+	auto foundx = input.ranges_.find(Range::LOOK_X);
+	if (foundx != input.ranges_.end()) {
+		//std::cout << "Look x: " << foundx->second << std::endl;
+		rotation_.y += foundx->second;
+		updateVectors();
+		//setRotation(rotation_ - glm::vec3(0.0f, foundx->second, 0.0f));
+
 		input.eatRange(Range::LOOK_X);
 	}
+
+	auto foundy = input.ranges_.find(Range::LOOK_Y);
+	if (foundy != input.ranges_.end()) {
+		//std::cout << "Look y: " << foundy->second << std::endl;
+		//setRotation(rotation_ - glm::vec3(foundy->second, 0.0f, 0.0f));
+		rotation_.x += foundy->second;
+
+		input.eatRange(Range::LOOK_Y);
+	}
+
+	velocity_ = new_velocity;
+}
+
+void Player::setPosition(glm::vec3& pos) {
+	position_ = pos;
+}
+
+void Player::setRotation(glm::vec3& rot) {
+	/*if (rot.y < 0)
+		rot.y = 0;
+	else if (rot.y > 360)
+		rot.y = 360;
+
+	if (rot.x < 0)
+		rot.x = 0;
+	else if (rot.x > 360)
+		rot.x = 360;*/
+
+	rotation_ = rot;
+	updateVectors();
+}
+
+void Player::updateVectors() {
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(rotation_.y)) * cos(glm::radians(rotation_.x));
+	front.y = sin(glm::radians(rotation_.x));
+	front.z = sin(glm::radians(rotation_.y)) * cos(glm::radians(rotation_.x));
+	frontVec_ = glm::normalize(front);
+	
+	rightVec_ = glm::normalize(glm::cross(frontVec_, glm::vec3(0.0f, 1.0f, 0.0f)));
 }
 

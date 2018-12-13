@@ -1,32 +1,41 @@
 #include "Camera.h"
 #include "GraphicEngine.h"
+#include <cmath>
 
-
-Camera::Camera() : position_(glm::vec3(0.0f, 0.0f, 0.0f)), lookAt_(glm::vec3(0.0f, 0.0f, 0.0f)), fieldOfView_(45.0f) {
+Camera::Camera(glm::vec3 pos, glm::vec3 front, float fov) : position_(pos), frontVec_(front), fieldOfView_(fov), rotation_(glm::vec3 (0.0f, 90.0f, 0.0f)){
 	makeProjMatrix();
 	makeViewMatrix();
 }
 
-Camera::Camera(glm::vec3 pos, glm::vec3 look_at, float fov) : position_(pos), lookAt_(look_at), fieldOfView_(fov){
-	makeProjMatrix();
-	makeViewMatrix();
-}
-
-
-Camera::~Camera()
-{
-}
-
-void Camera::setPosition(glm::vec3 pos) {
+void Camera::setPosition(glm::vec3& pos) {
 	position_ = pos;
 	makeProjMatrix();
 	makeViewMatrix();
 }
 
-void Camera::setLookAt(glm::vec3 look_at) {
-	lookAt_ = look_at;
+void Camera::setRotation(glm::vec3& rot) {
+	if (rot.x > 89.0) {
+		rot.x = 89.0;
+	}
+	else if (rot.x < -89.0) {
+		rot.x = -89.0;
+	}
+	
+	if (rot.y < 0 || rot.y > 360) {
+		rot.y = fmod(rot.y, 360.0f);
+	}
+
+	rotation_ = rot;
 	makeProjMatrix();
 	makeViewMatrix();
+}
+
+glm::vec3 & Camera::getPosition() {
+	return position_;
+}
+
+glm::vec3 & Camera::getRotation() {
+	return rotation_;
 }
 
 glm::mat4 & Camera::getViewMatrix() {
@@ -42,9 +51,14 @@ void Camera::makeProjMatrix() {
 }
 
 void Camera::makeViewMatrix() {
-	glm::vec3 camera_direction = glm::normalize(position_ - lookAt_);
-	rightVec_ = glm::normalize(glm::cross(UP_VECTOR, camera_direction) );
-	upVec_ = glm::cross(camera_direction, rightVec_);
 
-	viewMatrix_ = glm::lookAt(position_, camera_direction, upVec_);
+	glm::vec3 front;
+	front.x = cos(glm::radians(rotation_.y)) * cos(glm::radians(rotation_.x));
+	front.y = sin(glm::radians(rotation_.x));
+	front.z = sin(glm::radians(rotation_.y)) * cos(glm::radians(rotation_.x));
+	frontVec_ = glm::normalize(front);
+	rightVec_ = glm::normalize(glm::cross(frontVec_, UP_VECTOR) );
+	upVec_ = glm::cross(rightVec_, frontVec_);
+
+	viewMatrix_ = glm::lookAt(position_, position_ + frontVec_, upVec_);
 }

@@ -15,16 +15,19 @@ public:
 	void addComponent(Component* component);
 	void removeComponent(Component* component);
 
-	glm::vec3 getPosition();
-	glm::vec3 getRotation();
+	glm::vec3 & getPosition();
+	glm::vec3 & getRotation();
 
-	void setPosition(glm::vec3 pos);
-	void setRotation(glm::vec3 rot);
+	virtual void setPosition(glm::vec3& pos);
+	virtual void setRotation(glm::vec3& rot);
+
+protected:
+	glm::vec3 position_;
+	glm::vec3 rotation_;
+
 private:
 	void removeAllComponents();
 	 
-	glm::vec3 position_;
-	glm::vec3 rotation_;
 	using CompVec = std::vector<Component*>;
 	using CompIter = CompVec::iterator;
 	CompVec components_;
