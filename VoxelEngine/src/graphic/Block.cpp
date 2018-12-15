@@ -133,7 +133,8 @@ GraphicModel & Block::genQuadModel(glm::vec3 dim, BlockType type) {
 	0.0f, 1.0f
 	};
 	GraphicModel model;
-	model.loadData(vertices,text_cord);
+	model.loadData(vertices,3);
+	model.loadData(text_cord, 2);
 	return model;
 }
 

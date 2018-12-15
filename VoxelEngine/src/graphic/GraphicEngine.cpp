@@ -5,7 +5,7 @@ void framebuffer_size_callback(GLFWwindow* window, int height, int width) {
 	glViewport(0, 0, height, width);
 }
 
-GraphicEngine::GraphicEngine() : Singleton<GraphicEngine>(){
+GraphicEngine::GraphicEngine() : Singleton<GraphicEngine>() {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -27,10 +27,15 @@ GraphicEngine::GraphicEngine() : Singleton<GraphicEngine>(){
 	glViewport(0, 0, windowHeight_, windowWidth_);
 	glEnable(GL_DEPTH_TEST);
 
+	glEnable(GL_CULL_FACE);
+
 	glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
 	Block::blockShader_ = new Shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
+	//chunk = new Chunk();
+	//chunk->setBlock(4,4,4,(Block_t) BlockType::GRASS);
+	chunkRenderer_ = new ChunkRenderer();
 }
 
 GraphicEngine::~GraphicEngine() {
@@ -44,6 +49,7 @@ void GraphicEngine::draw() {
 	for (auto comp : components_) {
 		comp->draw();
 	}
+	chunkRenderer_->draw(world_);
 
 	glfwSwapBuffers(window_);
 	glfwPollEvents();
@@ -77,6 +83,10 @@ void GraphicEngine::unregisterComponent(GraphicComponent * g_comp) {
 	if (found != components_.end()) {
 		components_.erase(found);
 	}
+}
+
+void GraphicEngine::setWorld(World * world) {
+	world_ = world;
 }
 
 void GraphicEngine::setActiveCamera(Camera * camera) {

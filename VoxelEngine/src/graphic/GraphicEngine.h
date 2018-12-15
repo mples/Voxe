@@ -12,6 +12,9 @@
 #include "BlockType.h"
 #include "Camera.h"
 #include "components/GraphicComponent.h"
+#include "../../Chunk.h"
+#include "../../ChunkRenderer.h"
+#include "../../World.h"
 
 class GraphicEngine : public Singleton<GraphicEngine>
 {
@@ -23,8 +26,12 @@ public:
 	int getWindowHeight();
 	int getWindowWidth();
 	GLFWwindow * getWindow();
+
 	void registerComponent(GraphicComponent* g_comp);
 	void unregisterComponent(GraphicComponent* g_comp);
+
+	void setWorld(World * world);
+
 	void setActiveCamera(Camera* camera);
 	Camera* getActiveCamera();
 private:
@@ -34,5 +41,8 @@ private:
 	GLFWwindow* window_;
 	std::vector<GraphicComponent*> components_;
 	Camera* activeCamera_;
+	ChunkRenderer* chunkRenderer_;
+	World* world_;
+	Chunk* chunk;
 };
 

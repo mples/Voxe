@@ -14,22 +14,26 @@ MyStage::~MyStage() {
 
 void MyStage::init() {
 	player_ = new Player();
+	/*
 	object_ = new Object();
-	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-	object_->addComponent(new GraphicComponent(new Block(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-	object_->addComponent(new GraphicComponent(new Block(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::Grass)));
-
-
-	ObjectManager::getInstance().addObject(object_);
+	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::GRASS)));
+	object_->addComponent(new GraphicComponent(new Block(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::GRASS)));
+	object_->addComponent(new GraphicComponent(new Block(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::GRASS)));
+	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::GRASS)));
+	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::GRASS)));
+	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::GRASS)));
+	object_->addComponent(new GraphicComponent(new Block(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0, 20.0, 0.0), glm::vec3(1.0, 1.0, 1.0), BlockType::GRASS)));
+	*/
+	
+	//ObjectManager::getInstance().addObject(object_);
 	ObjectManager::getInstance().addObject(player_);
 	
 	InputContext * input_context = new InputContext();
 
-
+	world_.setBlock(1, 1, 1, BlockType::GRASS);
+	world_.setBlock(1, 2, 1, BlockType::GRASS);
+	world_.setBlock(1, 1, 2, BlockType::GRASS);
+	
 	input_context->addActionMapping(Action::QUIT, RawButton(GLFW_KEY_ESCAPE));
 
 	Input::getInstance().getMapper().pushBackContext(input_context);
@@ -41,9 +45,12 @@ void MyStage::init() {
 		}
 	}, InputCallbackPriority::HIGH);
 	
+
+	
 }
 
 void MyStage::update(float dt) {
+	
 }
 
 void MyStage::shutdown() {
