@@ -4,7 +4,13 @@
 
 Chunk::Chunk() : changed_(true){
 	//memset(blocks_, 0, sizeof(blocks_));
-
+	for (GLbyte x = 0; x < CHUNK_DIM; ++x) {
+		for (GLbyte y = 0; y < CHUNK_DIM; ++y) {
+			for (GLbyte z = 0; z < CHUNK_DIM; ++z) {
+				blocks_[x][y][z] = BlockType::AIR;
+			}
+		}
+	}
 }
 
 
@@ -24,15 +30,25 @@ void Chunk::update() {
 				if (type == BlockType::AIR) {
 					continue;
 				}
-
-				insertXPositiveSide(vertices, texture_coord, x, y, z);
-				inserXNegativeSide(vertices, texture_coord, x, y, z);
-
-				insertYPositiveSide(vertices, texture_coord, x, y, z);
-				insertYNegativeSide(vertices, texture_coord, x, y, z);
-
-				insertZPositiveSide(vertices, texture_coord, x, y, z);
-				insertZNegativeSide(vertices, texture_coord, x, y, z);
+				//TODO add checking on chunks egdes 
+				if (x > 0 && blocks_[x - 1][y][z] == BlockType::AIR) {
+					inserXNegativeSide(vertices, texture_coord, x, y, z);
+				}
+				if (x + 1 < CHUNK_DIM && blocks_[x + 1][y][z] == BlockType::AIR) {
+					insertXPositiveSide(vertices, texture_coord, x, y, z);
+				}
+				if (y > 0 && blocks_[x][y - 1][z] == BlockType::AIR) {
+					insertYNegativeSide(vertices, texture_coord, x, y, z);
+				}
+				if (y + 1 < CHUNK_DIM && blocks_[x][y + 1][z] == BlockType::AIR) {
+					insertYPositiveSide(vertices, texture_coord, x, y, z);
+				}
+				if (z > 0 && blocks_[x][y][z - 1] == BlockType::AIR) {
+					insertZNegativeSide(vertices, texture_coord, x, y, z);
+				}
+				if (z + 1 < CHUNK_DIM && blocks_[x][y][z + 1] == BlockType::AIR) {
+					insertZPositiveSide(vertices, texture_coord, x, y, z);
+				}
 			}
 		}
 	}
