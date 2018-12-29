@@ -5,6 +5,8 @@ enum Action {
 	MOVE_LEFT,
 	MOVE_FRONT,
 	MOVE_BACK,
+	LMOUSE_CLICK,
+	RMOUSE_CLICK,
 	QUIT
 };
 

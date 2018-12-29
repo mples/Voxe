@@ -10,15 +10,9 @@ World::World() {
 World::~World() {
 }
 
-void World::draw(Shader* shader) {
-	for (auto chunk : chunks_) {
-		glm::mat4 model = makeModelMatrix(chunk.first);
-		shader->setMat4("modelMatrix", model);
-		chunk.second->draw();
-	}
-}
 
 void World::setBlock(int x, int y, int z, BlockType type) {
+	std::cout << "World x: " << x << " y: " << y << " z: " << z << std::endl;
 	ChunkCoord coord = getChunkCoord(x, y, z);
 	auto found = chunks_.find(coord);
 	if (found == chunks_.end()) {
@@ -33,15 +27,6 @@ void World::setBlock(int x, int y, int z, BlockType type) {
 
 std::unordered_map<ChunkCoord, Chunk*>& World::getChunks() {
 	return chunks_;
-}
-
-glm::mat4 World::makeModelMatrix(ChunkCoord coord) {
-	glm::mat4 model(1.0f);
-	float a = (float)coord.x * Chunk::CHUNK_DIM;
-	glm::ivec3 vec(coord.x * Chunk::CHUNK_DIM, coord.y * Chunk::CHUNK_DIM, coord.z * Chunk::CHUNK_DIM);
-	model = glm::translate(model, glm::vec3((float)coord.x * Chunk::CHUNK_DIM, (float)coord.y * Chunk::CHUNK_DIM, (float)coord.z * Chunk::CHUNK_DIM));
-
-	return model;
 }
 
 ChunkCoord World::getChunkCoord(int x, int y, int z) {

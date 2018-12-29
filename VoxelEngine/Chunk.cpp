@@ -19,7 +19,7 @@ Chunk::~Chunk() {
 
 void Chunk::update() {
 	changed_ = false;
-
+	model_.clearData();
 	std::vector<GLbyte> vertices; 
 	std::vector<float> texture_coord;
 
@@ -371,8 +371,31 @@ void Chunk::draw() {
 }
 
 void Chunk::setBlock(int x, int y, int z, BlockType type) {
+	std::cout << "Chunk x: " << x << " y: " << y << " z: " << z << std::endl;
 	blocks_[x][y][z] = type;
 	changed_ = true;
+
+	if (x == 0 && left_ != nullptr) {
+		left_->changed_ = true;
+	}else if (x == CHUNK_DIM - 1 && right_ != nullptr) {
+		right_->changed_ = true;
+	}
+	if (y == 0 && up_ != nullptr) {
+		up_->changed_ = true;
+	}
+	else if (y == CHUNK_DIM - 1 && down_ != nullptr) {
+		down_->changed_ = true;
+	}
+	if (z == 0 && front_ != nullptr) {
+		front_->changed_ = true;
+	}
+	else if (z == CHUNK_DIM - 1 && back_ != nullptr) {
+		back_->changed_ = true;
+	}
+	std::cout << "Chunk end setBlock\n";
+	if (x == 15 && y == 15 && z == 15) {
+		std::cout << "Chunk deb\n";
+	}
 }
 
 BlockType Chunk::getBlock(int x, int y, int z) {

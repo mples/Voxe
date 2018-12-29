@@ -36,6 +36,16 @@ void GraphicModel::bindVAO() {
 	glBindVertexArray(vaoId_);
 }
 
+void GraphicModel::clearData() {
+	glDeleteVertexArrays(1, &vaoId_);
+	glDeleteBuffers(buffers_.size(), buffers_.data());
+
+	buffers_.clear();
+	vaoId_ = 0;
+	vboCount_ = 0;
+	indicesCount_ = 0;
+}
+
 void GraphicModel::loadVBO(int dim, const std::vector<float>& data) {
 	unsigned int vbo_id;
 
@@ -48,7 +58,7 @@ void GraphicModel::loadVBO(int dim, const std::vector<float>& data) {
 	glEnableVertexAttribArray(vboCount_);
 
 	++vboCount_;
-	buffers.push_back(vbo_id);
+	buffers_.push_back(vbo_id);
 }
 
 void GraphicModel::loadVBO(int dim, const std::vector<GLbyte>& data) {
@@ -63,7 +73,7 @@ void GraphicModel::loadVBO(int dim, const std::vector<GLbyte>& data) {
 	glEnableVertexAttribArray(vboCount_);
 
 	++vboCount_;
-	buffers.push_back(vbo_id);
+	buffers_.push_back(vbo_id);
 }
 
 void GraphicModel::loadEBO(const std::vector<unsigned int>& indices) {

@@ -11,5 +11,8 @@ public:
 	void draw(World* world);
 private:
 	Shader* shader_;
+
+	glm::mat4 makeModelMatrix(ChunkCoord  coord);
+	bool isVisible(ChunkCoord coord, glm::mat4 mvp);
 };
 

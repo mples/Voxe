@@ -24,6 +24,7 @@ Player::Player() : frontVec_(glm::vec3(0.0f, 0.0f, -1.0f)), rightVec_(glm::vec3(
 	input_context->addStateMapping(State::MOVING_BACK, RawButton(GLFW_KEY_S));
 	input_context->addStateMapping(State::MOVING_LEFT, RawButton(GLFW_KEY_A));
 	input_context->addStateMapping(State::MOVING_RIGHT, RawButton(GLFW_KEY_D));
+	input_context->addActionMapping(Action::LMOUSE_CLICK, RawButton(GLFW_KEY_Q));
 
 	input_context->addRangeMapping(Range::LOOK_X, RawAxis(AxisType::MOUSE_X));
 	input_context->addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::MOUSE_Y));
@@ -58,7 +59,7 @@ void Player::handleInput(MappedInput& input) {
 	}
 	auto found_left = input.states_.find(State::MOVING_LEFT);
 	if (found_left != input.states_.end()) {
-		std::cout << "move left" << std::endl;
+		//std::cout << "move left" << std::endl;
 		new_velocity -= rightVec_ * speed;
 
 		input.eatState(State::MOVING_LEFT);
@@ -98,6 +99,19 @@ void Player::handleInput(MappedInput& input) {
 	}
 
 	velocity_ = new_velocity;
+
+	auto mouse_clicked = input.actions_.find(Action::LMOUSE_CLICK);
+	if (mouse_clicked != input.actions_.end()) {
+		std::cout << "mouse clicked" << std::endl;
+		glm::vec3 selected = GraphicEngine::getInstance().unprojectMiddlePixel();
+		int x = floorf(selected.x);
+		int y = floorf(selected.y);
+		int z = floorf(selected.z);
+		std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+		GraphicEngine::getInstance().getActiveWorld()->setBlock(x, y, z, BlockType::AIR);
+
+		input.eatAction(Action::LMOUSE_CLICK);
+	}
 }
 
 void Player::setPosition(glm::vec3& pos) {
@@ -105,16 +119,6 @@ void Player::setPosition(glm::vec3& pos) {
 }
 
 void Player::setRotation(glm::vec3& rot) {
-	/*if (rot.y < 0)
-		rot.y = 0;
-	else if (rot.y > 360)
-		rot.y = 360;
-
-	if (rot.x < 0)
-		rot.x = 0;
-	else if (rot.x > 360)
-		rot.x = 360;*/
-
 	rotation_ = rot;
 	updateVectors();
 }

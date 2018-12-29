@@ -30,10 +30,12 @@ public:
 	void registerComponent(GraphicComponent* g_comp);
 	void unregisterComponent(GraphicComponent* g_comp);
 
+	World* getActiveWorld();
 	void setWorld(World * world);
 
 	void setActiveCamera(Camera* camera);
 	Camera* getActiveCamera();
+	glm::vec3 unprojectMiddlePixel();
 private:
 	int windowHeight_ = 800;
 	int windowWidth_ = 600;
@@ -43,6 +45,5 @@ private:
 	Camera* activeCamera_;
 	ChunkRenderer* chunkRenderer_;
 	World* world_;
-	Chunk* chunk;
 };
 

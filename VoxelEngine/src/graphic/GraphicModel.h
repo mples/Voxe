@@ -12,6 +12,8 @@ public:
 	void loadData(const std::vector<GLbyte>& data, int dim);
 
 	void bindVAO();
+
+	void clearData();
 private:
 	unsigned int vaoId_;
 	int vboCount_;
@@ -21,7 +23,7 @@ private:
 	void loadVBO(int dim, const std::vector<GLbyte>& data);
 
 	void loadEBO(const std::vector<unsigned int>& indices);
-	std::vector<unsigned int> buffers;
+	std::vector<unsigned int> buffers_;
 
 };
 
