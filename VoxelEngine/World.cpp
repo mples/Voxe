@@ -24,6 +24,7 @@ void World::setBlock(int x, int y, int z, BlockType type) {
 	if (found == chunks_.end()) {
 		Chunk* new_chunk = new Chunk();
 		chunks_.insert(std::make_pair(coord, new_chunk));
+		setAdjacentChunks(new_chunk, coord);
 		new_chunk->setBlock(x % Chunk::CHUNK_DIM, y % Chunk::CHUNK_DIM, z % Chunk::CHUNK_DIM, type);
 		return;
 	}
@@ -35,12 +36,67 @@ std::unordered_map<ChunkCoord, Chunk*>& World::getChunks() {
 }
 
 glm::mat4 World::makeModelMatrix(ChunkCoord coord) {
-	glm::mat4 model(1);
-	model = glm::translate(model, glm::vec3(coord.x, coord.x, coord.z));
+	glm::mat4 model(1.0f);
+	float a = (float)coord.x * Chunk::CHUNK_DIM;
+	glm::ivec3 vec(coord.x * Chunk::CHUNK_DIM, coord.y * Chunk::CHUNK_DIM, coord.z * Chunk::CHUNK_DIM);
+	model = glm::translate(model, glm::vec3((float)coord.x * Chunk::CHUNK_DIM, (float)coord.y * Chunk::CHUNK_DIM, (float)coord.z * Chunk::CHUNK_DIM));
 
 	return model;
 }
 
 ChunkCoord World::getChunkCoord(int x, int y, int z) {
-	return ChunkCoord(std::floor(x / Chunk::CHUNK_DIM) , std::floor(y / Chunk::CHUNK_DIM), std::floor(z / Chunk::CHUNK_DIM));
+	return ChunkCoord(std::floor((double)x / Chunk::CHUNK_DIM) , std::floor((double)y / Chunk::CHUNK_DIM), std::floor((double)z / Chunk::CHUNK_DIM));
+}
+
+void World::setAdjacentChunks(Chunk * chunk, ChunkCoord& coord) {
+	ChunkCoord left_coord = ChunkCoord(coord.x -1 , coord.y, coord.z);
+	Chunk* left_chunk = getChunk(left_coord);
+	if (left_chunk) {
+		chunk->left_ = left_chunk;
+		left_chunk->right_ = chunk;
+	}
+
+	ChunkCoord right_coord = ChunkCoord(coord.x + 1, coord.y, coord.z);
+	Chunk* right_chunk = getChunk(right_coord);
+	if (right_chunk) {
+		chunk->right_ = right_chunk;
+		right_chunk->left_= chunk;
+	}
+
+	ChunkCoord up_coord = ChunkCoord(coord.x, coord.y + 1, coord.z);
+	Chunk* up_chunk = getChunk(up_coord);
+	if (up_chunk) {
+		chunk->up_ = up_chunk;
+		up_chunk->down_ = chunk;
+	}
+
+	ChunkCoord down_coord = ChunkCoord(coord.x, coord.y - 1, coord.z);
+	Chunk* down_chunk = getChunk(down_coord);
+	if (down_chunk) {
+		chunk->down_= down_chunk;
+		down_chunk->up_ = chunk;
+	}
+
+	ChunkCoord front_coord = ChunkCoord(coord.x, coord.y, coord.z  - 1);
+	Chunk* front_chunk = getChunk(front_coord);
+	if (front_chunk) {
+		chunk->front_= front_chunk;
+		front_chunk->back_ = chunk;
+	}
+
+	ChunkCoord back_coord = ChunkCoord(coord.x, coord.y, coord.z + 1);
+	Chunk* back_chunk = getChunk(back_coord);
+	if (back_chunk) {
+		chunk->back_ = back_chunk;
+		back_chunk->front_ = chunk;
+	}
+
+}
+
+Chunk * World::getChunk(ChunkCoord& coord) {
+	auto found = chunks_.find(coord);
+	if (found != chunks_.end()) {
+		return found->second;
+	}
+	return nullptr;
 }

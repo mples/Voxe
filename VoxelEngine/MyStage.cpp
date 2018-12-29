@@ -33,6 +33,15 @@ void MyStage::init() {
 	world_.setBlock(1, 1, 1, BlockType::GRASS);
 	world_.setBlock(1, 2, 1, BlockType::GRASS);
 	world_.setBlock(1, 1, 2, BlockType::GRASS);
+	world_.setBlock(0, 0, 0, BlockType::GRASS);
+	world_.setBlock(1, 0, 0, BlockType::GRASS);
+	world_.setBlock(15, 0, 0, BlockType::GRASS);
+	world_.setBlock(0, 0, 15, BlockType::GRASS);
+	world_.setBlock(0, 15, 0, BlockType::GRASS);
+	world_.setBlock(16, 0, 0, BlockType::GRASS);
+	world_.setBlock(-1, 0, 0, BlockType::GRASS);
+	world_.setBlock(-1, -1, -1, BlockType::GRASS);
+
 	
 	input_context->addActionMapping(Action::QUIT, RawButton(GLFW_KEY_ESCAPE));
 

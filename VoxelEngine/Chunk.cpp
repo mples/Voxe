@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "GraphicEngine.h"
 
-Chunk::Chunk() : changed_(true){
+Chunk::Chunk() : changed_(true), left_(nullptr), right_(nullptr), up_(nullptr), down_(nullptr), front_(nullptr), back_(nullptr) {
 	//memset(blocks_, 0, sizeof(blocks_));
 	for (GLbyte x = 0; x < CHUNK_DIM; ++x) {
 		for (GLbyte y = 0; y < CHUNK_DIM; ++y) {
@@ -34,20 +34,50 @@ void Chunk::update() {
 				if (x > 0 && blocks_[x - 1][y][z] == BlockType::AIR) {
 					inserXNegativeSide(vertices, texture_coord, x, y, z);
 				}
+				else if (x == 0) {
+					if (!left_ || (left_->getBlock(CHUNK_DIM - 1, y, z)) == BlockType::AIR ) {
+						inserXNegativeSide(vertices, texture_coord, x, y, z);
+					}
+				}
 				if (x + 1 < CHUNK_DIM && blocks_[x + 1][y][z] == BlockType::AIR) {
 					insertXPositiveSide(vertices, texture_coord, x, y, z);
+				}
+				else if (x + 1 == CHUNK_DIM) {
+					if (!right_|| (right_->getBlock(0, y, z)) == BlockType::AIR) {
+						insertXPositiveSide(vertices, texture_coord, x, y, z);
+					}
 				}
 				if (y > 0 && blocks_[x][y - 1][z] == BlockType::AIR) {
 					insertYNegativeSide(vertices, texture_coord, x, y, z);
 				}
+				else if (y == 0) {
+					if (!up_ || (up_->getBlock(x, CHUNK_DIM - 1, z)) == BlockType::AIR) {
+						insertYNegativeSide(vertices, texture_coord, x, y, z);
+					}
+				}
 				if (y + 1 < CHUNK_DIM && blocks_[x][y + 1][z] == BlockType::AIR) {
 					insertYPositiveSide(vertices, texture_coord, x, y, z);
+				}
+				else if (y + 1 == CHUNK_DIM) {
+					if (!down_|| (down_->getBlock(x, 0, z)) == BlockType::AIR) {
+						insertYPositiveSide(vertices, texture_coord, x, y, z);
+					}
 				}
 				if (z > 0 && blocks_[x][y][z - 1] == BlockType::AIR) {
 					insertZNegativeSide(vertices, texture_coord, x, y, z);
 				}
+				else if (z == 0) {
+					if (!front_ || (front_->getBlock(x, y, CHUNK_DIM - 1)) == BlockType::AIR) {
+						insertZNegativeSide(vertices, texture_coord, x, y, z);
+					}
+				}
 				if (z + 1 < CHUNK_DIM && blocks_[x][y][z + 1] == BlockType::AIR) {
 					insertZPositiveSide(vertices, texture_coord, x, y, z);
+				}
+				else if (z + 1 == CHUNK_DIM) {
+					if (!back_ || (back_->getBlock(x, y, 0)) == BlockType::AIR) {
+						insertZPositiveSide(vertices, texture_coord, x, y, z);
+					}
 				}
 			}
 		}
@@ -347,4 +377,13 @@ void Chunk::setBlock(int x, int y, int z, BlockType type) {
 
 BlockType Chunk::getBlock(int x, int y, int z) {
 	return blocks_[x][y][z];
+}
+
+bool Chunk::isCovered(int x, int y, int z, int cov_x, int cov_y, int cov_z) {
+	//TODO clean method or make it usefull
+	if (blocks_[cov_x][cov_y][cov_z] != BlockType::AIR) {
+		return true;
+	}
+
+	return false;
 }

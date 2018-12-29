@@ -26,10 +26,13 @@ public:
 
 	void setBlock(int x, int y, int z, BlockType type);
 	BlockType getBlock(int x, int y, int z);
+	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
 private:
 	BlockType blocks_[CHUNK_DIM][CHUNK_DIM][CHUNK_DIM];
 	bool changed_;
 	GraphicModel model_;
 	int elements_;
+
+	bool isCovered(int x, int y, int z, int cov_x, int cov_y, int cov_z);
 };
 

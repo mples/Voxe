@@ -22,7 +22,7 @@ public:
 	~World();
 
 	void draw(Shader* shader);
-
+	
 	void setBlock(int x, int y, int z, BlockType type);
 
 	std::unordered_map<ChunkCoord, Chunk*> & getChunks();
@@ -33,7 +33,9 @@ private:
 	std::unordered_map<ChunkCoord, Chunk*> chunks_;
 	
 	ChunkCoord getChunkCoord(int x, int y, int z);
-	
+	void setAdjacentChunks(Chunk* chunk, ChunkCoord& coord);
+
+	Chunk* getChunk(ChunkCoord& coord);
 };
 
 
