@@ -100,15 +100,3 @@ void GraphicEngine::setActiveCamera(Camera * camera) {
 Camera * GraphicEngine::getActiveCamera() {
 	return activeCamera_;
 }
-
-glm::vec3 GraphicEngine::unprojectMiddlePixel() {
-	float depth;
-	glReadPixels(windowWidth_ / 2, windowHeight_ / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-
-	glm::vec4 viewport = glm::vec4(0, 0, windowWidth_, windowHeight_);
-	glm::vec3 win_coord = glm::vec3(windowWidth_ / 2, windowHeight_ / 2, depth);
-	glm::vec3 selected_coord = glm::unProject(win_coord,activeCamera_->getViewMatrix(), activeCamera_->getProjMatrix(), viewport);
-
-
-	return selected_coord;
-}

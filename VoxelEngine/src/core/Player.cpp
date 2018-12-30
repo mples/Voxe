@@ -24,7 +24,8 @@ Player::Player() : frontVec_(glm::vec3(0.0f, 0.0f, -1.0f)), rightVec_(glm::vec3(
 	input_context->addStateMapping(State::MOVING_BACK, RawButton(GLFW_KEY_S));
 	input_context->addStateMapping(State::MOVING_LEFT, RawButton(GLFW_KEY_A));
 	input_context->addStateMapping(State::MOVING_RIGHT, RawButton(GLFW_KEY_D));
-	input_context->addActionMapping(Action::LMOUSE_CLICK, RawButton(GLFW_KEY_Q));
+	input_context->addActionMapping(Action::DELETE_BLOCK, RawButton(GLFW_KEY_Q));
+	input_context->addActionMapping(Action::BUILD_BLOCK, RawButton(GLFW_KEY_E));
 
 	input_context->addRangeMapping(Range::LOOK_X, RawAxis(AxisType::MOUSE_X));
 	input_context->addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::MOUSE_Y));
@@ -100,16 +101,20 @@ void Player::handleInput(MappedInput& input) {
 
 	velocity_ = new_velocity;
 
-	auto mouse_clicked = input.actions_.find(Action::LMOUSE_CLICK);
-	if (mouse_clicked != input.actions_.end()) {
-		glm::vec3 selected = GraphicEngine::getInstance().unprojectMiddlePixel();
-		int x = floorf(selected.x);
-		int y = floorf(selected.y);
-		int z = floorf(selected.z);
-		//std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
-		GraphicEngine::getInstance().getActiveWorld()->setBlock(x, y, z, BlockType::AIR);
+	auto delete_action = input.actions_.find(Action::DELETE_BLOCK);
+	if (delete_action != input.actions_.end()) {
+		glm::ivec3 selected = Input::getInstance().unprojectMiddleVoxel();
+		GraphicEngine::getInstance().getActiveWorld()->setBlock(selected.x, selected.y, selected.z, BlockType::AIR);
 		
-		input.eatAction(Action::LMOUSE_CLICK);
+		input.eatAction(Action::DELETE_BLOCK);
+	}
+
+	auto build_action = input.actions_.find(Action::BUILD_BLOCK);
+	if (build_action != input.actions_.end()) {
+		glm::ivec3 selected = Input::getInstance().unprojectNextToMiddleVoxel();
+		GraphicEngine::getInstance().getActiveWorld()->setBlock(selected.x, selected.y, selected.z, BlockType::GRASS);
+
+		input.eatAction(Action::BUILD_BLOCK);
 	}
 }
 

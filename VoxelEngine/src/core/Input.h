@@ -15,7 +15,12 @@ public:
 	Input();
 	void processInput();
 	InputMapper& getMapper();
+	glm::vec3 unprojectMiddlePixel();
+	glm::ivec3 unprojectMiddleVoxel();
+	glm::ivec3 unprojectNextToMiddleVoxel();
 private:
 	InputMapper mapper_;
+
+	static float roundDiff(float value);
 };
 

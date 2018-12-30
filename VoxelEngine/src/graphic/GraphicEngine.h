@@ -35,7 +35,6 @@ public:
 
 	void setActiveCamera(Camera* camera);
 	Camera* getActiveCamera();
-	glm::vec3 unprojectMiddlePixel();
 private:
 	int windowHeight_ = 800;
 	int windowWidth_ = 600;
