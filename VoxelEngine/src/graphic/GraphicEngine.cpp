@@ -51,8 +51,8 @@ void GraphicEngine::draw() {
 	}
 	chunkRenderer_->draw(world_);
 
-	glfwSwapBuffers(window_);
 	glfwPollEvents();
+	glfwSwapBuffers(window_);
 
 	if (glfwWindowShouldClose(window_)) {
 		exit(0);

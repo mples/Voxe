@@ -102,14 +102,13 @@ void Player::handleInput(MappedInput& input) {
 
 	auto mouse_clicked = input.actions_.find(Action::LMOUSE_CLICK);
 	if (mouse_clicked != input.actions_.end()) {
-		std::cout << "mouse clicked" << std::endl;
 		glm::vec3 selected = GraphicEngine::getInstance().unprojectMiddlePixel();
 		int x = floorf(selected.x);
 		int y = floorf(selected.y);
 		int z = floorf(selected.z);
-		std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+		//std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
 		GraphicEngine::getInstance().getActiveWorld()->setBlock(x, y, z, BlockType::AIR);
-
+		
 		input.eatAction(Action::LMOUSE_CLICK);
 	}
 }

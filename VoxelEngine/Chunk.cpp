@@ -83,7 +83,7 @@ void Chunk::update() {
 		}
 	}
 
-	elements_ += vertices.size();
+	elements_ = vertices.size();
 	model_.loadData(vertices, 3);
 	model_.loadData(texture_coord, 2);
 }
@@ -371,7 +371,7 @@ void Chunk::draw() {
 }
 
 void Chunk::setBlock(int x, int y, int z, BlockType type) {
-	std::cout << "Chunk x: " << x << " y: " << y << " z: " << z << std::endl;
+	//std::cout << "Chunk x: " << x << " y: " << y << " z: " << z << std::endl;
 	blocks_[x][y][z] = type;
 	changed_ = true;
 
@@ -391,10 +391,6 @@ void Chunk::setBlock(int x, int y, int z, BlockType type) {
 	}
 	else if (z == CHUNK_DIM - 1 && back_ != nullptr) {
 		back_->changed_ = true;
-	}
-	std::cout << "Chunk end setBlock\n";
-	if (x == 15 && y == 15 && z == 15) {
-		std::cout << "Chunk deb\n";
 	}
 }
 
