@@ -30,7 +30,6 @@ void Chunk::update() {
 				if (type == BlockType::AIR) {
 					continue;
 				}
-				//TODO add checking on chunks egdes 
 				if (x > 0 && blocks_[x - 1][y][z] == BlockType::AIR) {
 					inserXNegativeSide(vertices, texture_coord, x, y, z);
 				}
@@ -51,15 +50,15 @@ void Chunk::update() {
 					insertYNegativeSide(vertices, texture_coord, x, y, z);
 				}
 				else if (y == 0) {
-					if (!up_ || (up_->getBlock(x, CHUNK_DIM - 1, z)) == BlockType::AIR) {
+					if (!down_ || (down_->getBlock(x, CHUNK_DIM - 1, z)) == BlockType::AIR) {
 						insertYNegativeSide(vertices, texture_coord, x, y, z);
 					}
 				}
 				if (y + 1 < CHUNK_DIM && blocks_[x][y + 1][z] == BlockType::AIR) {
 					insertYPositiveSide(vertices, texture_coord, x, y, z);
 				}
-				else if (y + 1 == CHUNK_DIM) {
-					if (!down_|| (down_->getBlock(x, 0, z)) == BlockType::AIR) {
+				else if (y  == CHUNK_DIM - 1) {
+					if (!up_|| (up_->getBlock(x, 0, z)) == BlockType::AIR) {
 						insertYPositiveSide(vertices, texture_coord, x, y, z);
 					}
 				}
@@ -372,6 +371,8 @@ void Chunk::draw() {
 
 void Chunk::setBlock(int x, int y, int z, BlockType type) {
 	//std::cout << "Chunk x: " << x << " y: " << y << " z: " << z << std::endl;
+	if (x < 0 || x >= CHUNK_DIM || y < 0 || y >= CHUNK_DIM || z < 0 || z >= CHUNK_DIM)
+		return;
 	blocks_[x][y][z] = type;
 	changed_ = true;
 

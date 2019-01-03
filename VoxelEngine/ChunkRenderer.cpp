@@ -55,10 +55,10 @@ bool ChunkRenderer::isVisible(ChunkCoord coord, glm::mat4 mvp) {
 	clip.x /= clip.w ;
 	clip.y /= clip.w ;
 
-	if (clip.z > 0) {
+	//if (clip.z > 0) {
 		//std::cout << "dia: " << diameter << "clip z: " << clip.z << "coord z: " << coord.z  << std::endl;
-		return false;
-	}
+	//	return false;
+	//}
 
 	diameter /= fabsf(clip.w);
 

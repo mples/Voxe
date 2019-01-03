@@ -4,14 +4,16 @@
 
 World::World() {
 	GraphicEngine::getInstance().setWorld(this);
-	setChunk(1, 0, 1, generator_.generate(1, 0, 1));
-	setChunk(1, 0, 0, generator_.generate(1, 0, 0));
-	setChunk(0, 0, 0, generator_.generate(0, 0, 0));
-	setChunk(2, 0, 0, generator_.generate(2, 0, 0));
-	setChunk(1, 0, 2, generator_.generate(1, 0, 2));
-	setChunk(2, 0, 2, generator_.generate(2, 0, 2));
-	setChunk(3, 0, 3, generator_.generate(3, 0, 3));
-	setChunk(3, 0, 3, generator_.generate(3, 0, 3));
+	for (int i = 0; i < 20 ; ++i) {
+		for (int j = 0; j < 20; ++j) {
+			for (int k = -3 ; k < 2; ++k) {
+				setChunk(i, k, j, generator_.generate(i, k, j));
+
+			}
+
+		}
+	}
+	
 }
 
 
@@ -20,7 +22,7 @@ World::~World() {
 
 
 void World::setBlock(int x, int y, int z, BlockType type) {
-	//std::cout << "World x: " << x << " y: " << y << " z: " << z << std::endl;
+	//std::cout << "Setblock World x: " << x << " y: " << y << " z: " << z << std::endl;
 	ChunkCoord coord = getChunkCoord(x, y, z);
 	auto found = chunks_.find(coord);
 	if (found == chunks_.end()) {
