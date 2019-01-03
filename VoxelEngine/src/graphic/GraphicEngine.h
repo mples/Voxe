@@ -36,8 +36,8 @@ public:
 	void setActiveCamera(Camera* camera);
 	Camera* getActiveCamera();
 private:
-	int windowHeight_ = 800;
-	int windowWidth_ = 600;
+	int windowHeight_ = 1200;
+	int windowWidth_ = 1200;
 	std::string windowTitle_ = "Voxel Engine";
 	GLFWwindow* window_;
 	std::vector<GraphicComponent*> components_;

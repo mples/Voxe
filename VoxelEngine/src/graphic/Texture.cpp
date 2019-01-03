@@ -14,10 +14,13 @@ void Texture::loadFromFile(const std::string & imageFile)
 	glGenTextures(1, &textureId_);
 	glBindTexture(GL_TEXTURE_2D, textureId_);
 
+	glGenerateMipmap(GL_TEXTURE_2D);
+	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 
 	unsigned char* image_data = stbi_load(imageFile.c_str(), &image_width, &image_height, &ncolor_channels, 0);
 	if (image_data) {
