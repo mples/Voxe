@@ -30,9 +30,9 @@ void ChunkRenderer::draw(World* world) {
 	for (auto chunk : chunks_map) {
 		glm::mat4 model = makeModelMatrix(chunk.first);
 		shader_->setMat4("modelMatrix", model);
-		if (isVisible(chunk.first, model * camera->getViewMatrix() * camera->getProjMatrix())) {
+		//if (isVisible(chunk.first, model * camera->getViewMatrix() * camera->getProjMatrix())) {
 			chunk.second->draw();
-		}
+		//}
 	}
 
 }

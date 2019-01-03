@@ -27,7 +27,7 @@ GraphicEngine::GraphicEngine() : Singleton<GraphicEngine>() {
 	glViewport(0, 0, windowHeight_, windowWidth_);
 	glEnable(GL_DEPTH_TEST);
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 

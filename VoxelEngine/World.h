@@ -5,6 +5,7 @@
 
 #include <Shader.h>
 #include "../../Chunk.h"
+#include "Generator.h"
 
 using ChunkCoord = glm::ivec3;
 
@@ -22,7 +23,8 @@ public:
 	~World();
 	
 	void setBlock(int x, int y, int z, BlockType type);
-
+	void setChunk(int x, int y, int z, Chunk * chunk);
+	Chunk* getChunk(ChunkCoord& coord);
 	std::unordered_map<ChunkCoord, Chunk*> & getChunks();
 	//TODO make method to activate and deactivate world in Graphic Engine
 private:
@@ -30,8 +32,8 @@ private:
 	
 	ChunkCoord getChunkCoord(int x, int y, int z);
 	void setAdjacentChunks(Chunk* chunk, ChunkCoord& coord);
+	Generator generator_;
 
-	Chunk* getChunk(ChunkCoord& coord);
 };
 
 

@@ -125,7 +125,9 @@
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkRenderer.cpp" />
+    <ClCompile Include="Generator.cpp" />
     <ClCompile Include="MyStage.cpp" />
+    <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
     <ClCompile Include="src\core\components\CameraComponent.cpp" />
@@ -153,7 +155,9 @@
     <ClInclude Include="..\gl\STB\stb_image.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkRenderer.h" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="MyStage.h" />
+    <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\CameraComponent.h" />

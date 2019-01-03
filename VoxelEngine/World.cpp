@@ -4,6 +4,14 @@
 
 World::World() {
 	GraphicEngine::getInstance().setWorld(this);
+	setChunk(1, 0, 1, generator_.generate(1, 0, 1));
+	setChunk(1, 0, 0, generator_.generate(1, 0, 0));
+	setChunk(0, 0, 0, generator_.generate(0, 0, 0));
+	setChunk(2, 0, 0, generator_.generate(2, 0, 0));
+	setChunk(1, 0, 2, generator_.generate(1, 0, 2));
+	setChunk(2, 0, 2, generator_.generate(2, 0, 2));
+	setChunk(3, 0, 3, generator_.generate(3, 0, 3));
+	setChunk(3, 0, 3, generator_.generate(3, 0, 3));
 }
 
 
@@ -23,6 +31,16 @@ void World::setBlock(int x, int y, int z, BlockType type) {
 		return;
 	}
 	found->second->setBlock(x % Chunk::CHUNK_DIM, y % Chunk::CHUNK_DIM, z % Chunk::CHUNK_DIM, type);
+}
+
+void World::setChunk(int x, int y, int z, Chunk * chunk) {
+	ChunkCoord coord(x, y, z);
+	auto found = chunks_.find(coord);
+	if (found == chunks_.end()) {
+		chunks_.insert(std::make_pair(coord, chunk));
+		setAdjacentChunks(chunk, coord);
+		return;
+	}
 }
 
 std::unordered_map<ChunkCoord, Chunk*>& World::getChunks() {
