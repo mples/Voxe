@@ -7,7 +7,8 @@ enum Action {
 	MOVE_BACK,
 	DELETE_BLOCK,
 	BUILD_BLOCK,
-	QUIT
+	QUIT,
+	CULL
 };
 
 enum State {

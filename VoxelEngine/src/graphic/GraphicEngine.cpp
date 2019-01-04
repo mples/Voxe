@@ -90,7 +90,10 @@ World * GraphicEngine::getActiveWorld() {
 }
 
 void GraphicEngine::setWorld(World * world) {
-	world_ = world;
+	if (world != nullptr) {
+		world_ = world;
+		chunkRenderer_->setWorld(world_);
+	}
 }
 
 void GraphicEngine::setActiveCamera(Camera * camera) {

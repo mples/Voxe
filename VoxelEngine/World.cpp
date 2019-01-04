@@ -3,10 +3,9 @@
 #include "GraphicEngine.h"
 
 World::World() {
-	GraphicEngine::getInstance().setWorld(this);
-	for (int i = 0; i < 20 ; ++i) {
-		for (int j = 0; j < 20; ++j) {
-			for (int k = -3 ; k < 2; ++k) {
+	for (int i = 0; i < 10 ; ++i) {
+		for (int j = 0; j < 10; ++j) {
+			for (int k = -1 ; k < 2; ++k) {
 				setChunk(i, k, j, generator_.generate(i, k, j));
 
 			}
@@ -14,6 +13,7 @@ World::World() {
 		}
 	}
 	
+	GraphicEngine::getInstance().setWorld(this);
 }
 
 

@@ -5,12 +5,16 @@
 Camera::Camera(glm::vec3 pos, glm::vec3 front, float fov) : position_(pos), frontVec_(front), fieldOfView_(fov), rotation_(glm::vec3 (0.0f, 90.0f, 0.0f)){
 	makeProjMatrix();
 	makeViewMatrix();
+	frustum_.update(projectionMatrix_ * viewMatrix_);
 }
 
 void Camera::setPosition(glm::vec3& pos) {
-	position_ = pos;
-	makeProjMatrix();
-	makeViewMatrix();
+	if (pos != position_) {
+		position_ = pos;
+		makeProjMatrix();
+		makeViewMatrix();
+		frustum_.update(projectionMatrix_ * viewMatrix_);
+	}
 }
 
 void Camera::setRotation(glm::vec3& rot) {
@@ -25,9 +29,12 @@ void Camera::setRotation(glm::vec3& rot) {
 		rot.y = fmod(rot.y, 360.0f);
 	}
 
-	rotation_ = rot;
-	makeProjMatrix();
-	makeViewMatrix();
+	if (rotation_ != rot) {
+		rotation_ = rot;
+		makeProjMatrix();
+		makeViewMatrix();
+		frustum_.update(projectionMatrix_ * viewMatrix_);
+	}
 }
 
 glm::vec3 & Camera::getPosition() {
@@ -38,12 +45,20 @@ glm::vec3 & Camera::getRotation() {
 	return rotation_;
 }
 
+glm::vec3 & Camera::getFront() {
+	return frontVec_;
+}
+
 glm::mat4 & Camera::getViewMatrix() {
 	return viewMatrix_;
 }
 
 glm::mat4 & Camera::getProjMatrix() {
 	return projectionMatrix_;
+}
+
+Frustum & Camera::getFrustum() {
+	return frustum_;
 }
 
 void Camera::makeProjMatrix() {

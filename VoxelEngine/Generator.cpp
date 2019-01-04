@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-Generator::Generator() : noise_(3402) {
+Generator::Generator() : noise_(34702) {
 
 }
 

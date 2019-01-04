@@ -19,22 +19,7 @@ void MyStage::init() {
 	ObjectManager::getInstance().addObject(player_);
 	
 	InputContext * input_context = new InputContext();
-	//Generator gen;
-	//gen.generate(&world_);
 
-	/*
-	world_.setBlock(1, 1, 1, BlockType::GRASS);
-	world_.setBlock(1, 2, 1, BlockType::GRASS);
-	world_.setBlock(1, 1, 2, BlockType::GRASS);
-	world_.setBlock(0, 0, 0, BlockType::GRASS);
-	world_.setBlock(1, 0, 0, BlockType::GRASS);
-	world_.setBlock(15, 0, 0, BlockType::GRASS);
-	world_.setBlock(0, 0, 15, BlockType::GRASS);
-	world_.setBlock(0, 15, 0, BlockType::GRASS);
-	world_.setBlock(16, 0, 0, BlockType::GRASS);
-	world_.setBlock(-1, 0, 0, BlockType::GRASS);
-	world_.setBlock(-1, -1, -1, BlockType::GRASS);
-	*/
 	
 	input_context->addActionMapping(Action::QUIT, RawButton(GLFW_KEY_ESCAPE));
 
@@ -44,6 +29,7 @@ void MyStage::init() {
 		auto found = std::find(input.actions_.begin(), input.actions_.end(), Action::QUIT);
 		if (found != input.actions_.end()) {
 			StageManager::getInstance().quitGame();
+			input.eatAction(Action::QUIT);
 		}
 	}, InputCallbackPriority::HIGH);
 	
