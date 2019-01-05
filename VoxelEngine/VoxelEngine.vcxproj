@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
+    <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
     <ClCompile Include="src\core\components\CameraComponent.cpp" />
@@ -152,9 +153,11 @@
     <ClCompile Include="src\graphic\Shader.cpp" />
     <ClCompile Include="src\graphic\Texture.cpp" />
     <ClCompile Include="src\graphic\World.cpp" />
+    <ClCompile Include="TextureAtlas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
+    <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\CameraComponent.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="src\graphic\Texture.h" />
     <ClInclude Include="src\graphic\World.h" />
     <ClInclude Include="src\utils\Singleton.h" />
+    <ClInclude Include="TextureAtlas.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.jpg" />

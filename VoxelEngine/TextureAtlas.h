@@ -25,11 +25,13 @@ class TextureAtlas  {
 public:
 	TextureAtlas(const std::string & imageFile, std::vector<BlockType> texture_types);
 	~TextureAtlas();
-	std::vector<std::pair<TextureVertex, float>> getTextureCoord(BlockType type, TextureSide side);
+	std::vector<std::pair<TextureVertex, glm::vec2>> getTextureCoord(BlockType type, TextureSide side);
 private:
 	unsigned int textureId_;
 	std::unordered_map<BlockType, unsigned int> textures_;
-	unsigned int sideHeight_;
-	unsigned int sideWidth_;
+	float sideHeight_;
+	float sideWidth_;
+	int imageHeight_;
+	int imageWidth_;
 };
 
