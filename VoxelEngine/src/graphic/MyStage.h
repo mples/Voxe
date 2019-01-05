@@ -1,7 +1,7 @@
 #pragma once
 #include "Stage.h"
 #include "Player.h"
-#include "../../World.h"
+#include "World.h"
 
 class MyStage : public Stage {
 public:

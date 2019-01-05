@@ -123,13 +123,6 @@
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
-    <ClCompile Include="Chunk.cpp" />
-    <ClCompile Include="ChunkRenderer.cpp" />
-    <ClCompile Include="Frustum.cpp" />
-    <ClCompile Include="Generator.cpp" />
-    <ClCompile Include="MyStage.cpp" />
-    <ClCompile Include="PerlinNoise.cpp" />
-    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
     <ClCompile Include="src\core\components\CameraComponent.cpp" />
@@ -147,21 +140,21 @@
     <ClCompile Include="src\graphic\Block.cpp" />
     <ClCompile Include="src\graphic\BlockRenderer.cpp" />
     <ClCompile Include="src\graphic\Camera.cpp" />
+    <ClCompile Include="src\graphic\Chunk.cpp" />
+    <ClCompile Include="src\graphic\ChunkRenderer.cpp" />
+    <ClCompile Include="src\graphic\Frustum.cpp" />
+    <ClCompile Include="src\graphic\Generator.cpp" />
     <ClCompile Include="src\graphic\GraphicEngine.cpp" />
     <ClCompile Include="src\graphic\GraphicModel.cpp" />
+    <ClCompile Include="src\graphic\MyStage.cpp" />
+    <ClCompile Include="src\graphic\PerlinNoise.cpp" />
+    <ClCompile Include="src\graphic\Plane.cpp" />
     <ClCompile Include="src\graphic\Shader.cpp" />
     <ClCompile Include="src\graphic\Texture.cpp" />
-    <ClCompile Include="World.cpp" />
+    <ClCompile Include="src\graphic\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
-    <ClInclude Include="Chunk.h" />
-    <ClInclude Include="ChunkRenderer.h" />
-    <ClInclude Include="Frustum.h" />
-    <ClInclude Include="Generator.h" />
-    <ClInclude Include="MyStage.h" />
-    <ClInclude Include="PerlinNoise.h" />
-    <ClInclude Include="Plane.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\CameraComponent.h" />
@@ -183,12 +176,19 @@
     <ClInclude Include="src\graphic\BlockRenderer.h" />
     <ClInclude Include="src\graphic\BlockType.h" />
     <ClInclude Include="src\graphic\Camera.h" />
+    <ClInclude Include="src\graphic\Chunk.h" />
+    <ClInclude Include="src\graphic\ChunkRenderer.h" />
+    <ClInclude Include="src\graphic\Frustum.h" />
+    <ClInclude Include="src\graphic\Generator.h" />
     <ClInclude Include="src\graphic\GraphicEngine.h" />
     <ClInclude Include="src\graphic\GraphicModel.h" />
+    <ClInclude Include="src\graphic\MyStage.h" />
+    <ClInclude Include="src\graphic\PerlinNoise.h" />
+    <ClInclude Include="src\graphic\Plane.h" />
     <ClInclude Include="src\graphic\Shader.h" />
     <ClInclude Include="src\graphic\Texture.h" />
+    <ClInclude Include="src\graphic\World.h" />
     <ClInclude Include="src\utils\Singleton.h" />
-    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.jpg" />

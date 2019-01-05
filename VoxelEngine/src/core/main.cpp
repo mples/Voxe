@@ -6,7 +6,7 @@
 #include "GraphicEngine.h"
 #include "Input.h"
 #include "Player.h"
-#include "../../MyStage.h"
+#include "MyStage.h"
 
 void handleInput(MappedInput& input) {
 	static long counter = 0;

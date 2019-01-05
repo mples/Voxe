@@ -12,9 +12,9 @@
 #include "BlockType.h"
 #include "Camera.h"
 #include "components/GraphicComponent.h"
-#include "../../Chunk.h"
-#include "../../ChunkRenderer.h"
-#include "../../World.h"
+#include "Chunk.h"
+#include "ChunkRenderer.h"
+#include "World.h"
 
 class GraphicEngine : public Singleton<GraphicEngine>
 {

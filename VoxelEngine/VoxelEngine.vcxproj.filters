@@ -31,14 +31,11 @@
     <Filter Include="core\graphics">
       <UniqueIdentifier>{781ae604-c03d-40cd-9bc1-e91aae339d6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core\generation">
+      <UniqueIdentifier>{07447e87-c0b0-4396-adf5-088317304f0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\gl\GLAD\src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\gl\STB\stb_image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -102,29 +99,35 @@
     <ClCompile Include="src\core\ObjectManager.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="MyStage.cpp">
+    <ClCompile Include="..\gl\STB\stb_image.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\gl\GLAD\src\glad.c">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphic\MyStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Chunk.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\graphic\Chunk.cpp">
+      <Filter>core\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="ChunkRenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\graphic\ChunkRenderer.cpp">
+      <Filter>core\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\graphic\World.cpp">
+      <Filter>core\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="PerlinNoise.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\graphic\PerlinNoise.cpp">
+      <Filter>core\generation</Filter>
     </ClCompile>
-    <ClCompile Include="Generator.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\graphic\Generator.cpp">
+      <Filter>core\generation</Filter>
     </ClCompile>
-    <ClCompile Include="Frustum.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\graphic\Frustum.cpp">
+      <Filter>core\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Plane.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\graphic\Plane.cpp">
+      <Filter>core\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,9 +166,6 @@
     </ClInclude>
     <ClInclude Include="src\core\Application.h">
       <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\gl\STB\stb_image.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\components\CameraComponent.h">
       <Filter>core\components</Filter>
@@ -209,29 +209,32 @@
     <ClInclude Include="src\core\StageManager.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="MyStage.h">
+    <ClInclude Include="..\gl\STB\stb_image.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\MyStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Chunk.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\Chunk.h">
+      <Filter>core\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="ChunkRenderer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\ChunkRenderer.h">
+      <Filter>core\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\World.h">
+      <Filter>core\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="PerlinNoise.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\PerlinNoise.h">
+      <Filter>core\generation</Filter>
     </ClInclude>
-    <ClInclude Include="Generator.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\Generator.h">
+      <Filter>core\generation</Filter>
     </ClInclude>
-    <ClInclude Include="Frustum.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\Frustum.h">
+      <Filter>core\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Plane.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\Plane.h">
+      <Filter>core\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

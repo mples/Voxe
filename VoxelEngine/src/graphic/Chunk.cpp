@@ -381,10 +381,10 @@ void Chunk::setBlock(int x, int y, int z, BlockType type) {
 	}else if (x == CHUNK_DIM - 1 && right_ != nullptr) {
 		right_->changed_ = true;
 	}
-	if (y == 0 && up_ != nullptr) {
+	if (y == CHUNK_DIM - 1 && up_ != nullptr) {
 		up_->changed_ = true;
 	}
-	else if (y == CHUNK_DIM - 1 && down_ != nullptr) {
+	else if (y == 0 && down_ != nullptr) {
 		down_->changed_ = true;
 	}
 	if (z == 0 && front_ != nullptr) {

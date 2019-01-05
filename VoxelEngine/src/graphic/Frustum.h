@@ -18,9 +18,9 @@ public:
 	Frustum(glm::mat4 mat);
 	~Frustum();
 	void update(glm::mat4 mat);
+	bool pointIntersect(glm::vec3 point);
 	bool sphereIntersect(glm::vec3 center, float radius);
 	bool cubeIntersect(glm::vec3 center, float x, float y, float z);
-	bool cubeIntersect(glm::ivec3 center, int dim);
 private:
 	std::vector<Plane> planes_;
 

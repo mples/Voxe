@@ -40,7 +40,7 @@ void ChunkRenderer::setWorld(World * world) {
 	if (world != nullptr){
 		worldToRender_ = world;
 		allChunks_ = world->getChunks();
-		//activeChunks_ = worldToRender_->getChunks();
+		//debug code
 		if (GraphicEngine::getInstance().getActiveCamera() != nullptr)
 			cullChunks();
 		InputContext * input_context = new InputContext();
@@ -67,15 +67,12 @@ glm::mat4 ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
 }
 
 bool ChunkRenderer::isVisible(ChunkCoord coord) {
-	/*glm::vec3 world_coord((float)coord.x * Chunk::CHUNK_DIM + ((float) Chunk::CHUNK_DIM /2), (float)coord.y * Chunk::CHUNK_DIM + ((float)Chunk::CHUNK_DIM / 2), (float)coord.z * Chunk::CHUNK_DIM + ((float)Chunk::CHUNK_DIM / 2));
-	float dim = (float) Chunk::CHUNK_DIM / 2;
-	glm::mat4 model = makeModelMatrix(coord);
-	glm::vec4 model_coord = model * GraphicEngine::getInstance().getActiveCamera()->getViewMatrix() * GraphicEngine::getInstance().getActiveCamera()->getProjMatrix() * glm::vec4(coord, 1.0f);
-	*/
-	if(GraphicEngine::getInstance().getActiveCamera() != nullptr)
-		return GraphicEngine::getInstance().getActiveCamera()->getFrustum().cubeIntersect(glm::ivec3(coord.x * Chunk::CHUNK_DIM, coord.y * Chunk::CHUNK_DIM, coord.z * Chunk::CHUNK_DIM), Chunk::CHUNK_DIM);
+	coord = glm::ivec3(coord.x * Chunk::CHUNK_DIM, coord.y * Chunk::CHUNK_DIM, coord.z * Chunk::CHUNK_DIM);
+	coord = glm::ivec3(coord.x + Chunk::CHUNK_DIM / 2, coord.y + Chunk::CHUNK_DIM / 2, coord.z + Chunk::CHUNK_DIM / 2);
+	if (GraphicEngine::getInstance().getActiveCamera() != nullptr)
+		return GraphicEngine::getInstance().getActiveCamera()->getFrustum().sphereIntersect(coord, Chunk::CHUNK_DIM * 2.0);
 	else {
-		//error
+		
 		return true;
 	}
 }

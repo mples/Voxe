@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Shader.h>
-#include "../../Chunk.h"
+#include "Chunk.h"
 #include "Generator.h"
 
 using ChunkCoord = glm::ivec3;
