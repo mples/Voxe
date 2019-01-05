@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
+    <ClCompile Include="BlockManager.cpp" />
     <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
@@ -157,7 +158,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
+    <ClInclude Include="BlockManager.h" />
     <ClInclude Include="ChunkManager.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\CameraComponent.h" />
@@ -196,10 +199,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.jpg" />
+    <Image Include="res\textures\texture_atlas.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\frag_shader.glsl" />
     <None Include="src\shaders\vert_shader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VoxelEngine.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

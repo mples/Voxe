@@ -135,6 +135,9 @@
     <ClCompile Include="TextureAtlas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BlockManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\graphic\Texture.h">
@@ -248,9 +251,18 @@
     <ClInclude Include="TextureAtlas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BlockManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\texture_atlas.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -261,5 +273,10 @@
     <None Include="src\shaders\vert_shader.glsl">
       <Filter>shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VoxelEngine.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

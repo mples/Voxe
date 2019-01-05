@@ -3,12 +3,12 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include "Texture.h"
 
 using Block_t = char;
 enum class BlockType : Block_t{
 	AIR = 0,
-	GRASS
+	GRASS,
+	GRASS_DIRT
 };
 
 inline std::string&  blockTypeToTextFile(BlockType type) {

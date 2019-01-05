@@ -6,13 +6,14 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include "stb_image.h"
+
 enum class TextureSide : unsigned int {
-	TOP = 5,
-	BOTTOM = 4,
-	LEFT = 3,
-	RIGHT = 2,
+	BACK = 0,
 	FRONT = 1,
-	BACK = 0
+	RIGHT = 2,
+	LEFT = 3,
+	BOTTOM = 4,
+	TOP = 5
 };
 
 enum class TextureVertex {
@@ -25,10 +26,13 @@ class TextureAtlas  {
 public:
 	TextureAtlas(const std::string & imageFile, std::vector<BlockType> texture_types);
 	~TextureAtlas();
-	std::vector<std::pair<TextureVertex, glm::vec2>> getTextureCoord(BlockType type, TextureSide side);
+	std::unordered_map<TextureVertex, glm::vec2>& getTextureCoord(BlockType type, TextureSide side);
+	void bind();
 private:
+	void calculateCoordinates(std::vector<BlockType> texture_types);
+
 	unsigned int textureId_;
-	std::unordered_map<BlockType, unsigned int> textures_;
+	std::unordered_map<BlockType, std::vector<std::unordered_map<TextureVertex, glm::vec2>>> textCoord_;
 	float sideHeight_;
 	float sideWidth_;
 	int imageHeight_;

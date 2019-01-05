@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "Chunk.h"
 #include "World.h"
+#include "../../BlockManager.h"
 
 class ChunkRenderer {
 public:

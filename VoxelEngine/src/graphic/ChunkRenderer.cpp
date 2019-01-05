@@ -5,7 +5,7 @@
 
 ChunkRenderer::ChunkRenderer() {
 	shader_ = new Shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
-
+	BlockManager::getInstance().setTextureAtlas("res/textures/texture_atlas.jpg", std::vector<BlockType>({BlockType::GRASS, BlockType::GRASS_DIRT}));
 	
 }
 
@@ -19,8 +19,9 @@ void ChunkRenderer::draw(World* world) {
 
 	shader_->setInt("texture1", 0);
 
-	Texture texture(blockTypeToTextFile(BlockType::GRASS));
-	texture.bind();
+	BlockManager::getInstance().getTextureAtlas()->bind();
+	//Texture texture(blockTypeToTextFile(BlockType::GRASS));
+	//texture.bind();
 
 	Camera * camera = GraphicEngine::getInstance().getActiveCamera();
 	if (camera) {

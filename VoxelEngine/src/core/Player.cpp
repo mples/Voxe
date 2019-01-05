@@ -112,7 +112,7 @@ void Player::handleInput(MappedInput& input) {
 	auto build_action = input.actions_.find(Action::BUILD_BLOCK);
 	if (build_action != input.actions_.end()) {
 		glm::ivec3 selected = Input::getInstance().unprojectNextToMiddleVoxel();
-		GraphicEngine::getInstance().getActiveWorld()->setBlock(selected.x, selected.y, selected.z, BlockType::GRASS);
+		GraphicEngine::getInstance().getActiveWorld()->setBlock(selected.x, selected.y, selected.z, BlockType::GRASS_DIRT);
 
 		input.eatAction(Action::BUILD_BLOCK);
 	}

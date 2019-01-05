@@ -22,7 +22,7 @@ World::~World() {
 
 
 void World::setBlock(int x, int y, int z, BlockType type) {
-	//std::cout << "Setblock World x: " << x << " y: " << y << " z: " << z << std::endl;
+	std::cout << "Setblock World x: " << x << " y: " << y << " z: " << z << std::endl;
 	ChunkCoord coord = getChunkCoord(x, y, z);
 	auto found = chunks_.find(coord);
 	if (found == chunks_.end()) {

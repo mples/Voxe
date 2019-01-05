@@ -31,51 +31,51 @@ void Chunk::update() {
 					continue;
 				}
 				if (x > 0 && blocks_[x - 1][y][z] == BlockType::AIR) {
-					inserXNegativeSide(vertices, texture_coord, x, y, z);
+					inserXNegativeSide(vertices, texture_coord, x, y, z, type);
 				}
 				else if (x == 0) {
 					if (!left_ || (left_->getBlock(CHUNK_DIM - 1, y, z)) == BlockType::AIR ) {
-						inserXNegativeSide(vertices, texture_coord, x, y, z);
+						inserXNegativeSide(vertices, texture_coord, x, y, z, type);
 					}
 				}
 				if (x + 1 < CHUNK_DIM && blocks_[x + 1][y][z] == BlockType::AIR) {
-					insertXPositiveSide(vertices, texture_coord, x, y, z);
+					insertXPositiveSide(vertices, texture_coord, x, y, z, type);
 				}
 				else if (x + 1 == CHUNK_DIM) {
 					if (!right_|| (right_->getBlock(0, y, z)) == BlockType::AIR) {
-						insertXPositiveSide(vertices, texture_coord, x, y, z);
+						insertXPositiveSide(vertices, texture_coord, x, y, z, type);
 					}
 				}
 				if (y > 0 && blocks_[x][y - 1][z] == BlockType::AIR) {
-					insertYNegativeSide(vertices, texture_coord, x, y, z);
+					insertYNegativeSide(vertices, texture_coord, x, y, z, type);
 				}
 				else if (y == 0) {
 					if (!down_ || (down_->getBlock(x, CHUNK_DIM - 1, z)) == BlockType::AIR) {
-						insertYNegativeSide(vertices, texture_coord, x, y, z);
+						insertYNegativeSide(vertices, texture_coord, x, y, z, type);
 					}
 				}
 				if (y + 1 < CHUNK_DIM && blocks_[x][y + 1][z] == BlockType::AIR) {
-					insertYPositiveSide(vertices, texture_coord, x, y, z);
+					insertYPositiveSide(vertices, texture_coord, x, y, z, type);
 				}
 				else if (y  == CHUNK_DIM - 1) {
 					if (!up_|| (up_->getBlock(x, 0, z)) == BlockType::AIR) {
-						insertYPositiveSide(vertices, texture_coord, x, y, z);
+						insertYPositiveSide(vertices, texture_coord, x, y, z, type);
 					}
 				}
 				if (z > 0 && blocks_[x][y][z - 1] == BlockType::AIR) {
-					insertZNegativeSide(vertices, texture_coord, x, y, z);
+					insertZNegativeSide(vertices, texture_coord, x, y, z, type);
 				}
 				else if (z == 0) {
 					if (!front_ || (front_->getBlock(x, y, CHUNK_DIM - 1)) == BlockType::AIR) {
-						insertZNegativeSide(vertices, texture_coord, x, y, z);
+						insertZNegativeSide(vertices, texture_coord, x, y, z, type);
 					}
 				}
 				if (z + 1 < CHUNK_DIM && blocks_[x][y][z + 1] == BlockType::AIR) {
-					insertZPositiveSide(vertices, texture_coord, x, y, z);
+					insertZPositiveSide(vertices, texture_coord, x, y, z, type);
 				}
 				else if (z + 1 == CHUNK_DIM) {
 					if (!back_ || (back_->getBlock(x, y, 0)) == BlockType::AIR) {
-						insertZPositiveSide(vertices, texture_coord, x, y, z);
+						insertZPositiveSide(vertices, texture_coord, x, y, z, type);
 					}
 				}
 			}
@@ -87,273 +87,311 @@ void Chunk::update() {
 	model_.loadData(texture_coord, 2);
 }
 
-void Chunk::inserXNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z) {
+void Chunk::inserXNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type) {
+	std::unordered_map<TextureVertex, glm::vec2> coord = BlockManager::getInstance().getTextureAtlas()->getTextureCoord(type, TextureSide::LEFT);
 	vertices.push_back(x);
 	vertices.push_back(y);
 	vertices.push_back(z);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
-
-	vertices.push_back(x);
-	vertices.push_back(y);
-	vertices.push_back(z + 1);
-
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
-
-	vertices.push_back(x);
-	vertices.push_back(y + 1);
-	vertices.push_back(z);
-
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
-
-	vertices.push_back(x);
-	vertices.push_back(y + 1);
-	vertices.push_back(z);
-
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
 
 	vertices.push_back(x);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
+
+	vertices.push_back(x);
+	vertices.push_back(y + 1);
+	vertices.push_back(z);
+
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+
+	vertices.push_back(x);
+	vertices.push_back(y + 1);
+	vertices.push_back(z);
+
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+
+	vertices.push_back(x);
+	vertices.push_back(y);
+	vertices.push_back(z + 1);
+
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
 
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
 }
 
-void Chunk::insertXPositiveSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z) {
+void Chunk::insertXPositiveSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type) {
+	std::unordered_map<TextureVertex, glm::vec2> coord = BlockManager::getInstance().getTextureAtlas()->getTextureCoord(type, TextureSide::RIGHT);
+
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z);
-
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
 	vertices.push_back(z);
-
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
-
-	vertices.push_back(x + 1);
-	vertices.push_back(y);
-	vertices.push_back(z + 1);
-
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
+	vertices.push_back(x + 1);
+	vertices.push_back(y);
+	vertices.push_back(z + 1);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
 	vertices.push_back(z);
-
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
-
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
 
 }
 
-void Chunk::insertYNegativeSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z) {
+void Chunk::insertYNegativeSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z, BlockType type) {
+	std::unordered_map<TextureVertex, glm::vec2> coord = BlockManager::getInstance().getTextureAtlas()->getTextureCoord(type, TextureSide::BOTTOM);
+
 	vertices.push_back(x);
 	vertices.push_back(y);
 	vertices.push_back(z);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
 
 	vertices.push_back(x);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
 
 	vertices.push_back(x);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
 
 	vertices.push_back(x  + 1);
 	vertices.push_back(y);
 	vertices.push_back(z);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
 
 }
 
-void Chunk::insertYPositiveSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z) {
-	vertices.push_back(x);
-	vertices.push_back(y + 1);
-	vertices.push_back(z);
-
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
+void Chunk::insertYPositiveSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z, BlockType type) {
+	std::unordered_map<TextureVertex, glm::vec2> coord = BlockManager::getInstance().getTextureAtlas()->getTextureCoord(type, TextureSide::TOP);
 
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
-	vertices.push_back(z + 1);
-
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
-
-	vertices.push_back(x + 1);
-	vertices.push_back(y + 1);
 	vertices.push_back(z);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
-
-	vertices.push_back(x + 1);
-	vertices.push_back(y + 1);
-	vertices.push_back(z);
-
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(1);
 
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
+
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(0);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
+	vertices.push_back(z);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
+
+	vertices.push_back(x + 1);
+	vertices.push_back(y + 1);
+	vertices.push_back(z);
+
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(1);
+	vertices.push_back(x);
+	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(0);
+	vertices.push_back(x + 1);
+	vertices.push_back(y + 1);
+	vertices.push_back(z + 1);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
 
 
 }
 
-void Chunk::insertZNegativeSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z) {
+void Chunk::insertZNegativeSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z, BlockType type) {
+	std::unordered_map<TextureVertex, glm::vec2> coord = BlockManager::getInstance().getTextureAtlas()->getTextureCoord(type, TextureSide::FRONT);
+
 	vertices.push_back(x);
 	vertices.push_back(y);
 	vertices.push_back(z);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
-
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(0);
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
-
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(1);
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
-
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(0);
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
-
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(1);
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
 	vertices.push_back(z);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
-
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(1);
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z);
-
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
 
 }
 
-void Chunk::insertZPositiveSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z) {
+void Chunk::insertZPositiveSide(std::vector<GLbyte>& vertices, std::vector<float> &texture_coord, const GLbyte & x, const GLbyte & y, const GLbyte & z, BlockType type) {
+	std::unordered_map<TextureVertex, glm::vec2> coord = BlockManager::getInstance().getTextureAtlas()->getTextureCoord(type, TextureSide::BACK);
 	vertices.push_back(x);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(0);
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(0);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
-
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(0);
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
-
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(1);
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(0);
-	texture_coord.push_back(1);
-
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+	//texture_coord.push_back(0);
+	//texture_coord.push_back(1);
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z + 1);
 
-	texture_coord.push_back(1);
-	texture_coord.push_back(0);
-
+	texture_coord.push_back(coord.at(TextureVertex::_10).x);
+	texture_coord.push_back(coord.at(TextureVertex::_10).y);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(0);
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
-
-	texture_coord.push_back(1);
-	texture_coord.push_back(1);
+	//texture_coord.push_back(1);
+	//texture_coord.push_back(1);
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
 
 }
 

@@ -4,6 +4,7 @@
 #include "BlockType.h"
 #include "GraphicModel.h"
 #include "Shader.h"
+#include "Texture.h"
 
 class Block
 {

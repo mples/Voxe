@@ -1,6 +1,7 @@
 #include "Application.h"
 
 Application::Application() {
+	BlockManager::createInstance();
 	GraphicEngine::createInstance();
 	Input::createInstance();
 	StageManager::createInstance();
@@ -18,9 +19,6 @@ void Application::run() {
 		if (StageManager::getInstance().isQuitting()) {
 			exit(0);
 		}
-		//player.update(10.0f);
-		//GraphicEngine::getInstance().draw();
-		//Input::getInstance().processInput();
 
 	}
 }

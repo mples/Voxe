@@ -33,8 +33,6 @@ GraphicEngine::GraphicEngine() : Singleton<GraphicEngine>() {
 
 	glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
 	Block::blockShader_ = new Shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
-	//chunk = new Chunk();
-	//chunk->setBlock(4,4,4,(Block_t) BlockType::GRASS);
 	chunkRenderer_ = new ChunkRenderer();
 }
 

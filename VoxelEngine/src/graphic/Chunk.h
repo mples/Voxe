@@ -13,14 +13,14 @@ public:
 	~Chunk();
 
 	void update();
-	void inserXNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z);
-	void insertXPositiveSide(std::vector<GLbyte>&vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z);
+	void inserXNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type);
+	void insertXPositiveSide(std::vector<GLbyte>&vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type);
 
-	void insertYNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z);
-	void insertYPositiveSide(std::vector<GLbyte>&vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z);
+	void insertYNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type);
+	void insertYPositiveSide(std::vector<GLbyte>&vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type);
 
-	void insertZNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z);
-	void insertZPositiveSide(std::vector<GLbyte>&vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z);
+	void insertZNegativeSide(std::vector<GLbyte> &vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type);
+	void insertZPositiveSide(std::vector<GLbyte>&vertices, std::vector<float> &texture_coord, const GLbyte &x, const GLbyte &y, const GLbyte &z, BlockType type);
 
 	void draw();
 
