@@ -12,8 +12,8 @@ TextureAtlas::TextureAtlas(const std::string & imageFile, std::vector<BlockType>
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	
 	//stbi_set_flip_vertically_on_load(true);
 	unsigned char* image_data = stbi_load(imageFile.c_str(), &imageWidth_, &imageHeight_, &ncolor_channels, 0);
@@ -54,10 +54,10 @@ void TextureAtlas::calculateCoordinates(std::vector<BlockType> texture_types) {
 			std::unordered_map<TextureVertex, glm::vec2> text_coord;
 			int height = tex_num;
 			int width =  5 - side;
-			text_coord.insert(std::make_pair(TextureVertex::_00, glm::vec2((height * sideWidth_) / imageWidth_, (width * sideHeight_) / imageHeight_)));
-			text_coord.insert(std::make_pair(TextureVertex::_01, glm::vec2((height * sideWidth_) / imageWidth_, ((width + 1) * sideHeight_) / imageHeight_)));
-			text_coord.insert(std::make_pair(TextureVertex::_10, glm::vec2(((height + 1) * sideWidth_) / imageWidth_, (width * sideHeight_) / imageHeight_)));
-			text_coord.insert(std::make_pair(TextureVertex::_11, glm::vec2(((height + 1) * sideWidth_) / imageWidth_, ((width + 1) * sideHeight_) / imageHeight_)));
+			text_coord.insert(std::make_pair(TextureVertex::_01, glm::vec2(((height + 1) * sideWidth_) / imageWidth_, (width * sideHeight_) / imageHeight_)));
+			text_coord.insert(std::make_pair(TextureVertex::_00, glm::vec2(((height + 1) * sideWidth_) / imageWidth_, ((width + 1) * sideHeight_) / imageHeight_)));
+			text_coord.insert(std::make_pair(TextureVertex::_11, glm::vec2((height * sideWidth_) / imageWidth_, (width * sideHeight_) / imageHeight_)));
+			text_coord.insert(std::make_pair(TextureVertex::_10, glm::vec2((height * sideWidth_) / imageWidth_, ((width + 1) * sideHeight_) / imageHeight_)));
 			temp.push_back(text_coord);
 		}
 		textCoord_.insert(std::make_pair(texture_types[tex_num], temp));

@@ -1,6 +1,7 @@
 #include "World.h"
 #include <cmath>
 #include "GraphicEngine.h"
+#include "octree.h"
 
 World::World() {
 	for (int i = 0; i < 10 ; ++i) {
@@ -22,12 +23,25 @@ World::~World() {
 
 
 void World::setBlock(int x, int y, int z, BlockType type) {
-	std::cout << "Setblock World x: " << x << " y: " << y << " z: " << z << std::endl;
+	//std::cout << "Setblock World x: " << x << " y: " << y << " z: " << z << std::endl;
+	/*
 	ChunkCoord coord = getChunkCoord(x, y, z);
-	auto found = chunks_.find(coord);
-	if (found == chunks_.end()) {
+	auto found = modifiedChunks_.find(coord);
+	if (found == modifiedChunks_.end()) {
 		Chunk* new_chunk = new Chunk();
-		chunks_.insert(std::make_pair(coord, new_chunk));
+		modifiedChunks_.insert(std::make_pair(coord, new_chunk));
+		setAdjacentChunks(new_chunk, coord);
+		new_chunk->setBlock(x % Chunk::CHUNK_DIM, y % Chunk::CHUNK_DIM, z % Chunk::CHUNK_DIM, type);
+		return;
+	}
+	found->second->setBlock(x % Chunk::CHUNK_DIM, y % Chunk::CHUNK_DIM, z % Chunk::CHUNK_DIM, type);*/
+
+
+	ChunkCoord coord = getChunkCoord(x, y, z);
+	auto found = modifiedChunks_.find(coord);
+	if (found == modifiedChunks_.end()) {
+		Chunk* new_chunk = new Chunk();
+		modifiedChunks_.insert(std::make_pair(coord, new_chunk));
 		setAdjacentChunks(new_chunk, coord);
 		new_chunk->setBlock(x % Chunk::CHUNK_DIM, y % Chunk::CHUNK_DIM, z % Chunk::CHUNK_DIM, type);
 		return;
@@ -37,16 +51,16 @@ void World::setBlock(int x, int y, int z, BlockType type) {
 
 void World::setChunk(int x, int y, int z, Chunk * chunk) {
 	ChunkCoord coord(x, y, z);
-	auto found = chunks_.find(coord);
-	if (found == chunks_.end()) {
-		chunks_.insert(std::make_pair(coord, chunk));
+	auto found = modifiedChunks_.find(coord);
+	if (found == modifiedChunks_.end()) {
+		modifiedChunks_.insert(std::make_pair(coord, chunk));
 		setAdjacentChunks(chunk, coord);
 		return;
 	}
 }
 
 std::unordered_map<ChunkCoord, Chunk*>& World::getChunks() {
-	return chunks_;
+	return modifiedChunks_;
 }
 
 ChunkCoord World::getChunkCoord(int x, int y, int z) {
@@ -99,9 +113,12 @@ void World::setAdjacentChunks(Chunk * chunk, ChunkCoord& coord) {
 }
 
 Chunk * World::getChunk(ChunkCoord& coord) {
-	auto found = chunks_.find(coord);
-	if (found != chunks_.end()) {
+	auto found = modifiedChunks_.find(coord);
+	if (found != modifiedChunks_.end()) {
 		return found->second;
 	}
-	return nullptr;
+	
+	//Chunk* chunk = generator_.generate(coord);
+	//setAdjacentChunks(chunk, coord);
+	//return chunk;
 }

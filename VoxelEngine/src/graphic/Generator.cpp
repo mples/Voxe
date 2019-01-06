@@ -51,6 +51,10 @@ Chunk * Generator::generate(int x, int y, int z) {
 	return chunk;
 }
 
+Chunk * Generator::generate(glm::ivec3 coord) {
+	return generate(coord.x, coord.y, coord.z);
+}
+
 glm::vec2 Generator::chunkToNoiseCoord(int x, int z) {
 
 	return glm::vec2 ((float)x / (Chunk::CHUNK_DIM * 10), (float)z / (Chunk::CHUNK_DIM * 10));

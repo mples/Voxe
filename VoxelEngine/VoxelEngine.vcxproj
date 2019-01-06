@@ -160,7 +160,6 @@
     <ClInclude Include="..\gl\STB\stb_image.h" />
     <ClInclude Include="BlockManager.h" />
     <ClInclude Include="ChunkManager.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\CameraComponent.h" />
@@ -194,7 +193,14 @@
     <ClInclude Include="src\graphic\Shader.h" />
     <ClInclude Include="src\graphic\Texture.h" />
     <ClInclude Include="src\graphic\World.h" />
+    <ClInclude Include="src\utils\array.h" />
+    <ClInclude Include="src\utils\array2d.h" />
+    <ClInclude Include="src\utils\numtraits.h" />
+    <ClInclude Include="src\utils\octree.h" />
+    <ClInclude Include="src\utils\point3d.h" />
+    <ClInclude Include="src\utils\shareddata.h" />
     <ClInclude Include="src\utils\Singleton.h" />
+    <ClInclude Include="src\utils\tinyvector.h" />
     <ClInclude Include="TextureAtlas.h" />
   </ItemGroup>
   <ItemGroup>

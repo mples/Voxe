@@ -241,8 +241,6 @@ void Chunk::insertYPositiveSide(std::vector<GLbyte>& vertices, std::vector<float
 
 	texture_coord.push_back(coord.at(TextureVertex::_01).x);
 	texture_coord.push_back(coord.at(TextureVertex::_01).y);
-	//texture_coord.push_back(0);
-	//texture_coord.push_back(1);
 
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
@@ -251,14 +249,11 @@ void Chunk::insertYPositiveSide(std::vector<GLbyte>& vertices, std::vector<float
 	texture_coord.push_back(coord.at(TextureVertex::_00).x);
 	texture_coord.push_back(coord.at(TextureVertex::_00).y);
 
-	//texture_coord.push_back(0);
-	//texture_coord.push_back(0);
 
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
 	vertices.push_back(z);
-	//texture_coord.push_back(1);
-	//texture_coord.push_back(1);
+
 	texture_coord.push_back(coord.at(TextureVertex::_11).x);
 	texture_coord.push_back(coord.at(TextureVertex::_11).y);
 
@@ -268,21 +263,18 @@ void Chunk::insertYPositiveSide(std::vector<GLbyte>& vertices, std::vector<float
 
 	texture_coord.push_back(coord.at(TextureVertex::_11).x);
 	texture_coord.push_back(coord.at(TextureVertex::_11).y);
-	//texture_coord.push_back(1);
-	//texture_coord.push_back(1);
+
 	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
 
 	texture_coord.push_back(coord.at(TextureVertex::_00).x);
 	texture_coord.push_back(coord.at(TextureVertex::_00).y);
-	//texture_coord.push_back(0);
-	//texture_coord.push_back(0);
+
 	vertices.push_back(x + 1);
 	vertices.push_back(y + 1);
 	vertices.push_back(z + 1);
-	//texture_coord.push_back(1);
-	//texture_coord.push_back(0);
+
 	texture_coord.push_back(coord.at(TextureVertex::_10).x);
 	texture_coord.push_back(coord.at(TextureVertex::_10).y);
 
@@ -296,49 +288,43 @@ void Chunk::insertZNegativeSide(std::vector<GLbyte>& vertices, std::vector<float
 	vertices.push_back(y);
 	vertices.push_back(z);
 
-	texture_coord.push_back(coord.at(TextureVertex::_00).x);
-	texture_coord.push_back(coord.at(TextureVertex::_00).y);
-	//texture_coord.push_back(0);
-	//texture_coord.push_back(0);
-	vertices.push_back(x);
-	vertices.push_back(y + 1);
-	vertices.push_back(z);
-
-	texture_coord.push_back(coord.at(TextureVertex::_01).x);
-	texture_coord.push_back(coord.at(TextureVertex::_01).y);
-	//texture_coord.push_back(0);
-	//texture_coord.push_back(1);
-	vertices.push_back(x + 1);
-	vertices.push_back(y);
-	vertices.push_back(z);
-
 	texture_coord.push_back(coord.at(TextureVertex::_10).x);
 	texture_coord.push_back(coord.at(TextureVertex::_10).y);
-	//texture_coord.push_back(1);
-	//texture_coord.push_back(0);
-	vertices.push_back(x);
-	vertices.push_back(y + 1);
-	vertices.push_back(z);
 
-	texture_coord.push_back(coord.at(TextureVertex::_01).x);
-	texture_coord.push_back(coord.at(TextureVertex::_01).y);
-	//texture_coord.push_back(0);
-	//texture_coord.push_back(1);
-	vertices.push_back(x + 1);
+	vertices.push_back(x);
 	vertices.push_back(y + 1);
 	vertices.push_back(z);
 
 	texture_coord.push_back(coord.at(TextureVertex::_11).x);
 	texture_coord.push_back(coord.at(TextureVertex::_11).y);
-	//texture_coord.push_back(1);
-	//texture_coord.push_back(1);
+
 	vertices.push_back(x + 1);
 	vertices.push_back(y);
 	vertices.push_back(z);
-	//texture_coord.push_back(1);
-	//texture_coord.push_back(0);
-	texture_coord.push_back(coord.at(TextureVertex::_10).x);
-	texture_coord.push_back(coord.at(TextureVertex::_10).y);
+
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
+
+	vertices.push_back(x);
+	vertices.push_back(y + 1);
+	vertices.push_back(z);
+
+	texture_coord.push_back(coord.at(TextureVertex::_11).x);
+	texture_coord.push_back(coord.at(TextureVertex::_11).y);
+
+	vertices.push_back(x + 1);
+	vertices.push_back(y + 1);
+	vertices.push_back(z);
+
+	texture_coord.push_back(coord.at(TextureVertex::_01).x);
+	texture_coord.push_back(coord.at(TextureVertex::_01).y);
+
+	vertices.push_back(x + 1);
+	vertices.push_back(y);
+	vertices.push_back(z);
+
+	texture_coord.push_back(coord.at(TextureVertex::_00).x);
+	texture_coord.push_back(coord.at(TextureVertex::_00).y);
 
 }
 
