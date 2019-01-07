@@ -62,7 +62,7 @@ Frustum & Camera::getFrustum() {
 }
 
 void Camera::makeProjMatrix() {
-	projectionMatrix_ = glm::perspective(glm::radians(fieldOfView_), (float)GraphicEngine::getInstance().getWindowWidth() / GraphicEngine::getInstance().getWindowHeight(), 0.1f, 1000.0f);
+	projectionMatrix_ = glm::perspective(glm::radians(fieldOfView_), (float)GraphicEngine::getInstance().getWindowWidth() / GraphicEngine::getInstance().getWindowHeight(), 0.1f, 100.0f);
 }
 
 void Camera::makeViewMatrix() {

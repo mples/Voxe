@@ -1,5 +1,5 @@
 #include "Frustum.h"
-
+#include <iostream>
 
 Frustum::Frustum() {
 	for (int i = 0; i < PLANE_COUNT; ++i) {
@@ -45,6 +45,26 @@ Frustum::Frustum(glm::mat4 mat) {
 	for (Plane p : planes_) {
 		p.normalize();
 	}
+
+	static const std::vector<glm::vec4> frustum_far({ glm::vec4(-1.0, -1.0, 1.0, 1.0), glm::vec4(-1.0, 1.0, 1.0, 1.0), glm::vec4(1.0, 1.0, 1.0, 1.0), glm::vec4(1.0, -1.0, 1.0, 1.0) });
+	static const std::vector<glm::vec4> frustum_near({ glm::vec4(-1.0, -1.0, -1.0, 1.0), glm::vec4(-1.0, 1.0, -1.0, 1.0), glm::vec4(1.0, 1.0, -1.0, 1.0), glm::vec4(1.0, -1.0, -1.0, 1.0) });
+	glm::mat4 invers = glm::inverse(mat);
+	glm::vec4 temp;
+	for (glm::vec4 v : frustum_far) {
+		temp = invers * v;
+		temp.x /= temp.w;
+		temp.y /= temp.w;
+		temp.z /= temp.w;
+		farCoord.push_back(temp);
+	}
+	for (glm::vec4 v : frustum_near) {
+		temp = invers * v;
+		temp.x /= temp.w;
+		temp.y /= temp.w;
+		temp.z /= temp.w;
+		nearCoord.push_back(temp);
+	}
+
 }
 
 
@@ -86,6 +106,27 @@ void Frustum::update(glm::mat4 mat) {
 	for (Plane p : planes_) {
 		p.normalize();
 	}
+
+	static const std::vector<glm::vec4> frustum_far ({ glm::vec4(-1.0, -1.0, 1.0, 1.0), glm::vec4(-1.0, 1.0, 1.0, 1.0), glm::vec4(1.0, 1.0, 1.0, 1.0), glm::vec4(1.0, -1.0, 1.0, 1.0) });
+	static const std::vector<glm::vec4> frustum_near ({ glm::vec4(-1.0, -1.0, -1.0, 1.0), glm::vec4(-1.0, 1.0, -1.0, 1.0), glm::vec4(1.0, 1.0, -1.0, 1.0), glm::vec4(1.0, -1.0, -1.0, 1.0) });
+	glm::mat4 invers = glm::inverse(mat);
+	glm::vec4 temp;
+	farCoord.clear();
+	for (glm::vec4 v : frustum_far) {
+		temp = invers * v;
+		temp.x /= temp.w;
+		temp.y /= temp.w;
+		temp.z /= temp.w;
+		farCoord.push_back(temp);
+	}
+	nearCoord.clear();
+	for (glm::vec4 v : frustum_near) {
+		temp = invers * v;
+		temp.x /= temp.w;
+		temp.y /= temp.w;
+		temp.z /= temp.w;
+		nearCoord.push_back(temp);
+	}
 }
 
 bool Frustum::pointIntersect(glm::vec3 point) {
@@ -105,6 +146,7 @@ bool Frustum::sphereIntersect(glm::vec3 center, float radius) {
 }
 
 bool Frustum::cubeIntersect(glm::vec3 center, float x, float y, float z) {
+	//std::cout << "a: " << a.x << " " << a.y << " " << a.z << " b: " << b.x << " " << b.z << " " << b.z << std::endl;
 	if (pointIntersect(center + glm::vec3(x, y, z)))
 		return true;
 	if (pointIntersect(center + glm::vec3(x, -y, z)))
@@ -123,4 +165,12 @@ bool Frustum::cubeIntersect(glm::vec3 center, float x, float y, float z) {
 		return true;
 
 	return false;
+}
+
+std::vector<glm::vec4>& Frustum::getFarCoord() {
+	return farCoord;
+}
+
+std::vector<glm::vec4>& Frustum::getNearCoord() {
+	return nearCoord;
 }

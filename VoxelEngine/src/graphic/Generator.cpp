@@ -11,21 +11,7 @@ Generator::~Generator() {
 }
 
 Chunk * Generator::generate(int x, int y, int z) {
-	/*int max_height = 100;
-	int min_height = -100;
 
-	for (int i = 0; i < 10; ++i) {
-		for (int j = 0; j < 10; ++j) {
-			glm::vec2 vec((float)i / (Chunk::CHUNK_DIM * 100), (float)j / (Chunk::CHUNK_DIM * 100));
-			float height = noise_.eval(vec) * 20000;
-			if (height > max_height)
-				height = max_height;
-			if (height < min_height)
-				height = min_height;
-			world->setBlock(i, (int) height, j, BlockType::GRASS);
-		}
-	}
-	*/
 	Chunk * chunk = new Chunk();
 	//std::cout << "chunk: " << x << " " << y << " " << z << std::endl;
 	for (int i = 0; i < Chunk::CHUNK_DIM; ++i) {

@@ -25,14 +25,15 @@ public:
 	void setBlock(int x, int y, int z, BlockType type);
 	void setChunk(int x, int y, int z, Chunk * chunk);
 	Chunk* getChunk(ChunkCoord& coord);
+	Chunk* getChunk(int x, int y, int z);
 	std::unordered_map<ChunkCoord, Chunk*> & getChunks();
 	//TODO make method to activate and deactivate world in Graphic Engine
+	static ChunkCoord getChunkCoord(int x, int y, int z);
 private:
 	std::unordered_map<ChunkCoord, Chunk*> modifiedChunks_;
 	Generator generator_;
 	
-	ChunkCoord getChunkCoord(int x, int y, int z);
-	void setAdjacentChunks(Chunk* chunk, ChunkCoord& coord);
+	void setAdjacentChunks(Chunk* chunk, const ChunkCoord& coord);
 
 };
 

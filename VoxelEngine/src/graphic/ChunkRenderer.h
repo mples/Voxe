@@ -18,7 +18,14 @@ private:
 	glm::mat4 makeModelMatrix(ChunkCoord  coord);
 	bool isVisible(ChunkCoord coord);
 	void cullChunks();
+	void unloadChunks();
+	void loadChunks();
+
 	std::unordered_map<ChunkCoord, Chunk*> activeChunks_;
 	std::unordered_map<ChunkCoord, Chunk*> allChunks_;
+	std::vector<ChunkCoord> loadList_;
+	std::unordered_map<ChunkCoord, Chunk*> unloadList_;
+	std::unordered_map<ChunkCoord, Chunk*> renderList_;
+	std::vector<ChunkCoord> visibilityList_;
 };
 

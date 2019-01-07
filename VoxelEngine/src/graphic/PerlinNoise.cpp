@@ -1,6 +1,6 @@
 #include "PerlinNoise.h"
 #include "glm/ext.hpp"
-
+#include "iostream"
 
 PerlinNoise::PerlinNoise(unsigned int seed) : seed_(seed) {
 	std::mt19937 generator(seed_);
@@ -37,7 +37,6 @@ PerlinNoise::~PerlinNoise() {
 float PerlinNoise::eval(const glm::vec2 p) {
 	int latt_x0 = ((int)std::floor(p.x) ) & MASK;
 	int latt_y0 = ((int)std::floor(p.y) ) & MASK;
-
 	int latt_x1 = (latt_x0 + 1) & MASK;
 	int latt_y1 = (latt_y0 + 1) & MASK;
 
@@ -47,6 +46,7 @@ float PerlinNoise::eval(const glm::vec2 p) {
 	float smooth_x = smootstep(p.x);
 	float smooth_y = smootstep(p.y);
 
+	//std::cout << "latt: " << latt_x0 << " " << latt_y0 << " latt1: " << latt_x1 << " " << latt_y1 << std::endl;
 	glm::vec2 grad_x0y0 = gradients_[hash(latt_x0, latt_y0)];
 	glm::vec2 grad_x1y0 = gradients_[hash(latt_x1, latt_y0)];
 	glm::vec2 grad_x0y1 = gradients_[hash(latt_x0, latt_y1)];

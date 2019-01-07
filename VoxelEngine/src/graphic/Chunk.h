@@ -7,7 +7,7 @@
 class Chunk {
 public:
 	using byte4 = glm::tvec4<GLbyte>;
-	static const unsigned int CHUNK_DIM = 16;
+	static const unsigned int CHUNK_DIM = 32;
 
 	Chunk();
 	~Chunk();

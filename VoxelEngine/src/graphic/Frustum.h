@@ -21,8 +21,13 @@ public:
 	bool pointIntersect(glm::vec3 point);
 	bool sphereIntersect(glm::vec3 center, float radius);
 	bool cubeIntersect(glm::vec3 center, float x, float y, float z);
+	std::vector<glm::vec4>& getFarCoord();
+	std::vector<glm::vec4>& getNearCoord();
 private:
 	std::vector<Plane> planes_;
+	std::vector<glm::vec4> farCoord;
+	std::vector<glm::vec4> nearCoord;
+
 
 };
 
