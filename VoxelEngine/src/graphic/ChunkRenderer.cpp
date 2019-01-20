@@ -43,6 +43,7 @@ void ChunkRenderer::draw(World* world) {
 	activeChunks_ = renderList_;
 	renderList_.clear();
 	loadChunks();
+	rebuildChunks();
 	// unloadChunks();
 	//std::cout << "draw chunk exit " << std::endl;
 }
@@ -136,6 +137,9 @@ void ChunkRenderer::cullChunks() {
 				}
 				else {
 					renderList_.insert(std::make_pair(find->first, find->second));
+					if (find->second->chagned()) {
+						rebuildList_.push_back(find->second);
+					}
 					activeChunks_.erase(find);
 				}
 				
@@ -173,4 +177,16 @@ void ChunkRenderer::loadChunks() {
 	}
 	loadList_.clear();
 	//std::cout << "unloa chunk exit " << std::endl;
+}
+
+void ChunkRenderer::rebuildChunks() {
+	static int max_rebuild_number = 3;
+	int count = 0;
+	for (auto chunk : rebuildList_) {
+		if (count >= max_rebuild_number)
+			break;
+		chunk->update();
+		++count;
+	}
+	rebuildList_.clear();
 }

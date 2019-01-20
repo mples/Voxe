@@ -2,7 +2,7 @@
 #include "Shader.h"
 #include "Chunk.h"
 #include "World.h"
-#include "../../BlockManager.h"
+#include "BlockManager.h"
 
 class ChunkRenderer {
 public:
@@ -20,6 +20,7 @@ private:
 	void cullChunks();
 	void unloadChunks();
 	void loadChunks();
+	void rebuildChunks();
 
 	std::unordered_map<ChunkCoord, Chunk*> activeChunks_;
 	std::unordered_map<ChunkCoord, Chunk*> allChunks_;
@@ -27,5 +28,6 @@ private:
 	std::unordered_map<ChunkCoord, Chunk*> unloadList_;
 	std::unordered_map<ChunkCoord, Chunk*> renderList_;
 	std::vector<ChunkCoord> visibilityList_;
+	std::vector<Chunk*> rebuildList_;
 };
 

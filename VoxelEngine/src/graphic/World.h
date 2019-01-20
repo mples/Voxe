@@ -19,7 +19,7 @@ public:
 
 class World {
 public:
-	World();
+	World(Generator* gen);
 	~World();
 	
 	void setBlock(int x, int y, int z, BlockType type);
@@ -27,11 +27,10 @@ public:
 	Chunk* getChunk(ChunkCoord& coord);
 	Chunk* getChunk(int x, int y, int z);
 	std::unordered_map<ChunkCoord, Chunk*> & getChunks();
-	//TODO make method to activate and deactivate world in Graphic Engine
 	static ChunkCoord getChunkCoord(int x, int y, int z);
 private:
 	std::unordered_map<ChunkCoord, Chunk*> modifiedChunks_;
-	Generator generator_;
+	Generator* generator_;
 	
 	void setAdjacentChunks(Chunk* chunk, const ChunkCoord& coord);
 

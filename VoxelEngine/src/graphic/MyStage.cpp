@@ -3,9 +3,10 @@
 #include "ObjectManager.h"
 #include "StageManager.h"
 #include <functional>
-#include "Generator.h"
+#include "SimpleGenerator.h"
+#include "PerlinNoise.h"
 
-MyStage::MyStage() : Stage() {
+MyStage::MyStage() : Stage(), world_(new SimpleGenerator(new PerlinNoise(1234)) ) {
 	
 }
 

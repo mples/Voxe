@@ -1,24 +1,15 @@
 #include "World.h"
 #include <cmath>
 #include "GraphicEngine.h"
-#include "octree.h"
 
-World::World() {
-	/*for (int i = 0; i < 10 ; ++i) {
-		for (int j = 0; j < 10; ++j) {
-			for (int k = -1 ; k < 2; ++k) {
-				setChunk(i, k, j, generator_.generate(i, k, j));
-
-			}
-
-		}
-	}*/
-	
+World::World(Generator* gen) : generator_(gen) {
 	GraphicEngine::getInstance().setWorld(this);
 }
 
 
 World::~World() {
+	if (generator_ != nullptr)
+		delete generator_;
 }
 
 
@@ -27,9 +18,7 @@ void World::setBlock(int x, int y, int z, BlockType type) {
 	ChunkCoord coord = getChunkCoord(x, y, z);
 	auto found = modifiedChunks_.find(coord);
 	if (found == modifiedChunks_.end()) {
-		Chunk* new_chunk = new Chunk();
-		modifiedChunks_.insert(std::make_pair(coord, new_chunk));
-		setAdjacentChunks(new_chunk, coord);
+		Chunk* new_chunk = getChunk(x, y, z);
 		new_chunk->setBlock(x % Chunk::CHUNK_DIM, y % Chunk::CHUNK_DIM, z % Chunk::CHUNK_DIM, type);
 		return;
 	}
@@ -102,11 +91,10 @@ void World::setAdjacentChunks(Chunk * chunk, const ChunkCoord& coord) {
 Chunk * World::getChunk(ChunkCoord& coord) {
 	auto found = modifiedChunks_.find(coord);
 	if (found != modifiedChunks_.end()) {
-		//setAdjacentChunks(found->second, found->first);
 		return found->second;
 	}
 	
-	Chunk* chunk = generator_.generate(coord);
+	Chunk* chunk = generator_->generate(coord);
 	setAdjacentChunks(chunk, coord);
 	modifiedChunks_.insert(std::make_pair(coord, chunk));
 	return chunk;

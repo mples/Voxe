@@ -25,6 +25,8 @@ public:
 	void draw();
 
 	void setBlock(int x, int y, int z, BlockType type);
+	bool chagned();
+	bool isEmpty();
 	BlockType getBlock(int x, int y, int z);
 	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
 private:

@@ -120,23 +120,29 @@
     <ClCompile Include="src\graphic\PerlinNoise.cpp">
       <Filter>core\generation</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphic\Generator.cpp">
-      <Filter>core\generation</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphic\Frustum.cpp">
       <Filter>core\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\graphic\Plane.cpp">
       <Filter>core\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="ChunkManager.cpp">
+    <ClCompile Include="src\graphic\Generator.cpp">
+      <Filter>core\generation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\BlockManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextureAtlas.cpp">
+    <ClCompile Include="src\core\ChunkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlockManager.cpp">
+    <ClCompile Include="src\core\TextureAtlas.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\generation\Noise.cpp">
+      <Filter>core\generation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\generation\SimpleGenerator.cpp">
+      <Filter>core\generation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,9 +166,6 @@
     </ClInclude>
     <ClInclude Include="src\graphic\GraphicEngine.h">
       <Filter>core\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphic\Camera.h">
-      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="src\graphic\BlockType.h">
       <Filter>core\graphics</Filter>
@@ -236,44 +239,32 @@
     <ClInclude Include="src\graphic\PerlinNoise.h">
       <Filter>core\generation</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\Generator.h">
-      <Filter>core\generation</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphic\Frustum.h">
       <Filter>core\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphic\Plane.h">
       <Filter>core\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="ChunkManager.h">
+    <ClInclude Include="src\graphic\Generator.h">
+      <Filter>core\generation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\BlockManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextureAtlas.h">
+    <ClInclude Include="src\core\ChunkManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlockManager.h">
+    <ClInclude Include="src\core\TextureAtlas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\array.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\generation\SimpleGenerator.h">
+      <Filter>core\generation</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\array2d.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\generation\Noise.h">
+      <Filter>core\generation</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\numtraits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\octree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\point3d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\shareddata.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\tinyvector.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\graphic\Camera.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

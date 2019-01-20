@@ -1,15 +1,16 @@
 #pragma once
 #include <random>
 #include <vector>
-#include <glm/glm.hpp>
 #include <functional>
 
-class PerlinNoise {
+#include "Noise.h"
+
+class PerlinNoise : public Noise {
 public:
 	PerlinNoise(unsigned int seed);
 	~PerlinNoise();
 
-	float eval(const glm::vec2 p);
+	float eval(const glm::vec2 p) override;
 private:
 	static const unsigned int SIZE = 256;
 	static const unsigned int MASK = SIZE - 1;

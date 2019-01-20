@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)/gl/GLM;$(SolutionDir)/gl/GLFW/include;$(SolutionDir)/gl/STB;$(SolutionDir)/gl/GLAD/include;$(SolutionDir)/VoxelEngine/src/core;$(SolutionDir)/VoxelEngine/src/utils;$(SolutionDir)/VoxelEngine/src/graphic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/gl/GLM;$(SolutionDir)/gl/GLFW/include;$(SolutionDir)/gl/STB;$(SolutionDir)/gl/GLAD/include;$(SolutionDir)/VoxelEngine/src/core;$(SolutionDir)/VoxelEngine/src/utils;$(SolutionDir)/VoxelEngine/src/graphic;$(SolutionDir)/VoxelEngine/src/generation;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)/gl/GLFW/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -123,9 +123,9 @@
   <ItemGroup>
     <ClCompile Include="..\gl\GLAD\src\glad.c" />
     <ClCompile Include="..\gl\STB\stb_image.cpp" />
-    <ClCompile Include="BlockManager.cpp" />
-    <ClCompile Include="ChunkManager.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
+    <ClCompile Include="src\core\BlockManager.cpp" />
+    <ClCompile Include="src\core\ChunkManager.cpp" />
     <ClCompile Include="src\core\Component.cpp" />
     <ClCompile Include="src\core\components\CameraComponent.cpp" />
     <ClCompile Include="src\core\components\GraphicComponent.cpp" />
@@ -139,6 +139,9 @@
     <ClCompile Include="src\core\Player.cpp" />
     <ClCompile Include="src\core\RangeConverter.cpp" />
     <ClCompile Include="src\core\StageManager.cpp" />
+    <ClCompile Include="src\core\TextureAtlas.cpp" />
+    <ClCompile Include="src\generation\Noise.cpp" />
+    <ClCompile Include="src\generation\SimpleGenerator.cpp" />
     <ClCompile Include="src\graphic\Block.cpp" />
     <ClCompile Include="src\graphic\BlockRenderer.cpp" />
     <ClCompile Include="src\graphic\Camera.cpp" />
@@ -154,13 +157,12 @@
     <ClCompile Include="src\graphic\Shader.cpp" />
     <ClCompile Include="src\graphic\Texture.cpp" />
     <ClCompile Include="src\graphic\World.cpp" />
-    <ClCompile Include="TextureAtlas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\gl\STB\stb_image.h" />
-    <ClInclude Include="BlockManager.h" />
-    <ClInclude Include="ChunkManager.h" />
     <ClInclude Include="src\core\Application.h" />
+    <ClInclude Include="src\core\BlockManager.h" />
+    <ClInclude Include="src\core\ChunkManager.h" />
     <ClInclude Include="src\core\Component.h" />
     <ClInclude Include="src\core\components\CameraComponent.h" />
     <ClInclude Include="src\core\components\GraphicComponent.h" />
@@ -177,6 +179,9 @@
     <ClInclude Include="src\core\RawInput.h" />
     <ClInclude Include="src\core\Stage.h" />
     <ClInclude Include="src\core\StageManager.h" />
+    <ClInclude Include="src\core\TextureAtlas.h" />
+    <ClInclude Include="src\generation\Noise.h" />
+    <ClInclude Include="src\generation\SimpleGenerator.h" />
     <ClInclude Include="src\graphic\Block.h" />
     <ClInclude Include="src\graphic\BlockRenderer.h" />
     <ClInclude Include="src\graphic\BlockType.h" />
@@ -193,15 +198,7 @@
     <ClInclude Include="src\graphic\Shader.h" />
     <ClInclude Include="src\graphic\Texture.h" />
     <ClInclude Include="src\graphic\World.h" />
-    <ClInclude Include="src\utils\array.h" />
-    <ClInclude Include="src\utils\array2d.h" />
-    <ClInclude Include="src\utils\numtraits.h" />
-    <ClInclude Include="src\utils\octree.h" />
-    <ClInclude Include="src\utils\point3d.h" />
-    <ClInclude Include="src\utils\shareddata.h" />
     <ClInclude Include="src\utils\Singleton.h" />
-    <ClInclude Include="src\utils\tinyvector.h" />
-    <ClInclude Include="TextureAtlas.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\grass.jpg" />

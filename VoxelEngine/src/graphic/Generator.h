@@ -1,17 +1,14 @@
 #pragma once
-#include "glm/glm.hpp"
+#include "Noise.h"
 #include "Chunk.h"
-#include "PerlinNoise.h"
 
 class Generator {
 public:
-	Generator();
-	~Generator();
-	Chunk* generate(int x, int y, int z);
-	Chunk* generate(glm::ivec3 coord);
-	PerlinNoise noise_;
+	Generator(Noise* noise);
+	virtual ~Generator() {};
+	virtual Chunk* generate(int x, int y, int z) = 0;
+	virtual Chunk* generate(glm::ivec3 coord) = 0;
+	Noise* noise_;
 
-private:
-	glm::vec2 chunkToNoiseCoord(int x, int z);
 };
 

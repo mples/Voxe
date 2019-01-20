@@ -1,7 +1,7 @@
 #pragma once
 #include "StageManager.h"
 #include "ObjectManager.h"
-#include "../../BlockManager.h"
+#include "BlockManager.h"
 #include "Player.h"
 
 class Application {

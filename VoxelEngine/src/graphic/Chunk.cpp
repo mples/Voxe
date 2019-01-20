@@ -382,9 +382,9 @@ void Chunk::insertZPositiveSide(std::vector<GLbyte>& vertices, std::vector<float
 }
 
 void Chunk::draw() {
-	if (changed_) {
+	/*if (changed_) {
 		update();
-	}
+	}*/
 	if (!elements_)
 		return;
 
@@ -417,6 +417,14 @@ void Chunk::setBlock(int x, int y, int z, BlockType type) {
 	else if (z == CHUNK_DIM - 1 && back_ != nullptr) {
 		back_->changed_ = true;
 	}
+}
+
+bool Chunk::chagned() {
+	return changed_;
+}
+
+bool Chunk::isEmpty() {
+	return elements_ == 0 ;
 }
 
 BlockType Chunk::getBlock(int x, int y, int z) {
