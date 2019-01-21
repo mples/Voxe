@@ -47,7 +47,7 @@ void GraphicEngine::draw() {
 	for (auto comp : components_) {
 		comp->draw();
 	}
-	chunkRenderer_->draw(world_);
+	chunkRenderer_->draw();
 
 	glfwPollEvents();
 	glfwSwapBuffers(window_);

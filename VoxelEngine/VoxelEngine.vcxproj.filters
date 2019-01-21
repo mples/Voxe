@@ -129,20 +129,20 @@
     <ClCompile Include="src\graphic\Generator.cpp">
       <Filter>core\generation</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\BlockManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\ChunkManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\TextureAtlas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\generation\Noise.cpp">
       <Filter>core\generation</Filter>
     </ClCompile>
     <ClCompile Include="src\generation\SimpleGenerator.cpp">
       <Filter>core\generation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\BlockManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\ChunkManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\TextureAtlas.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,18 +245,6 @@
     <ClInclude Include="src\graphic\Plane.h">
       <Filter>core\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphic\Generator.h">
-      <Filter>core\generation</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\BlockManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\ChunkManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\TextureAtlas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\generation\SimpleGenerator.h">
       <Filter>core\generation</Filter>
     </ClInclude>
@@ -264,6 +252,18 @@
       <Filter>core\generation</Filter>
     </ClInclude>
     <ClInclude Include="src\graphic\Camera.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\TextureAtlas.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\ChunkManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphic\Generator.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\BlockManager.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>

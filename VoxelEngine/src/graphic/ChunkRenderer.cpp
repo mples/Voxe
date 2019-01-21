@@ -15,15 +15,12 @@ ChunkRenderer::~ChunkRenderer() {
 	delete shader_;
 }
 
-void ChunkRenderer::draw(World* world) {
-	//std::cout << "draw chunk enter " << std::endl;
+void ChunkRenderer::draw() {
 	shader_->activate();
 
 	shader_->setInt("texture1", 0);
 
 	BlockManager::getInstance().getTextureAtlas()->bind();
-	//Texture texture(blockTypeToTextFile(BlockType::GRASS));
-	//texture.bind();
 
 	Camera * camera = GraphicEngine::getInstance().getActiveCamera();
 	if (camera) {
@@ -45,29 +42,11 @@ void ChunkRenderer::draw(World* world) {
 	loadChunks();
 	rebuildChunks();
 	// unloadChunks();
-	//std::cout << "draw chunk exit " << std::endl;
 }
 
 void ChunkRenderer::setWorld(World * world) {
 	if (world != nullptr){
-		worldToRender_ = world;
-		allChunks_ = world->getChunks();
-		//debug code
-		if (GraphicEngine::getInstance().getActiveCamera() != nullptr)
-			cullChunks();
-		InputContext * input_context = new InputContext();
-
-		input_context->addActionMapping(Action::CULL, RawButton(GLFW_KEY_C));
-
-		Input::getInstance().getMapper().pushBackContext(input_context);
-
-		Input::getInstance().getMapper().addCallback([=](MappedInput& input) {
-			auto found = std::find(input.actions_.begin(), input.actions_.end(), Action::CULL);
-			if (found != input.actions_.end()) {
-				cullChunks();
-				input.eatAction(Action::CULL);
-			}
-		}, InputCallbackPriority::HIGH);
+		worldToRender_ = world;		
 	}
 }
 
@@ -78,19 +57,7 @@ glm::mat4 ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
 	return model;
 }
 
-bool ChunkRenderer::isVisible(ChunkCoord coord) {
-	coord = glm::ivec3(coord.x * Chunk::CHUNK_DIM, coord.y * Chunk::CHUNK_DIM, coord.z * Chunk::CHUNK_DIM);
-	coord = glm::ivec3(coord.x + Chunk::CHUNK_DIM / 2, coord.y + Chunk::CHUNK_DIM / 2, coord.z + Chunk::CHUNK_DIM / 2);
-	if (GraphicEngine::getInstance().getActiveCamera() != nullptr)
-		return GraphicEngine::getInstance().getActiveCamera()->getFrustum().sphereIntersect(coord, Chunk::CHUNK_DIM * 2.0);
-	else {
-		
-		return true;
-	}
-}
-
 void ChunkRenderer::cullChunks() {
-	//std::cout << "cull chunk enter " << std::endl;
 	std::vector<glm::vec4> far_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getFarCoord();
 	std::vector<glm::vec4> near_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getNearCoord();
 
@@ -126,7 +93,6 @@ void ChunkRenderer::cullChunks() {
 	int z_min = *(z_minmax.first);
 	int z_max = *(z_minmax.second);
 
-	//std::cout << "x min: " << x_min << "x max: " << x_max << "y min: " << y_min << "y max: " << y_max << "z min: " << z_min << "z max: " << z_max << std::endl;
 
 	for (int x = x_min; x <= x_max; ++x) {
 		for (int y = y_min; y <= y_max; ++y) {
@@ -148,11 +114,9 @@ void ChunkRenderer::cullChunks() {
 	}
 	unloadList_.swap(activeChunks_);
 	activeChunks_.clear();
-	//std::cout << "cull chunk exit " << std::endl;
 }
 
 void ChunkRenderer::unloadChunks() {
-	//std::cout << "unload chunk enter "<< unloadList_.size() << std::endl;
 	static int max_unload_number = 3;
 	int count = 0;
 	for (auto chunk : unloadList_) {
@@ -162,11 +126,9 @@ void ChunkRenderer::unloadChunks() {
 		++count;
 	}
 	unloadList_.clear();
-	//std::cout << "load chunk exit " << std::endl;
 }
 
 void ChunkRenderer::loadChunks() {
-	//std::cout << "load chunk enter " << std::endl;
 	static int max_load_number = 3;
 	int count = 0;
 	for (auto chunk_coord : loadList_) {
@@ -176,7 +138,6 @@ void ChunkRenderer::loadChunks() {
 		++count;
 	}
 	loadList_.clear();
-	//std::cout << "unloa chunk exit " << std::endl;
 }
 
 void ChunkRenderer::rebuildChunks() {
