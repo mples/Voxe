@@ -1,8 +1,12 @@
 #pragma once
 #include <queue>
-#include "KeyboardEvent.h"
 
-class KeyboardManager {
+#include "KeyboardEvent.h"
+#include "../../Singleton.h"
+
+//auto& KEBOARD = KeyboardManager::getInstance;
+
+class KeyboardManager : public Singleton<KeyboardManager> {
 public:
 	KeyboardManager();
 	~KeyboardManager();
@@ -17,6 +21,7 @@ public:
 
 	void keyPressed(const unsigned char key);
 	void keyReleased(const unsigned char key);
+	void keyRepeated(const unsigned char key);
 	void charTyped(const unsigned char key);
 
 	void enableAutoRepeatKeys();
@@ -34,3 +39,4 @@ private:
 	std::queue<unsigned char> charBuffer_;
 };
 
+#define KEYBOARD KeyboardManager::getInstance()

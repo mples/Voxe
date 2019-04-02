@@ -56,6 +56,10 @@ void KeyboardManager::keyReleased(const unsigned char key) {
 	keyBuffer_.push(KeyboardEvent(KeyboardEvent::Type::RELEASE, key));
 }
 
+void KeyboardManager::keyRepeated(const unsigned char key) {
+	keyBuffer_.push(KeyboardEvent(KeyboardEvent::Type::REPEAT_PRESS, key));
+}
+
 void KeyboardManager::charTyped(const unsigned char key) {
 	charBuffer_.push(key);
 }

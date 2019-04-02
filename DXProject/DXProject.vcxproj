@@ -164,9 +164,13 @@
     <ClCompile Include="Graphics\imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Graphics\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Graphics\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Input\InputContext.cpp" />
+    <ClCompile Include="Input\InputMapper.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardEvent.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardManager.cpp" />
     <ClCompile Include="Graphics\Light.cpp" />
+    <ClCompile Include="Input\RangeConverter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Input\Mouse\MouseEvent.cpp" />
     <ClCompile Include="Input\Mouse\MouseManager.cpp" />
@@ -203,6 +207,10 @@
     <ClInclude Include="Graphics\imgui\imstb_truetype.h" />
     <ClInclude Include="Graphics\IndexBuffer.h" />
     <ClInclude Include="Graphics\VertexBuffer.h" />
+    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Input\InputContext.h" />
+    <ClInclude Include="Input\InputMapper.h" />
+    <ClInclude Include="Input\input_const.h" />
     <ClInclude Include="Input\Keyboard\KeyboardEvent.h" />
     <ClInclude Include="Input\Keyboard\KeyboardManager.h" />
     <ClInclude Include="Input\Mouse\MouseEvent.h" />
@@ -212,8 +220,11 @@
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\RenderableObject.h" />
     <ClInclude Include="Graphics\Light.h" />
+    <ClInclude Include="Input\RangeConverter.h" />
+    <ClInclude Include="Input\RawInput.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Graphics\VertexShader.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="StringHelper.h" />
     <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Graphics\Texture.h" />

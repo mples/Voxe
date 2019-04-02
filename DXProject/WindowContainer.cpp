@@ -34,33 +34,31 @@ LRESULT WindowContainer::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 	case WM_KEYDOWN:
 	{
 		unsigned char key_code = static_cast<unsigned char>(wParam);
-		if (keyboardManager_.isAutoRepeatKeys()) {
-			keyboardManager_.keyPressed(key_code);
+		const bool is_repeat = lParam & 0x4000000; // getting bit number 30 in lParam to check is key has already been pressed
+		if (!is_repeat) {
+			KEYBOARD.keyPressed(key_code);
 		}
-		else {
-			const bool is_repeat = lParam & 0x4000000; // getting bit number 30 in lParam to check is key has already been pressed
-			if (!is_repeat) {
-				keyboardManager_.keyPressed(key_code);
-			}
+		else if (is_repeat && KEYBOARD.isAutoRepeatKeys()) {
+			KEYBOARD.keyRepeated(key_code);
 		}
 		return 0;
 	}
 	case WM_KEYUP:
 	{
 		unsigned char key_code = static_cast<unsigned char>(wParam);
-		keyboardManager_.keyReleased(key_code);
+		KEYBOARD.keyReleased(key_code);
 		return 0;
 	}
 	case WM_CHAR:
 	{
 		unsigned char key_char = static_cast<unsigned char>(wParam);
-		if (keyboardManager_.isAutoRepeatChars()) {
-			keyboardManager_.charTyped(key_char);
+		if (KEYBOARD.isAutoRepeatChars()) {
+			KEYBOARD.charTyped(key_char);
 		}
 		else {
 			const bool is_repeat = lParam & 0x4000000; // getting bit number 30 in lParam to check is key has already been pressed
 			if (!is_repeat) {
-				keyboardManager_.charTyped(key_char);
+				KEYBOARD.charTyped(key_char);
 			}
 		}
 		return 0;
@@ -68,46 +66,46 @@ LRESULT WindowContainer::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 	//mouse messages
 	case WM_MOUSEMOVE:
 	{
-		mouseManager_.mouseMoved(LOWORD(lParam), HIWORD(lParam));
+		MOUSE.mouseMoved(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 	case WM_LBUTTONDOWN:
 	{
-		mouseManager_.leftButtonPressed(LOWORD(lParam), HIWORD(lParam));
+		MOUSE.leftButtonPressed(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 	case WM_LBUTTONUP:
 	{
-		mouseManager_.leftButtonReleased(LOWORD(lParam), HIWORD(lParam));
+		MOUSE.leftButtonReleased(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 	case WM_RBUTTONDOWN:
 	{
-		mouseManager_.rightButtonPressed(LOWORD(lParam), HIWORD(lParam));
+		MOUSE.rightButtonPressed(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 	case WM_RBUTTONUP:
 	{
-		mouseManager_.rightButtonReleased(LOWORD(lParam), HIWORD(lParam));
+		MOUSE.rightButtonReleased(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 	case WM_MBUTTONDOWN:
 	{
-		mouseManager_.midButtonPressed(LOWORD(lParam), HIWORD(lParam));
+		MOUSE.midButtonPressed(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 	case WM_MBUTTONUP:
 	{
-		mouseManager_.midButtonReleased(LOWORD(lParam), HIWORD(lParam));
+		MOUSE.midButtonReleased(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
 	case WM_MOUSEWHEEL:
 	{
 		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
-			mouseManager_.mouseWheelUp(LOWORD(lParam), HIWORD(lParam));
+			MOUSE.mouseWheelUp(LOWORD(lParam), HIWORD(lParam));
 		}
 		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
-			mouseManager_.mouseWheelDown(LOWORD(lParam), HIWORD(lParam));
+			MOUSE.mouseWheelDown(LOWORD(lParam), HIWORD(lParam));
 		}
 		return 0;
 	}
@@ -121,7 +119,7 @@ LRESULT WindowContainer::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 			if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT, raw_data.get(), &data_size, sizeof(RAWINPUTHEADER)) == data_size) {
 				RAWINPUT* rin = reinterpret_cast<RAWINPUT*>(raw_data.get());
 				if (rin->header.dwType == RIM_TYPEMOUSE) {
-					mouseManager_.mouseMovedRaw(rin->data.mouse.lLastX, rin->data.mouse.lLastY);
+					MOUSE.mouseMovedRaw(rin->data.mouse.lLastX, rin->data.mouse.lLastY);
 				}
 			}
 

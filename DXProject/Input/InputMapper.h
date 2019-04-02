@@ -42,8 +42,8 @@ public:
 
 //Raw input
 	void clear();
-	void setRawButtons(RawButton& button);
-	void setRawAxis(RawAxis& axis);
+	void buttonPressed(KeyboardEvent& button);
+	void axisMoved(RawAxis& axis);
 
 //Callback
 	void addCallback(InputCallback callback, InputCallbackPriority priority);
@@ -56,8 +56,8 @@ public:
 	void moveFrontContext(InputContext* input_context);
 	void moveBackContext(InputContext* input_context);
 private:
-	bool mapButtonToAction(RawButton button, Action& out);
-	bool mapButtonToState(RawButton button, State& out);
+	bool mapButtonToAction(KeyboardEvent button, Action& out);
+	bool mapButtonToState(KeyboardEvent button, State& out);
 
 	std::list<InputContext*> activeContexts_;
 	MappedInput currentInput_;

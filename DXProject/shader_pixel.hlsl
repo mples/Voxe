@@ -53,6 +53,6 @@ float4 main(PS_INPUT input) : SV_TARGET {
 
     float3 specular = attenuation * spec_factor * specularColor;
 
-    float3 final_color = pixel_color * (ambient + diffuse + specular);
+    float3 final_color = pixel_color * (ambient + diffuse) + specular;
     return float4(final_color, 1.0f);
 }

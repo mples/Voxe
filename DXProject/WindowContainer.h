@@ -11,8 +11,8 @@ public:
 
 protected:
 	RenderWindow renderWindow_;
-	KeyboardManager keyboardManager_;
-	MouseManager mouseManager_;
+	//KeyboardManager keyboardManager_;
+	//MouseManager mouseManager_;
 private:
 };
 

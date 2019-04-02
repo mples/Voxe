@@ -2,7 +2,10 @@
 #include "MouseEvent.h"
 #include <queue>
 
-class MouseManager {
+#include "../../Singleton.h"
+
+
+class MouseManager : public Singleton<MouseManager> {
 public:
 	MouseManager();
 	~MouseManager();
@@ -39,3 +42,4 @@ private:
 	int y_ = 0;
 };
 
+#define MOUSE MouseManager::getInstance()

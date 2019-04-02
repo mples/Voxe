@@ -3,6 +3,8 @@
 #include "Graphics/GraphicEngine.h"
 #include "Timer.h"
 
+#include "Input/InputManager.h"
+
 class Engine : WindowContainer {
 public:
 	Engine();
@@ -14,5 +16,7 @@ public:
 private:
 	GraphicEngine gfxEngine_;
 	Timer timer_;
+
+	InputContext engineContext_;
 };
 

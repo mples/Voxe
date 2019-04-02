@@ -12,7 +12,7 @@ InputContext::InputContext() {
 
 InputContext::~InputContext() {}
 
-bool InputContext::mapButtonToAction(RawButton button, Action & out) {
+bool InputContext::mapButtonToAction(KeyboardEvent button, Action & out) {
 	auto found = actionMap_.find(button);
 
 	if(found == actionMap_.end())
@@ -22,7 +22,7 @@ bool InputContext::mapButtonToAction(RawButton button, Action & out) {
 	return true;
 }
 
-bool InputContext::mapButtonToState(RawButton button, State & out) {
+bool InputContext::mapButtonToState(KeyboardEvent button, State & out) {
 	auto found = stateMap_.find(button);
 
 	if (found == stateMap_.end())
@@ -41,11 +41,11 @@ bool InputContext::mapAxisToRange(RawAxis axis, Range & out) {
 	return true;
 }
 
-void InputContext::addActionMapping(Action action, RawButton button) {
+void InputContext::addActionMapping(Action action, KeyboardEvent button) {
 	actionMap_.insert(std::make_pair(button, action));
 }
 
-void InputContext::addStateMapping(State state, RawButton button) {
+void InputContext::addStateMapping(State state, KeyboardEvent button) {
 	stateMap_.insert(std::make_pair(button, state));
 }
 

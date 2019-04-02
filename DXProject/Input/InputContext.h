@@ -3,6 +3,7 @@
 #include "RawInput.h"
 #include "input_const.h"
 #include "RangeConverter.h"
+#include "Keyboard/KeyboardEvent.h"
 
 class InputContext {
 public:
@@ -11,12 +12,12 @@ public:
 	InputContext(const InputContext& other) = default;
 	InputContext& operator=(const InputContext& other) = default;
 
-	bool mapButtonToAction(RawButton button, Action& out);
-	bool mapButtonToState(RawButton button, State& out);
+	bool mapButtonToAction(KeyboardEvent button, Action& out);
+	bool mapButtonToState(KeyboardEvent button, State& out);
 	bool mapAxisToRange(RawAxis axis, Range& out);
 
-	void addActionMapping(Action action, RawButton button);
-	void addStateMapping(State state, RawButton button);
+	void addActionMapping(Action action, KeyboardEvent button);
+	void addStateMapping(State state, KeyboardEvent button);
 	void addRangeMapping(Range range, RawAxis axis);
 
 	void addRangeConverter(Range range, RangeConverter range_converter);
@@ -24,8 +25,8 @@ public:
 	double convert(Range range, double value);
 private:
 	//TODO change to keycod insted of RawButton objects
-	std::unordered_map<RawButton, Action> actionMap_;
-	std::unordered_map<RawButton, State> stateMap_;
+	std::unordered_map<KeyboardEvent, Action> actionMap_;
+	std::unordered_map<KeyboardEvent, State> stateMap_;
 	std::unordered_map<RawAxis, Range> rangeMap_;
 
 	std::unordered_map<Range, RangeConverter> rangeConverters_;

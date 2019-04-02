@@ -1,5 +1,4 @@
 #include "InputMapper.h"
-#include "glfw3.h"
 
 
 InputMapper::InputMapper() {
@@ -12,15 +11,15 @@ InputMapper::~InputMapper() {
 void InputMapper::clear() {
 }
 
-void InputMapper::setRawButtons(RawButton& button) {
-	if (button.action_ == GLFW_PRESS) {
+void InputMapper::buttonPressed(KeyboardEvent& button) {
+	if (button.isPressed()) {
 		Action out_action;
 		if (mapButtonToAction(button, out_action)) {
 			currentInput_.actions_.insert(out_action);
 			return;
 		}
 	}
-	else if (button.action_ == GLFW_REPEAT) {
+	else if (button.isRepeatPress()) {
 		State out_state;
 		if (mapButtonToState(button, out_state)) {
 			currentInput_.states_.insert(out_state);
@@ -30,7 +29,7 @@ void InputMapper::setRawButtons(RawButton& button) {
 
 }
 
-void InputMapper::setRawAxis(RawAxis& axis) {
+void InputMapper::axisMoved(RawAxis& axis) {
 	for (auto it = activeContexts_.begin(); it != activeContexts_.end(); ++it) {
 		Range range;
 		if ((*it)->mapAxisToRange(axis, range)) {
@@ -94,7 +93,7 @@ void InputMapper::moveBackContext(InputContext * input_context) {
 	}
 }
 
-bool InputMapper::mapButtonToAction(RawButton button, Action & out) {
+bool InputMapper::mapButtonToAction(KeyboardEvent button, Action & out) {
 	for (auto it = activeContexts_.begin(); it != activeContexts_.end(); ++it) {
 		if ((*it)->mapButtonToAction(button, out)) {
 			return true;
@@ -103,7 +102,7 @@ bool InputMapper::mapButtonToAction(RawButton button, Action & out) {
 	return false;
 }
 
-bool InputMapper::mapButtonToState(RawButton button, State & out) {
+bool InputMapper::mapButtonToState(KeyboardEvent button, State & out) {
 	for (auto it = activeContexts_.begin(); it != activeContexts_.end(); ++it) {
 		if ((*it)->mapButtonToState(button, out)) {
 			return true;

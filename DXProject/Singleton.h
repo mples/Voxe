@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include  "ErrorLogger.h"
 
 template <typename T>
 class Singleton {
@@ -10,7 +10,7 @@ public:
 			instance_ = static_cast<T*>(this);
 		}
 		else {
-			std::cout << "Error: Singleton already created." << std::endl;
+			ErrorLogger::log(L"Error: Singleton already created.");
 		}
 	}
 	virtual ~Singleton() {
