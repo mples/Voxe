@@ -4,7 +4,7 @@
 #include <algorithm>
 
 
-using Block_t = char;
+using Block_t = unsigned char;
 enum class BlockType : Block_t{
 	AIR = 0,
 	GRASS,

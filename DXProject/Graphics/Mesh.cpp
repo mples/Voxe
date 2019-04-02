@@ -1,5 +1,8 @@
 #include "Mesh.h"
 
+Mesh::Mesh() {
+}
+
 Mesh::Mesh(ID3D11Device * device, ID3D11DeviceContext * device_context, std::vector<Vertex>& vertices, std::vector<DWORD>& indices, std::vector<Texture> & textures, const DirectX::XMMATRIX & transform) {
 	deviceContext_ = device_context;
 	textures_ = textures;
@@ -41,3 +44,4 @@ void Mesh::draw() {
 const DirectX::XMMATRIX & Mesh::getTransform() {
 	return transformMatrix_;
 }
+

@@ -11,6 +11,7 @@
 
 class Mesh {
 public:
+	Mesh();
 	Mesh(ID3D11Device * device, ID3D11DeviceContext * device_context, std::vector<Vertex>& vertices, std::vector<DWORD>& indices, std::vector<Texture> & textures, const DirectX::XMMATRIX & transform);
 	Mesh(const Mesh& other);
 	~Mesh();
