@@ -15,6 +15,8 @@
 #include "RenderableObject.h"
 #include "Light.h"
 
+#include "../Chunk.h"
+
 class GraphicEngine {
 public:
 	GraphicEngine();
@@ -59,5 +61,6 @@ private:
 	Timer fpsTimer_;
 
 	RenderableObject gameObject_;
+	Chunk chunk_;
 };
 

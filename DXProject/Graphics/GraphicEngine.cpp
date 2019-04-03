@@ -105,7 +105,9 @@ bool GraphicEngine::initializeScene() {
 		PSpointLightBuffer_.data_.lightAttenuationB_ = light_.attenuationB_;
 		PSpointLightBuffer_.data_.lightAttenuationC_ = light_.attenuationC_;
 
+		Texture* tex = new Texture(device_.Get(), L"Data/Textures/grass.jpg", aiTextureType_DIFFUSE);
 
+		chunk_.initialize(device_.Get(), deviceContext_.Get(), VSconstantBuffer_, tex);
 
 		if (!light_.initialize(device_.Get(), deviceContext_.Get(), VSconstantBuffer_)) {
 			return false;
@@ -155,6 +157,8 @@ void GraphicEngine::draw() {
 	gameObject_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
 
 	light_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
+
+	chunk_.draw(XMMatrixIdentity(), camera_.getViewMatrix() * camera_.getProjMatrix());
 
 	static int fps_counter = 0;
 	static std::wstring fps_wstring = L"FPS: 0";

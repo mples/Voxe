@@ -1,18 +1,21 @@
 #pragma once
 #include "BlockType.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/WorldChunkModel.h"
+
+using namespace DirectX;
 
 class Chunk {
 public:
 //	using byte4 = glm::tvec4<GLbyte>;
-	static const unsigned int CHUNK_DIM = 32;
+	static const unsigned int DIM = 32;
 
 	Chunk();
 	~Chunk();
 
+	bool initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& cb_vertex_shader, Texture * tex);
 	void update();
 
-	void draw();
+	void draw(XMMATRIX model_matrix, XMMATRIX view_proj_matrix);
 
 	void setBlock(int x, int y, int z, BlockType type);
 	bool chagned();
@@ -20,20 +23,37 @@ public:
 	BlockType getBlock(int x, int y, int z);
 	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
 private:
-	void inserXNegativeSide(std::vector<float> &vertices, std::vector<float> &indices, std::vector<float> &texture_coord, const float &x, const float &y, const float &z, BlockType type);
-	void insertXPositiveSide(std::vector<float>&vertices, std::vector<float> &indices, std::vector<float> &texture_coord, const float &x, const float &y, const float &z, BlockType type);
+	void insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
+	void insertPositiveX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 
-	void insertYNegativeSide(std::vector<float> &vertices, std::vector<float> &indices, std::vector<float> &texture_coord, const float &x, const float &y, const float &z, BlockType type);
-	void insertYPositiveSide(std::vector<float>&vertices, std::vector<float> &indices, std::vector<float> &texture_coord, const float &x, const float &y, const float &z, BlockType type);
+	void insertNegativeY(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
+	void insertPositiveY(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 
-	void insertZNegativeSide(std::vector<float> &vertices, std::vector<float> &indices, std::vector<float> &texture_coord, const float &x, const float &y, const float &z, BlockType type);
-	void insertZPositiveSide(std::vector<float>&vertices, std::vector<float> &indices, std::vector<float> &texture_coord, const float &x, const float &y, const float &z, BlockType type);
+	void insertNegativeZ(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
+	void insertPositiveZ(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 
-	BlockType blocks_[CHUNK_DIM][CHUNK_DIM][CHUNK_DIM];
+	bool isObscuredNegativeX(UINT x, UINT y, UINT z);
+	bool isObscuredPositiveX(UINT x, UINT y, UINT z);
+	bool isObscuredNegativeY(UINT x, UINT y, UINT z);
+	bool isObscuredPositiveY(UINT x, UINT y, UINT z);
+	bool isObscuredNegativeZ(UINT x, UINT y, UINT z);
+	bool isObscuredPositiveZ(UINT x, UINT y, UINT z);
+
+	void calculateVertices(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
+
+	const XMFLOAT3 POS_X_NORMAL = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	const XMFLOAT3 NEG_X_NORMAL = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+	const XMFLOAT3 POS_Y_NORMAL = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	const XMFLOAT3 NEG_Y_NORMAL = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	const XMFLOAT3 POS_Z_NORMAL = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	const XMFLOAT3 NEG_Z_NORMAL = XMFLOAT3(-1.0f, 0.0f, -1.0f);
+
+	BlockType blocks_[DIM][DIM][DIM];
 	bool changed_;
-	Mesh mesh_;
+	
 	int elements_;
 
+	WorldChunkModel model_;
 	bool isCovered(int x, int y, int z, int cov_x, int cov_y, int cov_z);
 };
 
