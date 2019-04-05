@@ -2,11 +2,17 @@
 #include <cassert>
 
 
-GraphicEngine::GraphicEngine() : enableMsaa_(true) {
+GraphicEngine::GraphicEngine() : enableMsaa_(true)  {
+	perlinNoise_ = new PerlinNoise(1234);
+	simpleGenerator_ = new SimpleGenerator(perlinNoise_);
+	world_ = new World(simpleGenerator_);
 }
 
 
 GraphicEngine::~GraphicEngine() {
+	delete perlinNoise_;
+	delete simpleGenerator_;
+	delete world_;
 }
 
 bool GraphicEngine::initialize(HWND hwnd, int width, int height) {
@@ -107,11 +113,15 @@ bool GraphicEngine::initializeScene() {
 
 		Texture* tex = new Texture(device_.Get(), L"Data/Textures/grass.jpg", aiTextureType_DIFFUSE);
 
-		chunk_.initialize(device_.Get(), deviceContext_.Get(), VSconstantBuffer_, tex);
+		//chunk_.initialize(device_.Get(), deviceContext_.Get(), VSconstantBuffer_, tex);
 
 		if (!light_.initialize(device_.Get(), deviceContext_.Get(), VSconstantBuffer_)) {
 			return false;
 		}
+
+		chunkRenderer_.setWorld(world_);
+		chunkRenderer_.initialize(device_.Get(), deviceContext_.Get());
+		
 	}
 	catch (COMException ex) {
 		ErrorLogger::log(ex);
@@ -158,7 +168,9 @@ void GraphicEngine::draw() {
 
 	light_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
 
-	chunk_.draw(XMMatrixIdentity(), camera_.getViewMatrix() * camera_.getProjMatrix());
+	//chunk_.draw(XMMatrixIdentity(), camera_.getViewMatrix() * camera_.getProjMatrix());
+
+	chunkRenderer_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
 
 	static int fps_counter = 0;
 	static std::wstring fps_wstring = L"FPS: 0";

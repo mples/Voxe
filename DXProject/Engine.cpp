@@ -34,36 +34,38 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	engineContext_.addRangeMapping(Range::LOOK_X, RawAxis(AxisType::RAW_INPUT_MOUSE_X));
 	engineContext_.addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::RAW_INPUT_MOUSE_Y));
 
+	static float camera_speed = 0.5f;
+
 	INPUT.addFrontContext(&engineContext_);
 	InputCallback callback = [=](MappedInput& input) {
 		auto move_left = input.actions_.find(Action::MOVE_LEFT);
 		if (move_left != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getLeftVector() * 0.1f);
+			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getLeftVector() * camera_speed);
 			input.actions_.erase(move_left);
 		}
 		auto move_right = input.actions_.find(Action::MOVE_RIGHT);
 		if (move_right != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getRightVector() * 0.1f);
+			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getRightVector() * camera_speed);
 			input.actions_.erase(move_right);
 		}
 		auto move_front = input.actions_.find(Action::MOVE_FRONT);
 		if (move_front != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getForwardVector() * 0.1f);
+			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getForwardVector() * camera_speed);
 			input.actions_.erase(move_front);
 		}
 		auto move_back = input.actions_.find(Action::MOVE_BACK);
 		if (move_back != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getBackwardVector() * 0.1f);
+			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getBackwardVector() * camera_speed);
 			input.actions_.erase(move_back);
 		}
 		auto move_up = input.actions_.find(Action::MOVE_UP);
 		if (move_up != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(0.0f, 0.1f, 0.0f);
+			gfxEngine_.camera_.adjustPos(0.0f, camera_speed, 0.0f);
 			input.actions_.erase(move_up);
 		}
 		auto move_down = input.actions_.find(Action::MOVE_DOWN);
 		if (move_down != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(0.0f, -0.1f, 0.0f);
+			gfxEngine_.camera_.adjustPos(0.0f, -camera_speed, 0.0f);
 			input.actions_.erase(move_down);
 		}
 

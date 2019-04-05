@@ -1,64 +1,69 @@
 #include "ChunkRenderer.h"
-#include "GraphicEngine.h"
 #include <math.h>
-#include "Input.h"
 #include <algorithm>
 
-ChunkRenderer::ChunkRenderer() {
-	shader_ = new Shader("src/shaders/vert_shader.glsl", "src/shaders/frag_shader.glsl");
-	BlockManager::getInstance().setTextureAtlas("res/textures/texture_atlas.jpg", std::vector<BlockType>({BlockType::GRASS, BlockType::GRASS_DIRT}));
-	
+ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr) {
 }
 
 
 ChunkRenderer::~ChunkRenderer() {
-	delete shader_;
 }
 
-void ChunkRenderer::draw() {
-	shader_->activate();
+bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * device_context) {
+	device_ = device;
+	deviceContext_ = device_context;
 
-	shader_->setInt("texture1", 0);
+	texture_ = new Texture(device_, L"Data/Textures/grass.jpg", aiTextureType_DIFFUSE);
+	HRESULT hr = CBVSObject_.initialize(device, device_context);
+	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer.");
 
-	BlockManager::getInstance().getTextureAtlas()->bind();
-
-	Camera * camera = GraphicEngine::getInstance().getActiveCamera();
-	if (camera) {
-		shader_->setMat4("viewMatrix", camera->getViewMatrix());
-		shader_->setMat4("projMatrix", camera->getProjMatrix());
+	//debug
+	for (int i = -5; i < 5; i++) {
+		for (int j = -5; j < 5; j++) {
+			for (int k = -5; k < 5; k++) {
+				Chunk * chunk = world_->getChunk(i, j, k);
+				chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
+				renderList_.insert(std::make_pair( ChunkCoord(i, j, k), chunk));
+			}
+		}
 	}
 
-	cullChunks();
+	return true;
+}
+
+void ChunkRenderer::draw(const DirectX::XMMATRIX & view_proj_matrix) {
+		
+	//cullChunks();
 
 	for (auto chunk : renderList_) {
-		glm::mat4 model = makeModelMatrix(chunk.first);
-		shader_->setMat4("modelMatrix", model);
-		chunk.second->draw();
+		chunk.second->draw(makeModelMatrix(chunk.first), view_proj_matrix);
 	}
 
 
-	activeChunks_ = renderList_;
-	renderList_.clear();
-	loadChunks();
-	rebuildChunks();
+	//activeChunks_ = renderList_;
+	//renderList_.clear();
+	//loadChunks();
+	//rebuildChunks();
 	// unloadChunks();
 }
 
 void ChunkRenderer::setWorld(World * world) {
 	if (world != nullptr){
-		worldToRender_ = world;		
+		world_ = world;		
 	}
 }
 
-glm::mat4 ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
-	glm::mat4 model(1.0f);
-	model = glm::translate(model, glm::vec3((float)coord.x * Chunk::CHUNK_DIM, (float)coord.y * Chunk::CHUNK_DIM, (float)coord.z * Chunk::CHUNK_DIM));
-
-	return model;
+DirectX::XMMATRIX ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
+	DirectX::XMMATRIX amt = DirectX::XMMatrixTranslation(static_cast<float>( coord.x_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord.y_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord.z_ * static_cast<int>(Chunk::DIM)));
+	return DirectX::XMMatrixTranslation(static_cast<float>(coord.x_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord.y_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord.z_ * static_cast<int>(Chunk::DIM)));
 }
 
 void ChunkRenderer::cullChunks() {
-	std::vector<glm::vec4> far_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getFarCoord();
+	/*std::vector<glm::vec4> far_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getFarCoord();
 	std::vector<glm::vec4> near_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getNearCoord();
 
 	std::vector<int> x_coord;
@@ -113,7 +118,7 @@ void ChunkRenderer::cullChunks() {
 		}
 	}
 	unloadList_.swap(activeChunks_);
-	activeChunks_.clear();
+	activeChunks_.clear();*/
 }
 
 void ChunkRenderer::unloadChunks() {
@@ -134,7 +139,7 @@ void ChunkRenderer::loadChunks() {
 	for (auto chunk_coord : loadList_) {
 		if (count >= max_load_number)
 			break;
-		renderList_.insert(std::make_pair(chunk_coord, GraphicEngine::getInstance().getActiveWorld()->getChunk(chunk_coord)));
+		renderList_.insert(std::make_pair(chunk_coord, world_->getChunk(chunk_coord)));
 		++count;
 	}
 	loadList_.clear();

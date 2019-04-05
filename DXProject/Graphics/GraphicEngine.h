@@ -15,7 +15,10 @@
 #include "RenderableObject.h"
 #include "Light.h"
 
-#include "../Chunk.h"
+#include "../World.h"
+#include "../ChunkRenderer.h"
+#include "../Generation/PerlinNoise.h"
+#include "../Generation/SimpleGenerator.h"
 
 class GraphicEngine {
 public:
@@ -62,5 +65,9 @@ private:
 
 	RenderableObject gameObject_;
 	Chunk chunk_;
+	ChunkRenderer chunkRenderer_;
+	World * world_;
+	SimpleGenerator * simpleGenerator_;
+	PerlinNoise * perlinNoise_;
 };
 

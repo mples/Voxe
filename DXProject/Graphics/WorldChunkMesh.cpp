@@ -25,7 +25,6 @@ bool WorldChunkMesh::initialize(ID3D11Device * device, ID3D11DeviceContext * dev
 void WorldChunkMesh::draw() {
 
 	deviceContext_->PSSetShaderResources(0, 1, texture_->getResourceViewAddress());
-
 	UINT offset = 0;
 	deviceContext_->IASetVertexBuffers(0, 1, vertexBuffer_.getAddressOf(), vertexBuffer_.stridePtr(), &offset);
 	deviceContext_->IASetIndexBuffer(indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);

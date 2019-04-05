@@ -23,6 +23,8 @@ void WorldChunkModel::loadData(std::vector<Vertex>& vertices, std::vector<DWORD>
 }
 
 void WorldChunkModel::draw(DirectX::XMMATRIX model_matrix, DirectX::XMMATRIX view_proj_matrix) {
+
+	deviceContext_->VSSetConstantBuffers(0, 1, CBVertexShader_->getAddressOf());
 	CBVertexShader_->data_.modelMatrix_ = model_matrix;
 	CBVertexShader_->data_.mvpMatrix_ = model_matrix * view_proj_matrix;
 	CBVertexShader_->applyChanges();

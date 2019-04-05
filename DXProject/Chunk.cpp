@@ -9,13 +9,13 @@ Chunk::~Chunk() {
 }
 
 bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& cb_vertex_shader, Texture * tex) {
-	for (BYTE x = 0; x < DIM; ++x) {
+	/*for (BYTE x = 0; x < DIM; ++x) {
 		for (BYTE y = 0; y < DIM; ++y) {
 			for (BYTE z = 0; z < DIM; ++z) {
 				blocks_[x][y][z] = BlockType::GRASS;
 			}
 		}
-	}
+	}*/
 	std::vector<Vertex> vertices;
 	std::vector<DWORD> indices;
 
@@ -23,19 +23,23 @@ bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_conte
 		for (UINT y = 0; y < DIM; ++y) {
 			for (UINT z = 0; z < DIM; ++z) {
 				BlockType type = blocks_[x][y][z];
-				calculateVertices(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
+				if (type != BlockType::AIR) {
+					calculateVertices(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
+				}
 			}
 		}
 	}
 
 	elements_ = vertices.size();
-	model_.initialize(device, device_context, cb_vertex_shader, vertices, indices, tex);
-	update();
+	if (elements_ > 0) {
+		model_.initialize(device, device_context, cb_vertex_shader, vertices, indices, tex);
+		update();
+
+	}
 	return true;
 }
 
 void Chunk::update() {
-	changed_ = false;
 
 	std::vector<Vertex> vertices;
 	std::vector<DWORD> indices;
@@ -44,20 +48,25 @@ void Chunk::update() {
 		for (UINT y = 0; y < DIM; ++y) {
 			for (UINT z = 0; z < DIM; ++z) {
 				BlockType type = blocks_[x][y][z];
-				calculateVertices(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
+				if (type != BlockType::AIR) {
+					calculateVertices(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
+				}
 			}
 		}
 	}
 
 	elements_ = vertices.size();
-	model_.loadData(vertices, indices);
+	if (elements_ > 0) {
+		model_.loadData(vertices, indices);
+	}
 	
+	changed_ = false;
 }
 
 void Chunk::draw(XMMATRIX model_matrix, XMMATRIX view_proj_matrix) {
-	/*if (changed_) {
+	if (changed_) {
 		update();
-	}*/
+	}
 	if (!elements_)
 		return;
 

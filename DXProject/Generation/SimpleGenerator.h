@@ -6,9 +6,9 @@ public:
 	SimpleGenerator(Noise* noise);
 	~SimpleGenerator();
 	Chunk* generate(int x, int y, int z) override;
-	Chunk* generate(glm::ivec3 coord) override;
+	Chunk* generate(ChunkCoord coord) override;
 
 private:
-	glm::vec2 chunkToNoiseCoord(int x, int z);
+	DirectX::XMFLOAT2 chunkToNoiseCoord(int x, int z);
 };
 

@@ -7,7 +7,7 @@ using namespace DirectX;
 class Chunk {
 public:
 //	using byte4 = glm::tvec4<GLbyte>;
-	static const unsigned int DIM = 32;
+	static const unsigned int DIM = 16;
 
 	Chunk();
 	~Chunk();

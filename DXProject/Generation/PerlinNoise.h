@@ -10,13 +10,13 @@ public:
 	PerlinNoise(unsigned int seed);
 	~PerlinNoise();
 
-	float eval(const glm::vec2 p) override;
+	float eval(const DirectX::XMFLOAT2 point) override;
 private:
 	static const unsigned int SIZE = 256;
 	static const unsigned int MASK = SIZE - 1;
 
 	unsigned int seed_;
-	std::vector<glm::vec2> gradients_;
+	std::vector<DirectX::XMFLOAT2> gradients_;
 	std::vector<unsigned int> permutationTable_;
 
 	int hash(int x, int y);
