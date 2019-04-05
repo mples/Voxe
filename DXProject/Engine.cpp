@@ -7,6 +7,10 @@ Engine::Engine() {
 
 
 Engine::~Engine() {
+	MouseManager::removeInstance();
+	KeyboardManager::removeInstance();
+	InputManager::removeInstance();
+	StageManager::removeInstance();
 }
 
 bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring window_class, int width, int height) {
@@ -23,6 +27,8 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	MouseManager::createInstance();
 	KeyboardManager::createInstance();
 	InputManager::createInstance();
+	StageManager::createInstance();
+
 
 	engineContext_.addActionMapping(Action::MOVE_FRONT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'W'));
 	engineContext_.addActionMapping(Action::MOVE_BACK, KeyboardEvent(KeyboardEvent::Type::PRESS, 'S'));
@@ -98,6 +104,7 @@ void Engine::update() {
 	const float camera_speed = 0.01f;
 
 	INPUT.processInput();
+	STAGE_MANAGER.update(dt);
 
 	gfxEngine_.draw();
 }

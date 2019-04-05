@@ -4,6 +4,7 @@
 #include "Timer.h"
 
 #include "Input/InputManager.h"
+#include "Stage/StageManager.h"
 
 class Engine : WindowContainer {
 public:
