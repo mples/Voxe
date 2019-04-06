@@ -1,4 +1,6 @@
 #pragma once
+#include <DirectXCollision.h>
+
 #include "BlockType.h"
 #include "Graphics/WorldChunkModel.h"
 
@@ -21,6 +23,8 @@ public:
 	bool chagned();
 	bool isEmpty();
 	BlockType getBlock(int x, int y, int z);
+	BoundingBox & getBoundingBox();
+
 	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
 private:
 	void insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
@@ -54,6 +58,9 @@ private:
 	int elements_;
 
 	WorldChunkModel model_;
+	BoundingBox boundingBox_;
+	
+
 	bool isCovered(int x, int y, int z, int cov_x, int cov_y, int cov_z);
 };
 

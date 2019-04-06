@@ -19,8 +19,11 @@
 #include "../ChunkRenderer.h"
 #include "../Generation/PerlinNoise.h"
 #include "../Generation/SimpleGenerator.h"
+#include "../Singleton.h"
 
-class GraphicEngine {
+#define GRAPHIC_ENGINE GraphicEngine::getInstance()
+
+class GraphicEngine : public Singleton<GraphicEngine> {
 public:
 	GraphicEngine();
 	~GraphicEngine();
@@ -62,7 +65,7 @@ private:
 	int windowWidth_;
 	int windowHeight_;
 	Timer fpsTimer_;
-
+	
 	RenderableObject gameObject_;
 	Chunk chunk_;
 	ChunkRenderer chunkRenderer_;
@@ -70,4 +73,3 @@ private:
 	SimpleGenerator * simpleGenerator_;
 	PerlinNoise * perlinNoise_;
 };
-

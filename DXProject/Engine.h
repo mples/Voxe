@@ -15,7 +15,7 @@ public:
 	bool processMessages();
 	void update();
 private:
-	GraphicEngine gfxEngine_;
+	//GraphicEngine gfxEngine_;
 	Timer timer_;
 
 	InputContext engineContext_;

@@ -26,8 +26,17 @@ const XMMATRIX Camera::getViewProjMatrix() {
 	return viewMatrix_ * projMatrix_;
 }
 
+BoundingFrustum & Camera::getLocalFrustum() {
+	return frustumLocal_;
+}
+
+BoundingFrustum & Camera::getFrustum() {
+	return frustum_;
+}
+
 void Camera::setProjData(float fov_degrees, float aspect_ratio, float near_plane, float far_plane) {
 	projMatrix_ = XMMatrixPerspectiveFovLH((fov_degrees / 360.0f) * XM_2PI, aspect_ratio, near_plane, far_plane);
+	frustumLocal_.CreateFromMatrix(frustumLocal_, projMatrix_);
 }
 
 void Camera::setLookAt(XMFLOAT3 look_at) {
@@ -63,10 +72,17 @@ void Camera::updateMatrix() {
 	XMVECTOR up_directory = XMVector3TransformCoord(DEFAULT_UP_VEC, camera_rot);
 	viewMatrix_ = XMMatrixLookAtLH(posVector_, target_vector, up_directory);
 
+	updateFrustum();
 	GameObject::updateMatrix();
-	/*XMMATRIX vector_rot = XMMatrixRotationRollPitchYaw(0.0f, rot_.y, 0.0f);
-	forwardVector_ = XMVector3TransformCoord(DEFAULT_FRONT_VEC, vector_rot);
-	backwardVector_ = XMVector3TransformCoord(DEFAULT_BACKWARD_VEC, vector_rot);
-	leftVector_ = XMVector3TransformCoord(DEFAULT_LEFT_VEC, vector_rot);
-	rightVector_ = XMVector3TransformCoord(DEFAULT_RIGHT_VEC, vector_rot);*/
+}
+
+void Camera::updateFrustum() {
+	XMMATRIX inv_view = XMMatrixInverse(&XMMatrixDeterminant(viewMatrix_), viewMatrix_);
+
+	XMVECTOR scale;
+	XMVECTOR rotation;
+	XMVECTOR translation;
+
+	XMMatrixDecompose(&scale, &rotation, &translation, inv_view);
+	frustumLocal_.Transform(frustum_, XMVectorGetX(scale), rotation, translation);
 }

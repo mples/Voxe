@@ -2,7 +2,7 @@
 #include <math.h>
 #include <algorithm>
 
-ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr) {
+ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true) {
 }
 
 
@@ -23,17 +23,32 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 			for (int k = -5; k < 5; k++) {
 				Chunk * chunk = world_->getChunk(i, j, k);
 				chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-				renderList_.insert(std::make_pair( ChunkCoord(i, j, k), chunk));
+				activeChunks_.insert(std::make_pair( ChunkCoord(i, j, k), chunk));
 			}
 		}
 	}
 
+	chunkContext_.addActionMapping(Action::CULL, KeyboardEvent(KeyboardEvent::Type::PRESS, 'C'));
+
+	INPUT.addFrontContext(&chunkContext_);
+	InputCallback callback = [=](MappedInput& input) {
+		auto cull = input.actions_.find(Action::CULL);
+		if (cull != input.actions_.end()) {
+			this->setEnableCulling(false);
+			input.actions_.erase(cull);
+
+		}
+	};
+	INPUT.addCallback(callback, InputCallbackPriority::HIGH);
+
 	return true;
 }
 
-void ChunkRenderer::draw(const DirectX::XMMATRIX & view_proj_matrix) {
-		
-	//cullChunks();
+void ChunkRenderer::draw(const DirectX::XMMATRIX & view_proj_matrix, BoundingFrustum & frustum) {
+	
+	if (enableCull_) {
+		cullChunks(frustum);
+	}
 
 	for (auto chunk : renderList_) {
 		chunk.second->draw(makeModelMatrix(chunk.first), view_proj_matrix);
@@ -53,6 +68,10 @@ void ChunkRenderer::setWorld(World * world) {
 	}
 }
 
+void ChunkRenderer::setEnableCulling(bool state) {
+	enableCull_ = state;
+}
+
 DirectX::XMMATRIX ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
 	DirectX::XMMATRIX amt = DirectX::XMMatrixTranslation(static_cast<float>( coord.x_ * static_cast<int>(Chunk::DIM)),
 		static_cast<float>(coord.y_ * static_cast<int>(Chunk::DIM)),
@@ -62,7 +81,7 @@ DirectX::XMMATRIX ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
 		static_cast<float>(coord.z_ * static_cast<int>(Chunk::DIM)));
 }
 
-void ChunkRenderer::cullChunks() {
+void ChunkRenderer::cullChunks(BoundingFrustum & frustum) {
 	/*std::vector<glm::vec4> far_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getFarCoord();
 	std::vector<glm::vec4> near_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getNearCoord();
 
@@ -119,6 +138,30 @@ void ChunkRenderer::cullChunks() {
 	}
 	unloadList_.swap(activeChunks_);
 	activeChunks_.clear();*/
+	renderList_ = activeChunks_;
+	
+
+	std::unordered_map<ChunkCoord, Chunk*> new_list;
+	for (auto chunk : renderList_) {
+		XMMATRIX world_mat = makeModelMatrix(chunk.first);
+		XMMATRIX inv_world = XMMatrixInverse(&XMMatrixDeterminant(world_mat), world_mat);
+
+		XMVECTOR scale;
+		XMVECTOR rotation;
+		XMVECTOR tranlation;
+
+		XMMatrixDecompose(&scale, &rotation, &tranlation, world_mat);
+		BoundingFrustum world_frustum;
+		frustum.Transform(world_frustum, XMVectorGetX(scale), rotation, tranlation);
+		
+
+		ContainmentType contains = world_frustum.Contains(chunk.second->getBoundingBox());
+		if (contains != ContainmentType::DISJOINT) {
+			new_list.insert(chunk);
+		}
+	}
+	renderList_.clear();
+	renderList_ = new_list;
 }
 
 void ChunkRenderer::unloadChunks() {

@@ -18,16 +18,17 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 		return false;
 	}
 
-	if (!gfxEngine_.initialize(renderWindow_.getHWND(), width, height)) {
-		return false;
-	}
-
 	timer_.start();
 
+	GraphicEngine::createInstance();
 	MouseManager::createInstance();
 	KeyboardManager::createInstance();
 	InputManager::createInstance();
 	StageManager::createInstance();
+
+	if (!GRAPHIC_ENGINE.initialize(renderWindow_.getHWND(), width, height)) {
+		return false;
+	}
 
 
 	engineContext_.addActionMapping(Action::MOVE_FRONT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'W'));
@@ -46,45 +47,45 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	InputCallback callback = [=](MappedInput& input) {
 		auto move_left = input.actions_.find(Action::MOVE_LEFT);
 		if (move_left != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getLeftVector() * camera_speed);
+			GRAPHIC_ENGINE.camera_.adjustPos(GRAPHIC_ENGINE.camera_.getLeftVector() * camera_speed);
 			input.actions_.erase(move_left);
 		}
 		auto move_right = input.actions_.find(Action::MOVE_RIGHT);
 		if (move_right != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getRightVector() * camera_speed);
+			GRAPHIC_ENGINE.camera_.adjustPos(GRAPHIC_ENGINE.camera_.getRightVector() * camera_speed);
 			input.actions_.erase(move_right);
 		}
 		auto move_front = input.actions_.find(Action::MOVE_FRONT);
 		if (move_front != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getForwardVector() * camera_speed);
+			GRAPHIC_ENGINE.camera_.adjustPos(GRAPHIC_ENGINE.camera_.getForwardVector() * camera_speed);
 			input.actions_.erase(move_front);
 		}
 		auto move_back = input.actions_.find(Action::MOVE_BACK);
 		if (move_back != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(gfxEngine_.camera_.getBackwardVector() * camera_speed);
+			GRAPHIC_ENGINE.camera_.adjustPos(GRAPHIC_ENGINE.camera_.getBackwardVector() * camera_speed);
 			input.actions_.erase(move_back);
 		}
 		auto move_up = input.actions_.find(Action::MOVE_UP);
 		if (move_up != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(0.0f, camera_speed, 0.0f);
+			GRAPHIC_ENGINE.camera_.adjustPos(0.0f, camera_speed, 0.0f);
 			input.actions_.erase(move_up);
 		}
 		auto move_down = input.actions_.find(Action::MOVE_DOWN);
 		if (move_down != input.actions_.end()) {
-			gfxEngine_.camera_.adjustPos(0.0f, -camera_speed, 0.0f);
+			GRAPHIC_ENGINE.camera_.adjustPos(0.0f, -camera_speed, 0.0f);
 			input.actions_.erase(move_down);
 		}
 
 		auto look_x = input.ranges_.find(Range::LOOK_X);
 		if (look_x != input.ranges_.end()) {
-			gfxEngine_.camera_.adjustRot(0.0f, look_x->second * 0.01f, 0.0f);
+			GRAPHIC_ENGINE.camera_.adjustRot(0.0f, look_x->second * 0.01f, 0.0f);
 
 			input.ranges_.erase(look_x);
 		}
 
 		auto look_y = input.ranges_.find(Range::LOOK_Y);
 		if (look_y != input.ranges_.end()) {
-			gfxEngine_.camera_.adjustRot(look_y->second * 0.01f, 0.0f, 0.0f);
+			GRAPHIC_ENGINE.camera_.adjustRot(look_y->second * 0.01f, 0.0f, 0.0f);
 
 			input.ranges_.erase(look_y);
 		}
@@ -106,5 +107,5 @@ void Engine::update() {
 	INPUT.processInput();
 	STAGE_MANAGER.update(dt);
 
-	gfxEngine_.draw();
+	GRAPHIC_ENGINE.draw();
 }

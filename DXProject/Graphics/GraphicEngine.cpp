@@ -170,7 +170,7 @@ void GraphicEngine::draw() {
 
 	//chunk_.draw(XMMatrixIdentity(), camera_.getViewMatrix() * camera_.getProjMatrix());
 
-	chunkRenderer_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
+	chunkRenderer_.draw(camera_.getViewMatrix() * camera_.getProjMatrix(), camera_.getFrustum());
 
 	static int fps_counter = 0;
 	static std::wstring fps_wstring = L"FPS: 0";

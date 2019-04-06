@@ -32,6 +32,7 @@ bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_conte
 
 	elements_ = vertices.size();
 	if (elements_ > 0) {
+		boundingBox_.CreateFromPoints(boundingBox_, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
 		model_.initialize(device, device_context, cb_vertex_shader, vertices, indices, tex);
 		update();
 
@@ -57,6 +58,7 @@ void Chunk::update() {
 
 	elements_ = vertices.size();
 	if (elements_ > 0) {
+		boundingBox_.CreateFromPoints(boundingBox_, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
 		model_.loadData(vertices, indices);
 	}
 	
@@ -110,6 +112,10 @@ bool Chunk::isEmpty() {
 
 BlockType Chunk::getBlock(int x, int y, int z) {
 	return blocks_[x][y][z];
+}
+
+BoundingBox & Chunk::getBoundingBox() {
+	return boundingBox_;
 }
 
 void Chunk::insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
