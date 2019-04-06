@@ -8,13 +8,13 @@ public:
 	~ChunkRenderer();
 
 	bool initialize(ID3D11Device* device, ID3D11DeviceContext * device_context);
-	void draw(const DirectX::XMMATRIX & view_proj_matrix, BoundingFrustum & frustum);
+	void draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum);
 	void setWorld(World* world);
 	void setEnableCulling(bool state);
 private:
 
 	DirectX::XMMATRIX makeModelMatrix(ChunkCoord  coord);
-	void cullChunks(BoundingFrustum & frustum);
+	void cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFrustum & frustum);
 	void unloadChunks();
 	void loadChunks();
 	void rebuildChunks();

@@ -44,14 +44,14 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 	return true;
 }
 
-void ChunkRenderer::draw(const DirectX::XMMATRIX & view_proj_matrix, BoundingFrustum & frustum) {
+void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum) {
 	
 	if (enableCull_) {
-		cullChunks(frustum);
+		cullChunks(view_matrix, frustum);
 	}
 
 	for (auto chunk : renderList_) {
-		chunk.second->draw(makeModelMatrix(chunk.first), view_proj_matrix);
+		chunk.second->draw(makeModelMatrix(chunk.first), view_matrix * proj_matrix);
 	}
 
 
@@ -81,7 +81,7 @@ DirectX::XMMATRIX ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
 		static_cast<float>(coord.z_ * static_cast<int>(Chunk::DIM)));
 }
 
-void ChunkRenderer::cullChunks(BoundingFrustum & frustum) {
+void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFrustum & frustum) {
 	/*std::vector<glm::vec4> far_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getFarCoord();
 	std::vector<glm::vec4> near_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getNearCoord();
 
@@ -139,18 +139,21 @@ void ChunkRenderer::cullChunks(BoundingFrustum & frustum) {
 	unloadList_.swap(activeChunks_);
 	activeChunks_.clear();*/
 	renderList_ = activeChunks_;
-	
+	XMVECTOR det = XMMatrixDeterminant(view_matrix);
+	XMMATRIX inv_view = XMMatrixInverse(&det, view_matrix);
 
 	std::unordered_map<ChunkCoord, Chunk*> new_list;
 	for (auto chunk : renderList_) {
 		XMMATRIX world_mat = makeModelMatrix(chunk.first);
 		XMMATRIX inv_world = XMMatrixInverse(&XMMatrixDeterminant(world_mat), world_mat);
 
+		XMMATRIX inv = inv_view * inv_world;
+
 		XMVECTOR scale;
 		XMVECTOR rotation;
 		XMVECTOR tranlation;
 
-		XMMatrixDecompose(&scale, &rotation, &tranlation, world_mat);
+		XMMatrixDecompose(&scale, &rotation, &tranlation, inv);
 		BoundingFrustum world_frustum;
 		frustum.Transform(world_frustum, XMVectorGetX(scale), rotation, tranlation);
 		
