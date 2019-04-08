@@ -2,6 +2,8 @@
 #include "Chunk.h"
 #include "World.h"
 #include "Input/InputManager.h"
+#include "Utilities/Octree/Octree.h"
+
 class ChunkRenderer {
 public:
 	ChunkRenderer();
@@ -35,5 +37,6 @@ private:
 	bool enableCull_;
 	InputContext chunkContext_;
 	Texture * texture_;
+	Octree<Chunk> octree_;
 };
 

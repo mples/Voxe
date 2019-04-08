@@ -240,6 +240,8 @@
     <ClInclude Include="Graphics\Light.h" />
     <ClInclude Include="Input\RangeConverter.h" />
     <ClInclude Include="Input\RawInput.h" />
+    <ClInclude Include="Utilities\Octree\Node.h" />
+    <ClInclude Include="Utilities\Octree\Octree.h" />
     <ClInclude Include="RenderWindow.h" />
     <ClInclude Include="Graphics\VertexShader.h" />
     <ClInclude Include="Singleton.h" />

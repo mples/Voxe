@@ -2,7 +2,7 @@
 #include <math.h>
 #include <algorithm>
 
-ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true) {
+ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(500.0f, 500.0f, 500.0f))) {
 }
 
 
@@ -24,6 +24,7 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 				Chunk * chunk = world_->getChunk(i, j, k);
 				chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
 				activeChunks_.insert(std::make_pair( ChunkCoord(i, j, k), chunk));
+				octree_.insert(chunk);
 			}
 		}
 	}
@@ -48,6 +49,7 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 	
 	if (enableCull_) {
 		cullChunks(view_matrix, frustum);
+		std::vector<Chunk*>o = octree_.collides(frustum);
 	}
 
 	for (auto chunk : renderList_) {
@@ -158,7 +160,7 @@ void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFr
 		frustum.Transform(world_frustum, XMVectorGetX(scale), rotation, tranlation);
 		
 
-		ContainmentType contains = world_frustum.Contains(chunk.second->getBoundingBox());
+		ContainmentType contains = world_frustum.Contains(chunk.second->getBoundingVolume());
 		if (contains != ContainmentType::DISJOINT) {
 			new_list.insert(chunk);
 		}

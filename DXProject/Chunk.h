@@ -23,7 +23,7 @@ public:
 	bool chagned();
 	bool isEmpty();
 	BlockType getBlock(int x, int y, int z);
-	BoundingBox & getBoundingBox();
+	BoundingBox & getBoundingVolume();
 
 	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
 private:

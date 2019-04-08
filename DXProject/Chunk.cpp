@@ -114,7 +114,7 @@ BlockType Chunk::getBlock(int x, int y, int z) {
 	return blocks_[x][y][z];
 }
 
-BoundingBox & Chunk::getBoundingBox() {
+BoundingBox & Chunk::getBoundingVolume() {
 	return boundingBox_;
 }
 
