@@ -1,7 +1,10 @@
 #include "Chunk.h"
 
-Chunk::Chunk() : changed_(true), left_(nullptr), right_(nullptr), up_(nullptr), down_(nullptr), front_(nullptr), back_(nullptr) {
+Chunk::Chunk(int x, int y, int z) : changed_(true), left_(nullptr), right_(nullptr), up_(nullptr), down_(nullptr), front_(nullptr), back_(nullptr), coord_(x, y, z) {
 	ZeroMemory(blocks_, pow(DIM, 3) * sizeof(BlockType));
+	worldMatrix_ = XMMatrixTranslation(static_cast<float>(coord_.x_ * static_cast<int>(Chunk::DIM)),
+										static_cast<float>(coord_.y_ * static_cast<int>(Chunk::DIM)),
+										static_cast<float>(coord_.z_ * static_cast<int>(Chunk::DIM)));
 }
 
 
@@ -33,6 +36,7 @@ bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_conte
 	elements_ = vertices.size();
 	if (elements_ > 0) {
 		boundingBox_.CreateFromPoints(boundingBox_, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
+		boundingBox_.Transform(worldBoundingBox_, worldMatrix_);
 		model_.initialize(device, device_context, cb_vertex_shader, vertices, indices, tex);
 		update();
 
@@ -65,14 +69,14 @@ void Chunk::update() {
 	changed_ = false;
 }
 
-void Chunk::draw(XMMATRIX model_matrix, XMMATRIX view_proj_matrix) {
+void Chunk::draw(XMMATRIX view_proj_matrix) {
 	if (changed_) {
 		update();
 	}
 	if (!elements_)
 		return;
 
-	model_.draw(model_matrix, view_proj_matrix);
+	model_.draw(worldMatrix_, view_proj_matrix);
 
 }
 
@@ -115,7 +119,11 @@ BlockType Chunk::getBlock(int x, int y, int z) {
 }
 
 BoundingBox & Chunk::getBoundingVolume() {
-	return boundingBox_;
+	return worldBoundingBox_;
+}
+
+XMMATRIX & Chunk::getWorldMatrix() {
+	return worldMatrix_;
 }
 
 void Chunk::insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {

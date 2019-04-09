@@ -25,10 +25,10 @@ private:
 
 	ConstantBuffer<CB_VS_object_buffer> CBVSObject_;
 
-	std::unordered_map<ChunkCoord, Chunk*> activeChunks_;
+	std::vector<Chunk*> activeChunks_;
 	std::vector<ChunkCoord> loadList_;
-	std::unordered_map<ChunkCoord, Chunk*> unloadList_;
-	std::unordered_map<ChunkCoord, Chunk*> renderList_;
+	std::vector<Chunk*> unloadList_;
+	std::vector<Chunk*> renderList_;
 	std::vector<Chunk*> rebuildList_;
 
 	ID3D11Device* device_;

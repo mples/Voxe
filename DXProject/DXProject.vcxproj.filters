@@ -299,9 +299,6 @@
     <ClInclude Include="Generation\SimpleGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generation\ChunkCoord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ChunkRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -327,6 +324,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilities\Octree\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkCoord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

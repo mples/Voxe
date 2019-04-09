@@ -67,7 +67,6 @@ private:
 	Timer fpsTimer_;
 	
 	RenderableObject gameObject_;
-	Chunk chunk_;
 	ChunkRenderer chunkRenderer_;
 	World * world_;
 	SimpleGenerator * simpleGenerator_;

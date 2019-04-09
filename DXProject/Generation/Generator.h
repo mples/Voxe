@@ -1,7 +1,7 @@
 #pragma once
 #include "Noise.h"
 #include "../Chunk.h"
-#include "ChunkCoord.h"
+#include "../ChunkCoord.h"
 
 class Generator {
 public:

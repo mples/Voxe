@@ -11,7 +11,7 @@ SimpleGenerator::~SimpleGenerator() {
 
 Chunk * SimpleGenerator::generate(int x, int y, int z) {
 
-	Chunk * chunk = new Chunk();
+	Chunk * chunk = new Chunk(x, y, z);
 	for (int i = 0; i < Chunk::DIM; ++i) {
 		for (int j = 0; j < Chunk::DIM; ++j) {
 			float height = noise_->eval(chunkToNoiseCoord(x * Chunk::DIM + i, z * Chunk::DIM + j));

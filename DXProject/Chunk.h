@@ -3,6 +3,7 @@
 
 #include "BlockType.h"
 #include "Graphics/WorldChunkModel.h"
+#include "ChunkCoord.h"
 
 using namespace DirectX;
 
@@ -11,19 +12,20 @@ public:
 //	using byte4 = glm::tvec4<GLbyte>;
 	static const unsigned int DIM = 16;
 
-	Chunk();
+	Chunk(int x, int y, int z);
 	~Chunk();
 
 	bool initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& cb_vertex_shader, Texture * tex);
 	void update();
 
-	void draw(XMMATRIX model_matrix, XMMATRIX view_proj_matrix);
+	void draw(XMMATRIX view_proj_matrix);
 
 	void setBlock(int x, int y, int z, BlockType type);
 	bool chagned();
 	bool isEmpty();
 	BlockType getBlock(int x, int y, int z);
 	BoundingBox & getBoundingVolume();
+	XMMATRIX & getWorldMatrix();
 
 	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
 private:
@@ -59,7 +61,9 @@ private:
 
 	WorldChunkModel model_;
 	BoundingBox boundingBox_;
-	
+	BoundingBox worldBoundingBox_;
+	ChunkCoord coord_;
+	XMMATRIX worldMatrix_;
 
 	bool isCovered(int x, int y, int z, int cov_x, int cov_y, int cov_z);
 };

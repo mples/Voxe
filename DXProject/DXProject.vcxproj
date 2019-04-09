@@ -200,7 +200,7 @@
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkRenderer.h" />
     <ClInclude Include="GameStage.h" />
-    <ClInclude Include="generation\ChunkCoord.h" />
+    <ClInclude Include="ChunkCoord.h" />
     <ClInclude Include="Generation\Generator.h" />
     <ClInclude Include="Generation\Noise.h" />
     <ClInclude Include="Generation\PerlinNoise.h" />

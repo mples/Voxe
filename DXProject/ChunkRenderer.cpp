@@ -2,7 +2,7 @@
 #include <math.h>
 #include <algorithm>
 
-ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(500.0f, 500.0f, 500.0f))) {
+ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(500.0f, 500.0f, 500.0f))) {
 }
 
 
@@ -23,7 +23,7 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 			for (int k = -5; k < 5; k++) {
 				Chunk * chunk = world_->getChunk(i, j, k);
 				chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-				activeChunks_.insert(std::make_pair( ChunkCoord(i, j, k), chunk));
+				activeChunks_.push_back(chunk);
 				octree_.insert(chunk);
 			}
 		}
@@ -49,13 +49,11 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 	
 	if (enableCull_) {
 		cullChunks(view_matrix, frustum);
-		std::vector<Chunk*>o = octree_.collides(frustum);
 	}
 
 	for (auto chunk : renderList_) {
-		chunk.second->draw(makeModelMatrix(chunk.first), view_matrix * proj_matrix);
+		chunk->draw(view_matrix * proj_matrix);
 	}
-
 
 	//activeChunks_ = renderList_;
 	//renderList_.clear();
@@ -75,98 +73,27 @@ void ChunkRenderer::setEnableCulling(bool state) {
 }
 
 DirectX::XMMATRIX ChunkRenderer::makeModelMatrix(ChunkCoord coord) {
-	DirectX::XMMATRIX amt = DirectX::XMMatrixTranslation(static_cast<float>( coord.x_ * static_cast<int>(Chunk::DIM)),
-		static_cast<float>(coord.y_ * static_cast<int>(Chunk::DIM)),
-		static_cast<float>(coord.z_ * static_cast<int>(Chunk::DIM)));
 	return DirectX::XMMatrixTranslation(static_cast<float>(coord.x_ * static_cast<int>(Chunk::DIM)),
 		static_cast<float>(coord.y_ * static_cast<int>(Chunk::DIM)),
 		static_cast<float>(coord.z_ * static_cast<int>(Chunk::DIM)));
 }
 
 void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFrustum & frustum) {
-	/*std::vector<glm::vec4> far_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getFarCoord();
-	std::vector<glm::vec4> near_coord = GraphicEngine::getInstance().getActiveCamera()->getFrustum().getNearCoord();
 
-	std::vector<int> x_coord;
-	std::vector<int> y_coord;
-	std::vector<int> z_coord;
-	for (auto v : far_coord) {
-		glm::ivec3 temp = World::getChunkCoord(v.x, v.y, v.z);
-		x_coord.push_back(temp.x);
-		y_coord.push_back(temp.y);
-		z_coord.push_back(temp.z);
-	}
-
-	for (auto v : near_coord) {
-		glm::ivec3 temp = World::getChunkCoord(v.x, v.y, v.z);
-		x_coord.push_back(temp.x);
-		y_coord.push_back(temp.y);
-		z_coord.push_back(temp.z);
-	}
-
-	auto x_minmax = std::minmax_element(x_coord.begin(), x_coord.end());
-
-	int x_min = *(x_minmax.first);
-	int x_max = *(x_minmax.second);
-
-	auto y_minmax = std::minmax_element(y_coord.begin(), y_coord.end());
-
-	int y_min = *(y_minmax.first);
-	int y_max = *(y_minmax.second);
-
-	auto z_minmax = std::minmax_element(z_coord.begin(), z_coord.end());
-
-	int z_min = *(z_minmax.first);
-	int z_max = *(z_minmax.second);
-
-
-	for (int x = x_min; x <= x_max; ++x) {
-		for (int y = y_min; y <= y_max; ++y) {
-			for (int z = z_min; z <= z_max; ++z) {
-				auto find = activeChunks_.find(ChunkCoord(x, y, z));
-				if (find == activeChunks_.end()) {
-					loadList_.push_back(ChunkCoord(x, y, z));
-				}
-				else {
-					renderList_.insert(std::make_pair(find->first, find->second));
-					if (find->second->chagned()) {
-						rebuildList_.push_back(find->second);
-					}
-					activeChunks_.erase(find);
-				}
-				
-			}
-		}
-	}
-	unloadList_.swap(activeChunks_);
-	activeChunks_.clear();*/
-	renderList_ = activeChunks_;
+	renderList_.clear();
 	XMVECTOR det = XMMatrixDeterminant(view_matrix);
 	XMMATRIX inv_view = XMMatrixInverse(&det, view_matrix);
 
-	std::unordered_map<ChunkCoord, Chunk*> new_list;
-	for (auto chunk : renderList_) {
-		XMMATRIX world_mat = makeModelMatrix(chunk.first);
-		XMMATRIX inv_world = XMMatrixInverse(&XMMatrixDeterminant(world_mat), world_mat);
+	XMVECTOR scale;
+	XMVECTOR rotation;
+	XMVECTOR tranlation;
 
-		XMMATRIX inv = inv_view * inv_world;
+	XMMatrixDecompose(&scale, &rotation, &tranlation, inv_view);
+	BoundingFrustum world_frustum;
+	frustum.Transform(world_frustum, XMVectorGetX(scale), rotation, tranlation);
 
-		XMVECTOR scale;
-		XMVECTOR rotation;
-		XMVECTOR tranlation;
+	renderList_ = octree_.collides(world_frustum);
 
-		XMMatrixDecompose(&scale, &rotation, &tranlation, inv);
-		BoundingFrustum world_frustum;
-		frustum.Transform(world_frustum, XMVectorGetX(scale), rotation, tranlation);
-		
-
-		ContainmentType contains = world_frustum.Contains(chunk.second->getBoundingVolume());
-		if (contains != ContainmentType::DISJOINT) {
-			new_list.insert(chunk);
-		}
-	}
-	renderList_.clear();
-	renderList_ = new_list;
 }
 
 void ChunkRenderer::unloadChunks() {
@@ -175,7 +102,7 @@ void ChunkRenderer::unloadChunks() {
 	for (auto chunk : unloadList_) {
 		if (count >= max_unload_number)
 			break;
-		delete chunk.second;
+		delete chunk;
 		++count;
 	}
 	unloadList_.clear();
@@ -187,7 +114,7 @@ void ChunkRenderer::loadChunks() {
 	for (auto chunk_coord : loadList_) {
 		if (count >= max_load_number)
 			break;
-		renderList_.insert(std::make_pair(chunk_coord, world_->getChunk(chunk_coord)));
+		renderList_.push_back(world_->getChunk(chunk_coord));
 		++count;
 	}
 	loadList_.clear();
