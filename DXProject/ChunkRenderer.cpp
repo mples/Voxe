@@ -36,6 +36,10 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 		auto cull = input.actions_.find(Action::CULL);
 		if (cull != input.actions_.end()) {
 			this->setEnableCulling(false);
+			for (int i = 0; i < 500; i++) {
+				this->octree_.remove(activeChunks_[i]);
+
+			}
 			input.actions_.erase(cull);
 
 		}

@@ -13,6 +13,8 @@ public:
 	void draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum);
 	void setWorld(World* world);
 	void setEnableCulling(bool state);
+	Octree<Chunk> octree_; // TODO move back to private
+	std::vector<Chunk*> activeChunks_;
 private:
 
 	DirectX::XMMATRIX makeModelMatrix(ChunkCoord  coord);
@@ -25,7 +27,6 @@ private:
 
 	ConstantBuffer<CB_VS_object_buffer> CBVSObject_;
 
-	std::vector<Chunk*> activeChunks_;
 	std::vector<ChunkCoord> loadList_;
 	std::vector<Chunk*> unloadList_;
 	std::vector<Chunk*> renderList_;
@@ -37,6 +38,5 @@ private:
 	bool enableCull_;
 	InputContext chunkContext_;
 	Texture * texture_;
-	Octree<Chunk> octree_;
 };
 
