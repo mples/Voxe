@@ -2,7 +2,7 @@
 #include <math.h>
 #include <algorithm>
 
-ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(500.0f, 500.0f, 500.0f))) {
+ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(0.0f, .0f, 0.0f), XMFLOAT3(200.0f, 200.0f, 200.0f))) {
 }
 
 
@@ -35,11 +35,27 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 	InputCallback callback = [=](MappedInput& input) {
 		auto cull = input.actions_.find(Action::CULL);
 		if (cull != input.actions_.end()) {
-			this->setEnableCulling(false);
-			for (int i = 0; i < 500; i++) {
-				this->octree_.remove(activeChunks_[i]);
-
+			//this->setEnableCulling(false);
+			for (int i = -5; i < 5; i++) {
+				for (int j = -5; j < 5; j++) {
+					for (int k = -5; k < 5; k++) {
+						Chunk * chunk = world_->getChunk(i, j, k);
+						octree_.remove(chunk);
+					}
+				}
 			}
+
+			for (int i = 5; i < 15; i++) {
+				for (int j = -5; j < 5; j++) {
+					for (int k = 5; k < 15; k++) {
+						Chunk * chunk = world_->getChunk(i, j, k);
+						chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
+						activeChunks_.push_back(chunk);
+						octree_.insert(chunk);
+					}
+				}
+			}
+
 			input.actions_.erase(cull);
 
 		}

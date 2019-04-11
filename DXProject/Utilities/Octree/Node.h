@@ -9,9 +9,9 @@ using namespace DirectX;
 template <typename T>
 class Node {
 public:
-	Node(BoundingBox bounding_box, Node * parent);
-	Node(BoundingBox bounding_box, T* object, Node * parent);
-	Node(BoundingBox bounding_box, std::vector<T*> objects, Node * parent);
+	Node(BoundingBox bounding_box, Node * parent = nullptr);
+	Node(BoundingBox bounding_box, T* object, Node * parent = nullptr);
+	Node(BoundingBox bounding_box, std::vector<T*> objects, Node * parent = nullptr);
 	~Node();
 	Node * parent_;
 	std::array<Node*, 8> children_;
@@ -26,20 +26,20 @@ private:
 
 
 template<typename T>
-Node<T>::Node(BoundingBox bounding_box, Node * parent) : isLeaf_(true) {
+Node<T>::Node(BoundingBox bounding_box, Node * parent ) : isLeaf_(true) {
 	boundingBox_ = bounding_box;
 	parent_ = parent;
 }
 
 template<typename T>
-Node<T>::Node(BoundingBox bounding_box, T * object, Node * parent) : isLeaf_(true) {
+Node<T>::Node(BoundingBox bounding_box, T * object, Node * parent ) : isLeaf_(true) {
 	boundingBox_ = bounding_box;
 	parent_ = parent;
 	insert(object);
 }
 
 template<typename T>
-Node<T>::Node(BoundingBox bounding_box, std::vector<T*> objects, Node * parent) : isLeaf_(true) {
+Node<T>::Node(BoundingBox bounding_box, std::vector<T*> objects, Node * parent ) : isLeaf_(true) {
 	boundingBox_ = bounding_box;
 	parent_ = parent;
 	objects_.insert(objects_.end(), objects.begin(), objects.end());
@@ -47,4 +47,9 @@ Node<T>::Node(BoundingBox bounding_box, std::vector<T*> objects, Node * parent) 
 
 template<typename T>
 Node<T>::~Node() {
+	if(!isLeaf_) {
+		for (Node* child : children_) {
+			delete child;
+		}
+	}
 }
