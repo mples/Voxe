@@ -14,12 +14,9 @@ bool WorldChunkModel::initialize(ID3D11Device* device, ID3D11DeviceContext* devi
 	deviceContext_ = device_context;
 	CBVertexShader_ = &cb_vertex_shader;
 	texture_ = texture;
-	loadData(vertices, indices);
+	mesh_.initialize(device_, deviceContext_, vertices, indices, texture_);	
+	boundingBox_.CreateFromPoints(boundingBox_, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
 	return false;
-}
-
-void WorldChunkModel::loadData(std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
-	mesh_.initialize(device_, deviceContext_, vertices, indices, texture_);
 }
 
 void WorldChunkModel::draw(DirectX::XMMATRIX model_matrix, DirectX::XMMATRIX view_proj_matrix) {
@@ -29,4 +26,12 @@ void WorldChunkModel::draw(DirectX::XMMATRIX model_matrix, DirectX::XMMATRIX vie
 	CBVertexShader_->data_.mvpMatrix_ = model_matrix * view_proj_matrix;
 	CBVertexShader_->applyChanges();
 	mesh_.draw();
+}
+
+void WorldChunkModel::loadData(std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
+	mesh_.initialize(device_, deviceContext_, vertices, indices, texture_);
+}
+
+BoundingBox & WorldChunkModel::getBoundingBox() {
+	return boundingBox_;
 }

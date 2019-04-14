@@ -28,15 +28,17 @@ private:
 	ConstantBuffer<CB_VS_object_buffer> CBVSObject_;
 
 	std::vector<ChunkCoord> loadList_;
-	std::vector<Chunk*> unloadList_;
+	std::vector<ChunkCoord> unloadList_;
 	std::vector<Chunk*> renderList_;
 	std::vector<Chunk*> rebuildList_;
 
 	ID3D11Device* device_;
 	ID3D11DeviceContext * deviceContext_;
+	Texture * texture_;
 
+	BoundingBox previousViewBox_;
 	bool enableCull_;
 	InputContext chunkContext_;
-	Texture * texture_;
+	
 };
 

@@ -7,27 +7,36 @@
 
 using namespace DirectX;
 
+class Chunk;
+
+struct ChunkNeighbours {
+	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
+};
+
 class Chunk {
 public:
 //	using byte4 = glm::tvec4<GLbyte>;
 	static const unsigned int DIM = 16;
 
+	Chunk();
 	Chunk(int x, int y, int z);
+	Chunk(int x, int y, int z, BlockType* blocks);
 	~Chunk();
 
-	bool initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& cb_vertex_shader, Texture * tex);
+	bool initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture);
 	void update();
 
 	void draw(XMMATRIX view_proj_matrix);
 
 	void setBlock(int x, int y, int z, BlockType type);
-	bool chagned();
-	bool isEmpty();
-	BlockType getBlock(int x, int y, int z);
+	BlockType getBlock(UINT x, UINT y, UINT z);
 	BoundingBox & getBoundingVolume();
 	XMMATRIX & getWorldMatrix();
+	ChunkCoord & getCoord();
 
-	Chunk* left_, *right_, *up_, *down_, *front_, *back_;
+	ChunkNeighbours neighbours_;
+	bool initialized_;
+	bool changed_;
 private:
 	void insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 	void insertPositiveX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
@@ -45,7 +54,9 @@ private:
 	bool isObscuredNegativeZ(UINT x, UINT y, UINT z);
 	bool isObscuredPositiveZ(UINT x, UINT y, UINT z);
 
-	void calculateVertices(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
+	void calculateVertices(UINT x, UINT y, UINT z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
+
+	void calculateMeshData(std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 
 	const XMFLOAT3 POS_X_NORMAL = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	const XMFLOAT3 NEG_X_NORMAL = XMFLOAT3(-1.0f, 0.0f, 0.0f);
@@ -55,16 +66,11 @@ private:
 	const XMFLOAT3 NEG_Z_NORMAL = XMFLOAT3(-1.0f, 0.0f, -1.0f);
 
 	BlockType blocks_[DIM][DIM][DIM];
-	bool changed_;
 	
-	int elements_;
-
 	WorldChunkModel model_;
-	BoundingBox boundingBox_;
+
 	BoundingBox worldBoundingBox_;
 	ChunkCoord coord_;
 	XMMATRIX worldMatrix_;
-
-	bool isCovered(int x, int y, int z, int cov_x, int cov_y, int cov_z);
 };
 

@@ -13,6 +13,7 @@ public:
 	Chunk* getChunk(int x, int y, int z);
 	std::unordered_map<ChunkCoord, Chunk*> & getChunks();
 	static ChunkCoord getChunkCoord(int x, int y, int z);
+	void remove(Chunk* chunk);
 private:
 	void setAdjacentChunks(Chunk* chunk, const ChunkCoord& coord);
 

@@ -1,71 +1,75 @@
 #include "Chunk.h"
+#include "Chunk.h"
 
-Chunk::Chunk(int x, int y, int z) : changed_(true), left_(nullptr), right_(nullptr), up_(nullptr), down_(nullptr), front_(nullptr), back_(nullptr), coord_(x, y, z) {
+Chunk::Chunk() : coord_(0, 0, 0), changed_(false) {
+	neighbours_.back_ = nullptr;
+	neighbours_.front_ = nullptr;
+	neighbours_.left_ = nullptr;
+	neighbours_.right_ = nullptr;
+	neighbours_.up_ = nullptr;
+	neighbours_.down_ = nullptr;
+}
+
+Chunk::Chunk(int x, int y, int z) : changed_(false), coord_(x, y, z), initialized_(false) {
 	ZeroMemory(blocks_, pow(DIM, 3) * sizeof(BlockType));
 	worldMatrix_ = XMMatrixTranslation(static_cast<float>(coord_.x_ * static_cast<int>(Chunk::DIM)),
 										static_cast<float>(coord_.y_ * static_cast<int>(Chunk::DIM)),
 										static_cast<float>(coord_.z_ * static_cast<int>(Chunk::DIM)));
+	neighbours_.back_ = nullptr;
+	neighbours_.front_ = nullptr;
+	neighbours_.left_ = nullptr;
+	neighbours_.right_ = nullptr;
+	neighbours_.up_ = nullptr;
+	neighbours_.down_ = nullptr;
+}
+
+Chunk::Chunk(int x, int y, int z, BlockType * blocks) : changed_(false), coord_(x, y, z), initialized_(false) {
+	CopyMemory(blocks_, blocks, sizeof(BlockType) * DIM * DIM * DIM);
+	worldMatrix_ = XMMatrixTranslation(static_cast<float>(coord_.x_ * static_cast<int>(Chunk::DIM)),
+										static_cast<float>(coord_.y_ * static_cast<int>(Chunk::DIM)),
+										static_cast<float>(coord_.z_ * static_cast<int>(Chunk::DIM)));
+	neighbours_.back_ = nullptr;
+	neighbours_.front_ = nullptr;
+	neighbours_.left_ = nullptr;
+	neighbours_.right_ = nullptr;
+	neighbours_.up_ = nullptr;
+	neighbours_.down_ = nullptr;
 }
 
 
 Chunk::~Chunk() {
 }
 
-bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& cb_vertex_shader, Texture * tex) {
-	/*for (BYTE x = 0; x < DIM; ++x) {
-		for (BYTE y = 0; y < DIM; ++y) {
-			for (BYTE z = 0; z < DIM; ++z) {
-				blocks_[x][y][z] = BlockType::GRASS;
-			}
-		}
-	}*/
+bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture) {
 	std::vector<Vertex> vertices;
 	std::vector<DWORD> indices;
 
-	for (UINT x = 0; x < DIM; ++x) {
-		for (UINT y = 0; y < DIM; ++y) {
-			for (UINT z = 0; z < DIM; ++z) {
-				BlockType type = blocks_[x][y][z];
-				if (type != BlockType::AIR) {
-					calculateVertices(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
-				}
-			}
-		}
+	calculateMeshData(vertices, indices);
+	if (vertices.size() > 0) {
+		model_.initialize(device, device_context, const_buffer, vertices, indices, texture);
+		initialized_ = true;
 	}
-
-	elements_ = vertices.size();
-	if (elements_ > 0) {
-		boundingBox_.CreateFromPoints(boundingBox_, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
-		boundingBox_.Transform(worldBoundingBox_, worldMatrix_);
-		model_.initialize(device, device_context, cb_vertex_shader, vertices, indices, tex);
-		update();
-
-	}
+	model_.getBoundingBox().Transform(worldBoundingBox_, worldMatrix_);
 	return true;
 }
 
 void Chunk::update() {
-
 	std::vector<Vertex> vertices;
 	std::vector<DWORD> indices;
 
-	for (UINT x = 0; x < DIM; ++x) {
-		for (UINT y = 0; y < DIM; ++y) {
-			for (UINT z = 0; z < DIM; ++z) {
-				BlockType type = blocks_[x][y][z];
-				if (type != BlockType::AIR) {
-					calculateVertices(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
-				}
-			}
+	calculateMeshData(vertices, indices);
+	if (vertices.size() > 0) {
+		if (initialized_) {
+			model_.loadData(vertices, indices);
+		}
+		else {
+			//model_.initialize(device, device_context, const_buffer, vertices, indices, texture);
+			//initialized_ = true;
 		}
 	}
 
-	elements_ = vertices.size();
-	if (elements_ > 0) {
-		boundingBox_.CreateFromPoints(boundingBox_, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
-		model_.loadData(vertices, indices);
-	}
-	
+	model_.getBoundingBox().Transform(worldBoundingBox_, worldMatrix_);
+
 	changed_ = false;
 }
 
@@ -73,7 +77,7 @@ void Chunk::draw(XMMATRIX view_proj_matrix) {
 	if (changed_) {
 		update();
 	}
-	if (!elements_)
+	if (!initialized_)
 		return;
 
 	model_.draw(worldMatrix_, view_proj_matrix);
@@ -87,34 +91,26 @@ void Chunk::setBlock(int x, int y, int z, BlockType type) {
 	blocks_[x][y][z] = type;
 	changed_ = true;
 
-	if (x == 0 && left_ != nullptr) {
-		left_->changed_ = true;
-	}else if (x == DIM - 1 && right_ != nullptr) {
-		right_->changed_ = true;
+	if (x == 0 && neighbours_.left_ != nullptr) {
+		neighbours_.left_->changed_ = true;
+	}else if (x == DIM - 1 && neighbours_.right_ != nullptr) {
+		neighbours_.right_->changed_ = true;
 	}
-	if (y == DIM - 1 && up_ != nullptr) {
-		up_->changed_ = true;
+	if (y == DIM - 1 && neighbours_.up_ != nullptr) {
+		neighbours_.up_->changed_ = true;
 	}
-	else if (y == 0 && down_ != nullptr) {
-		down_->changed_ = true;
+	else if (y == 0 && neighbours_.down_ != nullptr) {
+		neighbours_.down_->changed_ = true;
 	}
-	if (z == 0 && front_ != nullptr) {
-		front_->changed_ = true;
+	if (z == 0 && neighbours_.back_ != nullptr) {
+		neighbours_.back_->changed_ = true;
 	}
-	else if (z == DIM - 1 && back_ != nullptr) {
-		back_->changed_ = true;
+	else if (z == DIM - 1 && neighbours_.front_ != nullptr) {
+		neighbours_.front_->changed_ = true;
 	}
 }
 
-bool Chunk::chagned() {
-	return changed_;
-}
-
-bool Chunk::isEmpty() {
-	return elements_ == 0 ;
-}
-
-BlockType Chunk::getBlock(int x, int y, int z) {
+BlockType Chunk::getBlock(UINT x, UINT y, UINT z) {
 	return blocks_[x][y][z];
 }
 
@@ -124,6 +120,10 @@ BoundingBox & Chunk::getBoundingVolume() {
 
 XMMATRIX & Chunk::getWorldMatrix() {
 	return worldMatrix_;
+}
+
+ChunkCoord & Chunk::getCoord() {
+	return coord_;
 }
 
 void Chunk::insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
@@ -227,7 +227,7 @@ bool Chunk::isObscuredNegativeX(UINT x, UINT y, UINT z) {
 		return false;
 	}
 	else if (x == 0) {
-		if (!left_ || (left_->getBlock(DIM - 1, y, z)) == BlockType::AIR) {
+		if (!neighbours_.left_ || (neighbours_.left_->getBlock(Chunk::DIM - 1, y, z)) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -235,11 +235,11 @@ bool Chunk::isObscuredNegativeX(UINT x, UINT y, UINT z) {
 }
 
 bool Chunk::isObscuredPositiveX(UINT x, UINT y, UINT z) {
-	if (x + 1 < DIM && blocks_[x + 1][y][z] == BlockType::AIR) {
+	if (x + 1 < Chunk::DIM && blocks_[x + 1][y][z] == BlockType::AIR) {
 		return false;
 	}
-	else if (x + 1 == DIM) {
-		if (!right_ || (right_->getBlock(0, y, z)) == BlockType::AIR) {
+	else if (x + 1 == Chunk::DIM) {
+		if (!neighbours_.right_ || (neighbours_.right_->getBlock(0, y, z)) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -251,7 +251,7 @@ bool Chunk::isObscuredNegativeY(UINT x, UINT y, UINT z) {
 		return false;
 	}
 	else if (y == 0) {
-		if (!down_ || (down_->getBlock(x, DIM - 1, z)) == BlockType::AIR) {
+		if (!neighbours_.down_ || (neighbours_.down_->getBlock(x, Chunk::DIM - 1, z)) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -259,11 +259,11 @@ bool Chunk::isObscuredNegativeY(UINT x, UINT y, UINT z) {
 }
 
 bool Chunk::isObscuredPositiveY(UINT x, UINT y, UINT z) {
-	if (y + 1 < DIM && blocks_[x][y + 1][z] == BlockType::AIR) {
+	if (y + 1 < Chunk::DIM && blocks_[x][y + 1][z] == BlockType::AIR) {
 		return false;
 	}
-	else if (y == DIM - 1) {
-		if (!up_ || (up_->getBlock(x, 0, z)) == BlockType::AIR) {
+	else if (y == Chunk::DIM - 1) {
+		if (!neighbours_.up_ || (neighbours_.up_->getBlock(x, 0, z)) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -275,7 +275,7 @@ bool Chunk::isObscuredNegativeZ(UINT x, UINT y, UINT z) {
 		return false;
 	}
 	else if (z == 0) {
-		if (!front_ || (front_->getBlock(x, y, DIM - 1)) == BlockType::AIR) {
+		if (!neighbours_.back_ || (neighbours_.back_->getBlock(x, y, Chunk::DIM - 1)) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -283,43 +283,47 @@ bool Chunk::isObscuredNegativeZ(UINT x, UINT y, UINT z) {
 }
 
 bool Chunk::isObscuredPositiveZ(UINT x, UINT y, UINT z) {
-	if (z + 1 < DIM && blocks_[x][y][z + 1] == BlockType::AIR) {
+	if (z + 1 < Chunk::DIM && blocks_[x][y][z + 1] == BlockType::AIR) {
 		return false;
 	}
-	else if (z + 1 == DIM) {
-		if (!back_ || (back_->getBlock(x, y, 0)) == BlockType::AIR) {
+	else if (z + 1 == Chunk::DIM) {
+		if (!neighbours_.front_ || (neighbours_.front_->getBlock(x, y, 0)) == BlockType::AIR) {
 			return false;
 		}
 	}
 	return true;
 }
 
-void Chunk::calculateVertices(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
+void Chunk::calculateVertices(UINT x, UINT y, UINT z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
 	if (!isObscuredNegativeX(x, y, z)) {
-		insertNegativeX(x, y, z, type, vertices, indices);
+		insertNegativeX(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
 	}
 	if (!isObscuredPositiveX(x, y, z)) {
-		insertPositiveX(x, y, z, type, vertices, indices);
+		insertPositiveX(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
 	}
 	if (!isObscuredNegativeY(x, y, z)) {
-		insertNegativeY(x, y, z, type, vertices, indices);
+		insertNegativeY(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
 	}
 	if (!isObscuredPositiveY(x, y, z)) {
-		insertPositiveY(x, y, z, type, vertices, indices);
+		insertPositiveY(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
 	}
 	if (!isObscuredNegativeZ(x, y, z)) {
-		insertNegativeZ(x, y, z, type, vertices, indices);
+		insertNegativeZ(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
 	}
 	if (!isObscuredPositiveZ(x, y, z)) {
-		insertPositiveZ(x, y, z, type, vertices, indices);
+		insertPositiveZ(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), type, vertices, indices);
 	}
 }
 
-bool Chunk::isCovered(int x, int y, int z, int cov_x, int cov_y, int cov_z) {
-	//TODO clean method or make it usefull
-	if (blocks_[cov_x][cov_y][cov_z] != BlockType::AIR) {
-		return true;
+void Chunk::calculateMeshData(std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
+	for (UINT x = 0; x < Chunk::DIM; ++x) {
+		for (UINT y = 0; y < Chunk::DIM; ++y) {
+			for (UINT z = 0; z < Chunk::DIM; ++z) {
+				BlockType type = blocks_[x][y][z];
+				if (type != BlockType::AIR) {
+					calculateVertices(x, y, z, type, vertices, indices);
+				}
+			}
+		}
 	}
-
-	return false;
 }
