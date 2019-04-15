@@ -12,6 +12,7 @@ public:
 	void draw(DirectX::XMMATRIX model_matrix, DirectX::XMMATRIX view_proj_matrix);
 	void loadData(std::vector<Vertex>& vertices, std::vector<DWORD>& indices);
 	BoundingBox & getBoundingBox();
+	void reset();
 private:
 	ID3D11Device* device_;
 	ID3D11DeviceContext* deviceContext_;

@@ -28,6 +28,11 @@ public:
 		return &stride_;
 	}
 
+	void reset() {
+		buffer_.Reset();
+		verticesCount_ = 0;
+	}
+
 	HRESULT initialize(ID3D11Device* device, T* data, UINT vertices_count) {
 		if (buffer_.Get() != nullptr) {
 			buffer_.Reset();

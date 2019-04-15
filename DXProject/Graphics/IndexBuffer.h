@@ -19,6 +19,11 @@ public:
 		return indicesCount_;
 	}
 
+	void reset() {
+		buffer_.Reset();
+		indicesCount_ = 0;
+	}
+
 	HRESULT initialize(ID3D11Device* device, DWORD* data, UINT indices_count) {
 		if (buffer_.Get() != nullptr) {
 			buffer_.Reset();

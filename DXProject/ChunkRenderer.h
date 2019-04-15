@@ -25,7 +25,6 @@ private:
 
 	World* world_;
 
-	ConstantBuffer<CB_VS_object_buffer> CBVSObject_;
 
 	std::vector<ChunkCoord> loadList_;
 	std::vector<ChunkCoord> unloadList_;
@@ -34,6 +33,7 @@ private:
 
 	ID3D11Device* device_;
 	ID3D11DeviceContext * deviceContext_;
+	ConstantBuffer<CB_VS_object_buffer> CBVSObject_;
 	Texture * texture_;
 
 	BoundingBox previousViewBox_;

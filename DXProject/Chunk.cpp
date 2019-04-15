@@ -46,37 +46,30 @@ bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_conte
 
 	calculateMeshData(vertices, indices);
 	if (vertices.size() > 0) {
-		model_.initialize(device, device_context, const_buffer, vertices, indices, texture);
+		try {
+			model_.initialize(device, device_context, const_buffer, vertices, indices, texture);
+		}
+		catch (COMException e) {
+			ErrorLogger::log(e);
+		}
 		initialized_ = true;
 	}
 	model_.getBoundingBox().Transform(worldBoundingBox_, worldMatrix_);
 	return true;
 }
 
-void Chunk::update() {
-	std::vector<Vertex> vertices;
-	std::vector<DWORD> indices;
-
-	calculateMeshData(vertices, indices);
-	if (vertices.size() > 0) {
-		if (initialized_) {
-			model_.loadData(vertices, indices);
-		}
-		else {
-			//model_.initialize(device, device_context, const_buffer, vertices, indices, texture);
-			//initialized_ = true;
-		}
-	}
-
-	model_.getBoundingBox().Transform(worldBoundingBox_, worldMatrix_);
+void Chunk::update(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture) {
+	model_.reset();
+	initialized_ = false;
+	initialize(device, device_context, const_buffer, texture);
 
 	changed_ = false;
 }
 
 void Chunk::draw(XMMATRIX view_proj_matrix) {
-	if (changed_) {
-		update();
-	}
+	//if (changed_) {
+		//update();
+	//}
 	if (!initialized_)
 		return;
 

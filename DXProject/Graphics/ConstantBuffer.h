@@ -18,6 +18,11 @@ public:
 		return buffer_.GetAddressOf();
 	}
 
+	void reset() {
+		buffer_.Reset();
+		deviceContext_ = nullptr;
+	}
+
 	HRESULT initialize(ID3D11Device* device, ID3D11DeviceContext* device_context) {
 		if (buffer_.Get() != nullptr) {
 			buffer_.Reset();

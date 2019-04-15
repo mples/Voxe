@@ -35,3 +35,11 @@ void WorldChunkModel::loadData(std::vector<Vertex>& vertices, std::vector<DWORD>
 BoundingBox & WorldChunkModel::getBoundingBox() {
 	return boundingBox_;
 }
+
+void WorldChunkModel::reset() {
+	device_ = nullptr;
+	deviceContext_ = nullptr;
+	CBVertexShader_= nullptr;
+	texture_ = nullptr;
+	mesh_.reset();
+}

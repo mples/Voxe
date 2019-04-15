@@ -24,7 +24,7 @@ public:
 	~Chunk();
 
 	bool initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture);
-	void update();
+	void update(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture);
 
 	void draw(XMMATRIX view_proj_matrix);
 

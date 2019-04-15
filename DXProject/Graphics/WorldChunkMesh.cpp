@@ -31,3 +31,10 @@ void WorldChunkMesh::draw() {
 
 	deviceContext_->DrawIndexed(indexBuffer_.indicesCount(), 0, 0);
 }
+
+void WorldChunkMesh::reset() {
+	texture_ = nullptr;
+	deviceContext_ = nullptr;
+	vertexBuffer_.reset();
+	indexBuffer_.reset();
+}

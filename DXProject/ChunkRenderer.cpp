@@ -19,9 +19,9 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer.");
 
 	//debug
-	for (int i = -5; i < -2; i++) {
-		for (int j = -10; j < 0; j++) {
-			for (int k = -5; k < -2; k++) {
+	for (int i = -15; i < 15; i++) {
+		for (int j = -5; j < 5; j++) {
+			for (int k = -15; k < 15; k++) {
 				Chunk * chunk = world_->getChunk(i, j, k);
 				chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
 				activeChunks_.push_back(chunk);
@@ -30,74 +30,14 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 		}
 	}
 
-	/*Chunk * chunk = world_->getChunk(0, 0, 0);
-	chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	activeChunks_.push_back(chunk);
-	octree_.insert(chunk);
-
-	chunk = world_->getChunk(1, 0, 0);
-	chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	activeChunks_.push_back(chunk);
-	octree_.insert(chunk);
-
-	chunk = world_->getChunk(2, 0, 0);
-	chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	activeChunks_.push_back(chunk);
-	octree_.insert(chunk);
-
-	chunk = world_->getChunk(0, -1, 0);
-	chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	activeChunks_.push_back(chunk);
-	octree_.insert(chunk);
-
-	chunk = world_->getChunk(1, -1, 0);
-	chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	activeChunks_.push_back(chunk);
-	octree_.insert(chunk);
-
-	chunk = world_->getChunk(2, -1, 0);
-	chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	activeChunks_.push_back(chunk);
-	octree_.insert(chunk);
-
-	chunk = world_->getChunk(3, -1, 0);
-	chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	activeChunks_.push_back(chunk);
-	octree_.insert(chunk);
-*/
-
 	chunkContext_.addActionMapping(Action::CULL, KeyboardEvent(KeyboardEvent::Type::PRESS, 'C'));
 
 	INPUT.addFrontContext(&chunkContext_);
 	InputCallback callback = [=](MappedInput& input) {
 		auto cull = input.actions_.find(Action::CULL);
 		if (cull != input.actions_.end()) {
-			//this->setEnableCulling(false);
-			/*for (int i = -5; i < 5; i++) {
-				for (int j = -5; j < 5; j++) {
-					for (int k = -5; k < 5; k++) {
-						Chunk * chunk = world_->getChunk(i, j, k);
-						octree_.remove(chunk);
-					}
-				}
-			}
+			
 
-			for (int i = 5; i < 15; i++) {
-				for (int j = -5; j < 5; j++) {
-					for (int k = 5; k < 15; k++) {
-						Chunk * chunk = world_->getChunk(i, j, dsk);
-						chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-						activeChunks_.push_back(chunk);
-						octree_.insert(chunk);
-					}
-				}
-			}*/
-			for (Chunk* chunk : activeChunks_) {
-				chunk->changed_ = true;
-			}
-			static int i = 0;
-			//world_->setBlock(0, i, 0, BlockType::AIR);
-			i--;
 			input.actions_.erase(cull);
 
 		}
@@ -115,12 +55,15 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 
 	for (auto chunk : renderList_) {
 		chunk->draw(view_matrix * proj_matrix);
+		if (chunk->changed_ == true) {
+			rebuildList_.push_back(chunk);
+		}
 	}
 
 	//activeChunks_ = renderList_;
 	//renderList_.clear();
 	//loadChunks();
-	//rebuildChunks();
+	rebuildChunks();
 	// unloadChunks();
 }
 
@@ -379,7 +322,7 @@ void ChunkRenderer::loadChunks() {
 	for (auto chunk_coord : loadList_) {
 		Chunk * chunk = world_->getChunk(chunk_coord);
 		if (!chunk->initialized_) {
-			chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
+			chunk->initialize(device_, deviceCowntext_, CBVSObject_, texture_);
 
 		}
 		octree_->insert(chunk);
@@ -390,12 +333,12 @@ void ChunkRenderer::loadChunks() {
 
 void ChunkRenderer::rebuildChunks() {
 	static int max_rebuild_number = 3;
-	/*int count = 0;
+	int count = 0;
 	for (auto chunk : rebuildList_) {
 		if (count >= max_rebuild_number)
 			break;
-		chunk->update();
+		chunk->update(device_, deviceContext_, CBVSObject_, texture_);
 		++count;
-	}*/
-	//rebuildList_.clear();
+	}
+	rebuildList_.clear();
 }
