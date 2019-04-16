@@ -12,6 +12,8 @@ public:
 	void remove(T* object);
 	std::vector<T*> collides(BoundingFrustum& frustum);
 	static bool equalsBoundingBox(BoundingBox a, BoundingBox b);
+	BoundingBox & getBoundingBox();
+
 	int size_;
 private:
 	void insertIntoNode(T* object, Node<T>* node);
@@ -155,6 +157,11 @@ template<typename T>
 inline bool Octree<T>::equalsBoundingBox(BoundingBox a, BoundingBox b) {
 	return a.Center.x == b.Center.x && a.Center.y == b.Center.y && a.Center.z == b.Center.z &&
 				a.Extents.x == b.Extents.x && a.Extents.y == b.Extents.y && a.Extents.z == b.Extents.z;
+}
+
+template<typename T>
+inline BoundingBox & Octree<T>::getBoundingBox() {
+	return root_->boundingBox_;
 }
 
 template<typename T>

@@ -98,7 +98,7 @@ bool GraphicEngine::initializeScene() {
 		}
 
 		camera_.setPos(0.0f, 0.0f, -5.0f);
-		camera_.setProjData(90.0f, static_cast<float>(windowWidth_) / static_cast<float>(windowHeight_), 0.1f, 500.0f);
+		camera_.setProjData(90.0f, static_cast<float>(windowWidth_) / static_cast<float>(windowHeight_), 0.1f, 100.0f);
 
 		//test
 

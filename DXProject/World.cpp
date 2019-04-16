@@ -107,7 +107,9 @@ Chunk * World::getChunk(ChunkCoord& coord) {
 		return found->second;
 	}
 	
-	Chunk* chunk = generator_->generate(coord);
+	BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM] = {};
+	generator_->generate(blocks, coord);
+	Chunk* chunk = new Chunk(coord, blocks);
 	setAdjacentChunks(chunk, coord);
 	modifiedChunks_.insert(std::make_pair(coord, chunk));
 	return chunk;

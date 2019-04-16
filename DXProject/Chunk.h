@@ -20,7 +20,8 @@ public:
 
 	Chunk();
 	Chunk(int x, int y, int z);
-	Chunk(int x, int y, int z, BlockType* blocks);
+	Chunk(int x, int y, int z, BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM]);
+	Chunk(ChunkCoord coord, BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM]);
 	~Chunk();
 
 	bool initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture);
@@ -36,6 +37,7 @@ public:
 
 	ChunkNeighbours neighbours_;
 	bool initialized_;
+	bool isEmpty_;
 	bool changed_;
 private:
 	void insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);

@@ -22,10 +22,12 @@ private:
 	void unloadChunks();
 	void loadChunks();
 	void rebuildChunks();
+	void initializeChunks();
 
 	World* world_;
+	bool firstDraw_ = true;
 
-
+	std::vector<Chunk*> initList_;
 	std::vector<ChunkCoord> loadList_;
 	std::vector<ChunkCoord> unloadList_;
 	std::vector<Chunk*> renderList_;
@@ -36,7 +38,8 @@ private:
 	ConstantBuffer<CB_VS_object_buffer> CBVSObject_;
 	Texture * texture_;
 
-	BoundingBox previousViewBox_;
+	XMFLOAT3 previousExtend_;
+	XMFLOAT3 previousCenter_;
 	bool enableCull_;
 	InputContext chunkContext_;
 	

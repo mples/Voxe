@@ -9,9 +9,9 @@ SimpleGenerator::SimpleGenerator(Noise* noise) : Generator(noise) {
 SimpleGenerator::~SimpleGenerator() {
 }
 
-Chunk * SimpleGenerator::generate(int x, int y, int z) {
+void SimpleGenerator::generate(BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM], int x, int y, int z) {
 
-	Chunk * chunk = new Chunk(x, y, z);
+	//Chunk * chunk = new Chunk(x, y, z);
 	for (int i = 0; i < Chunk::DIM; ++i) {
 		for (int j = 0; j < Chunk::DIM; ++j) {
 			float height = noise_->eval(chunkToNoiseCoord(x * Chunk::DIM + i, z * Chunk::DIM + j));
@@ -19,16 +19,17 @@ Chunk * SimpleGenerator::generate(int x, int y, int z) {
 			int terr_height = std::roundf(height);
 
 			for (int k = 0; (y * (int)Chunk::DIM + k <= terr_height && k < (int)Chunk::DIM); ++k) {
-				chunk->setBlock(i, k, j, BlockType::GRASS_DIRT);
+				//chunk->setBlock(i, k, j, BlockType::GRASS_DIRT);
+				blocks[i][k][j] = BlockType::GRASS;
 			}
 
 		}
 	}
-	return chunk;
+	//return chunk;
 }
 
-Chunk * SimpleGenerator::generate(ChunkCoord coord) {
-	return generate(coord.x_, coord.y_, coord.z_);
+void SimpleGenerator::generate(BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM], ChunkCoord coord) {
+	return generate(blocks, coord.x_, coord.y_, coord.z_);
 }
 
 DirectX::XMFLOAT2 SimpleGenerator::chunkToNoiseCoord(int x, int z) {
