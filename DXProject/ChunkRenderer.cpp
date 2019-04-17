@@ -50,7 +50,6 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 }
 
 void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum) {
-	
 	if (enableCull_) {
 		cullChunks(view_matrix, frustum);
 	}
@@ -65,12 +64,10 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 		}
 	}
 
-	//activeChunks_ = renderList_;
-	//renderList_.clear();
 	loadChunks();
 	rebuildChunks();
 	initializeChunks();
-	//unloadChunks();
+	unloadChunks();
 }
 
 void ChunkRenderer::setWorld(World * world) {
@@ -332,12 +329,13 @@ void ChunkRenderer::unloadChunks() {
 	int count = 0;
 	while (count < max_unload_number && !unloadList_.empty()) {
 		ChunkCoord coord = unloadList_.back();
-		Chunk * chunk = world_->getChunk(coord);
-		auto found = std::find(activeChunks_.begin(), activeChunks_.end(), chunk);
+		auto found = activeChunks_.find(coord);
 		if (found != activeChunks_.end()) {
+			octree_.remove(found->second);
+			chunkPool_.release(found->second);
 			activeChunks_.erase(found);
 		}
-		octree_.remove(chunk);
+
 		//world_->remove(chunk);
 		//delete chunk;
 		unloadList_.pop_back();
@@ -359,9 +357,20 @@ void ChunkRenderer::loadChunks() {
 	//}
 	
 	for (auto chunk_coord : loadList_) {
-		Chunk * chunk = world_->getChunk(chunk_coord);
+		//Chunk * chunk = world_->getChunk(chunk_coord);
+
+		BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM] = {};
+		world_->generateChunk(blocks, chunk_coord);
+		Chunk* chunk = chunkPool_.create();
+		if (chunk == nullptr) {
+			assert(0);
+		}
+		chunk->initialize(chunk_coord, blocks);
+		setAdjacentChunks(chunk);
+
 		octree_.insert(chunk);
-		activeChunks_.push_back(chunk);
+		activeChunks_.insert(std::make_pair(chunk->getCoord(), chunk));
+
 		++count;
 		//if (count >= max_load_number) {
 		//	break;
@@ -396,7 +405,7 @@ void ChunkRenderer::initializeChunks() {
 
 	for (auto chunk : initList_) {
 		//Chunk * chunk = world_->getChunk(chunk_coord);
-		chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
+		chunk->initializeMesh(device_, deviceContext_, CBVSObject_, texture_);
 		//octree_.insert(chunk);
 		//activeChunks_.push_back(chunk);
 		++count;
@@ -405,4 +414,54 @@ void ChunkRenderer::initializeChunks() {
 		}
 	}
 	initList_.clear();
+}
+
+void ChunkRenderer::setAdjacentChunks(Chunk * chunk) {
+	ChunkCoord left_coord = ChunkCoord(chunk->getCoord().x_ - 1, chunk->getCoord().y_, chunk->getCoord().z_);
+	auto left_chunk = activeChunks_.find(left_coord);
+	if (left_chunk != activeChunks_.end()) {
+		chunk->neighbours_.left_ = left_chunk->second;
+		left_chunk->second->neighbours_.right_ = chunk;
+		left_chunk->second->changed_ = true;
+	}
+
+	ChunkCoord right_coord = ChunkCoord(chunk->getCoord().x_ + 1, chunk->getCoord().y_, chunk->getCoord().z_);
+	auto right_chunk = activeChunks_.find(right_coord);
+	if (right_chunk != activeChunks_.end()) {
+		chunk->neighbours_.right_ = right_chunk->second;
+		right_chunk->second->neighbours_.left_ = chunk;
+		right_chunk->second->changed_ = true;
+	}
+
+	ChunkCoord up_coord = ChunkCoord(chunk->getCoord().x_, chunk->getCoord().y_ + 1, chunk->getCoord().z_);
+	auto up_chunk = activeChunks_.find(up_coord);
+	if (up_chunk != activeChunks_.end()) {
+		chunk->neighbours_.up_ = up_chunk->second;
+		up_chunk->second->neighbours_.down_ = chunk;
+		up_chunk->second->changed_ = true;
+	}
+
+	ChunkCoord down_coord = ChunkCoord(chunk->getCoord().x_, chunk->getCoord().y_ - 1, chunk->getCoord().z_);
+	auto down_chunk = activeChunks_.find(down_coord);
+	if (down_chunk != activeChunks_.end()) {
+		chunk->neighbours_.down_ = down_chunk->second;
+		down_chunk->second->neighbours_.up_ = chunk;
+		down_chunk->second->changed_ = true;
+	}
+
+	ChunkCoord front_coord = ChunkCoord(chunk->getCoord().x_, chunk->getCoord().y_, chunk->getCoord().z_ + 1);
+	auto front_chunk = activeChunks_.find(front_coord);
+	if (front_chunk != activeChunks_.end()) {
+		chunk->neighbours_.front_ = front_chunk->second;
+		front_chunk->second->neighbours_.back_ = chunk;
+		front_chunk->second->changed_ = true;
+	}
+
+	ChunkCoord back_coord = ChunkCoord(chunk->getCoord().x_, chunk->getCoord().y_, chunk->getCoord().z_ - 1);
+	auto back_chunk = activeChunks_.find(back_coord);
+	if (back_chunk != activeChunks_.end()) {
+		chunk->neighbours_.back_ = back_chunk->second;
+		back_chunk->second->neighbours_.front_ = chunk;
+		back_chunk->second->changed_ = true;
+	}
 }

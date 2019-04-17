@@ -3,6 +3,7 @@
 #include "World.h"
 #include "Input/InputManager.h"
 #include "Utilities/Octree/Octree.h"
+#include "ObjectPool.h"
 
 class ChunkRenderer {
 public:
@@ -14,7 +15,7 @@ public:
 	void setWorld(World* world);
 	void setEnableCulling(bool state);
 	Octree<Chunk> octree_; // TODO move back to private
-	std::vector<Chunk*> activeChunks_;
+	std::unordered_map<ChunkCoord, Chunk*> activeChunks_;
 private:
 
 	DirectX::XMMATRIX makeModelMatrix(ChunkCoord  coord);
@@ -23,6 +24,8 @@ private:
 	void loadChunks();
 	void rebuildChunks();
 	void initializeChunks();
+
+	void setAdjacentChunks(Chunk* chunk);
 
 	World* world_;
 	bool firstDraw_ = true;
@@ -42,6 +45,8 @@ private:
 	XMFLOAT3 previousCenter_;
 	bool enableCull_;
 	InputContext chunkContext_;
+
+	ObjectPool<Chunk, 10000> chunkPool_;
 	
 };
 

@@ -1,7 +1,11 @@
 #include "Chunk.h"
 #include "Chunk.h"
 
-Chunk::Chunk() : coord_(0, 0, 0), changed_(false), isEmpty_(false) {
+Chunk::Chunk() : coord_(0, 0, 0), changed_(false), isEmpty_(false), initialized_(false) {
+	ZeroMemory(blocks_, pow(DIM, 3) * sizeof(BlockType));
+	worldMatrix_ = XMMatrixTranslation(static_cast<float>(coord_.x_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.y_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.z_ * static_cast<int>(Chunk::DIM)));
 	neighbours_.back_ = nullptr;
 	neighbours_.front_ = nullptr;
 	neighbours_.left_ = nullptr;
@@ -53,7 +57,53 @@ Chunk::Chunk(ChunkCoord coord, BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::D
 Chunk::~Chunk() {
 }
 
-bool Chunk::initialize(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture) {
+void Chunk::initialize() {
+	coord_ = ChunkCoord(0, 0, 0);
+	changed_ = false;
+	initialized_ = false;
+	isEmpty_ = false;
+
+	ZeroMemory(blocks_, pow(DIM, 3) * sizeof(BlockType));
+	worldMatrix_ = XMMatrixTranslation(static_cast<float>(coord_.x_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.y_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.z_ * static_cast<int>(Chunk::DIM)));
+	neighbours_.back_ = nullptr;
+	neighbours_.front_ = nullptr;
+	neighbours_.left_ = nullptr;
+	neighbours_.right_ = nullptr;
+	neighbours_.up_ = nullptr;
+	neighbours_.down_ = nullptr;
+}
+
+void Chunk::initialize(int x, int y, int z, BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM]) {
+	coord_ = ChunkCoord(x,y,z);
+	CopyMemory(blocks_, blocks, sizeof(BlockType) * DIM * DIM * DIM);
+	worldMatrix_ = XMMatrixTranslation(static_cast<float>(coord_.x_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.y_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.z_ * static_cast<int>(Chunk::DIM)));
+	neighbours_.back_ = nullptr;
+	neighbours_.front_ = nullptr;
+	neighbours_.left_ = nullptr;
+	neighbours_.right_ = nullptr;
+	neighbours_.up_ = nullptr;
+	neighbours_.down_ = nullptr;
+}
+
+void Chunk::initialize(ChunkCoord coord, BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM]) {
+	coord_ = coord;
+	CopyMemory(blocks_, blocks, sizeof(BlockType) * DIM * DIM * DIM);
+	worldMatrix_ = XMMatrixTranslation(static_cast<float>(coord_.x_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.y_ * static_cast<int>(Chunk::DIM)),
+		static_cast<float>(coord_.z_ * static_cast<int>(Chunk::DIM)));
+	neighbours_.back_ = nullptr;
+	neighbours_.front_ = nullptr;
+	neighbours_.left_ = nullptr;
+	neighbours_.right_ = nullptr;
+	neighbours_.up_ = nullptr;
+	neighbours_.down_ = nullptr;
+}
+
+bool Chunk::initializeMesh(ID3D11Device * device, ID3D11DeviceContext * device_context, ConstantBuffer<CB_VS_object_buffer>& const_buffer, Texture * texture) {
 	if (isEmpty_) {
 		return false;
 	}
@@ -86,7 +136,7 @@ void Chunk::update(ID3D11Device * device, ID3D11DeviceContext * device_context, 
 	model_.reset();
 	initialized_ = false;
 	isEmpty_ = false;
-	initialize(device, device_context, const_buffer, texture);
+	initializeMesh(device, device_context, const_buffer, texture);
 	initialized_ = true;
 
 	changed_ = false;

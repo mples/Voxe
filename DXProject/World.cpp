@@ -119,3 +119,11 @@ Chunk * World::getChunk(int x, int y, int z) {
 	ChunkCoord coord(x, y, z);
 	return getChunk(coord);
 }
+
+void World::generateChunk(BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM], int x, int y, int z) {
+	generator_->generate(blocks, x, y, z);
+}
+
+void World::generateChunk(BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM], ChunkCoord coord) {
+	generator_->generate(blocks, coord);
+}
