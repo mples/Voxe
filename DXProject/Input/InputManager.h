@@ -13,7 +13,7 @@ class InputManager : public Singleton<InputManager> {
 public:
 	InputManager();
 
-	void processInput();
+	void processInput(float dt);
 	//Callback
 	void addCallback(InputCallback callback, InputCallbackPriority priority);
 	void removeCallback(InputCallback callback);

@@ -2,6 +2,7 @@
 #include <math.h>
 #include <algorithm>
 #include <limits>
+#include <Windows.h>
 
 ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.0f, 100.0f, 100.0f))) {
 	//previousViewBox_ = BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1000.0f, 1000.0f, 1000.0f));
@@ -66,7 +67,7 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 
 	loadChunks();
 	rebuildChunks();
-	initializeChunks();
+	//initializeChunks();
 	unloadChunks();
 }
 
@@ -98,51 +99,31 @@ void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFr
 	BoundingFrustum world_frustum;
 	frustum.Transform(world_frustum, XMVectorGetX(scale), rotation, tranlation);
 
-	/*if (octree_ == nullptr) {
-		XMFLOAT3 corners[8];
-		world_frustum.GetCorners(corners);
-		previousViewBox_.CreateFromPoints(previousViewBox_, 8, corners, sizeof(XMFLOAT3));
-
-		octree_ = new Octree<Chunk>(previousViewBox_);
-
-		XMINT3 min_bounds(std::round((previousViewBox_.Center.x - previousViewBox_.Extents.x) / 16.0f),
-			std::round((previousViewBox_.Center.y - previousViewBox_.Extents.y) / 16.0f),
-			std::round((previousViewBox_.Center.z - previousViewBox_.Extents.z) / 16.0f));
-		XMINT3 max_bounds(std::round((previousViewBox_.Center.x + previousViewBox_.Extents.x) / 16.0f),
-			std::round((previousViewBox_.Center.y + previousViewBox_.Extents.y) / 16.0f),
-			std::round((previousViewBox_.Center.z + previousViewBox_.Extents.z) / 16.0f));
-
-		for (int x = min_bounds.x; x <= max_bounds.x; x++) {
-			for (int y = min_bounds.y; y <= max_bounds.y; y++) {
-				for (int z = min_bounds.z; z <= max_bounds.z; z++) {
-					loadList_.push_back(ChunkCoord(x, y, z));
-				}
-			}
-		}
-	}
-	else*/
 	{
 
 		XMFLOAT3 corners[8];
 		world_frustum.GetCorners(corners);
 		BoundingBox frustum_aabb;
 		frustum_aabb.CreateFromPoints(frustum_aabb, 8, corners, sizeof(XMFLOAT3));
-
 		if (firstDraw_) {
-			previousExtend_ = frustum_aabb.Extents;
+			XMFLOAT3 extend = frustum_aabb.Extents;
+			extend.x += 3.0f * Chunk::DIM;
+			extend.y += 3.0f * Chunk::DIM;
+			extend.z += 3.0f * Chunk::DIM;
+
 			previousCenter_ = frustum_aabb.Center;
 			firstDraw_ = false;
-			XMINT3 min_bounds(std::round((previousCenter_.x - previousExtend_.x) / 16.0f),
-				std::round((previousCenter_.y - previousExtend_.y) / 16.0f),
-				std::round((previousCenter_.z - previousExtend_.z) / 16.0f));
-			XMINT3 max_bounds(std::round((previousCenter_.x + previousExtend_.x) / 16.0f),
-				std::round((previousCenter_.y + previousExtend_.y) / 16.0f),
-				std::round((previousCenter_.z + previousExtend_.z) / 16.0f));
+			minBounds_ = XMINT3(std::round((previousCenter_.x - extend.x) / 16.0f),
+				std::round((previousCenter_.y - extend.y) / 16.0f),
+				std::round((previousCenter_.z - extend.z) / 16.0f));
+			maxBounds_ = XMINT3(std::round((previousCenter_.x + extend.x) / 16.0f),
+				std::round((previousCenter_.y + extend.y) / 16.0f),
+				std::round((previousCenter_.z + extend.z) / 16.0f));
 
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						loadList_.push_back(ChunkCoord(x, y, z));
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						loadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
@@ -153,15 +134,13 @@ void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFr
 		XMVECTOR prev_center = XMLoadFloat3(&previousCenter_);
 		XMVECTOR moved_distance = XMVectorSubtract(origin, prev_center);
 
-		XMVECTOR distance = XMVector3Length(moved_distance);
-
 		static XMFLOAT3 up(0.0f, 1.0f, 0.0f);
 		static XMFLOAT3 right(1.0f, 0.0f, 0.0f);
 		static XMFLOAT3 front(0.0f, 0.0f, 1.0f);
 
-		XMVECTOR up_vec = XMLoadFloat3(&up);
-		XMVECTOR right_vec = XMLoadFloat3(&right);
-		XMVECTOR front_vec = XMLoadFloat3(&front);
+		static XMVECTOR up_vec = XMLoadFloat3(&up);
+		static XMVECTOR right_vec = XMLoadFloat3(&right);
+		static XMVECTOR front_vec = XMLoadFloat3(&front);
 
 		XMVECTOR perp_proj;
 		XMVECTOR up_proj;
@@ -171,153 +150,150 @@ void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFr
 		XMVECTOR front_proj;
 		XMVector3ComponentsFromNormal(&front_proj, &perp_proj, moved_distance, front_vec);
 		
-		float up_move = XMVectorGetX(XMVector3Length(up_proj));
-		float right_move = XMVectorGetX(XMVector3Length(right_proj));
-		float front_move = XMVectorGetX(XMVector3Length(front_proj));
+		float right_move = XMVectorGetX(right_proj);
+		float up_move = XMVectorGetY(up_proj);
+		float front_move = XMVectorGetZ(front_proj);
 
-		XMINT3 min_bounds(std::round((previousCenter_.x - previousExtend_.x) / 16.0f),
-			std::round((previousCenter_.y - previousExtend_.y) / 16.0f),
-			std::round((previousCenter_.z - previousExtend_.z) / 16.0f));
-		XMINT3 max_bounds(std::round((previousCenter_.x + previousExtend_.x) / 16.0f),
-			std::round((previousCenter_.y + previousExtend_.y) / 16.0f),
-			std::round((previousCenter_.z + previousExtend_.z) / 16.0f));
 
-	/*	XMINT3 min_bounds(std::round((octree_.getBoundingBox().Center.x - octree_.getBoundingBox().Extents.x) / 16.0f),
-			std::round((octree_.getBoundingBox().Center.y - octree_.getBoundingBox().Extents.y) / 16.0f),
-			std::round((octree_.getBoundingBox().Center.z - octree_.getBoundingBox().Extents.z) / 16.0f));
-		XMINT3 max_bounds(std::round((octree_.getBoundingBox().Center.x + octree_.getBoundingBox().Extents.x) / 16.0f),
-			std::round((octree_.getBoundingBox().Center.y + octree_.getBoundingBox().Extents.y) / 16.0f),
-			std::round((octree_.getBoundingBox().Center.z + octree_.getBoundingBox().Extents.z) / 16.0f));*/
+		assert(right_move > -32.0f && right_move < 32.0f);
+		assert(front_move > -32.0f && front_move < 32.0f);
+		assert(up_move > -32.0f && up_move < 32.0f);
 
-		if (right_move > 0.0f && std::round(right_move) > 1) {
-
-			for (int x = max_bounds.x; x < max_bounds.x + 1; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						loadList_.push_back(ChunkCoord(x, y, z));
+		if (right_move > 1.0f * Chunk::DIM) {
+			OutputDebugStringA("Right Extend.\n");
+			int diff = std::round(right_move / Chunk::DIM);
+			for (int x = maxBounds_.x + 1; x <= maxBounds_.x + diff; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						loadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
 
-			for (int x = min_bounds.x - 1 ; x < min_bounds.x ; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						unloadList_.push_back(ChunkCoord(x, y, z));
+			for (int x = minBounds_.x; x < minBounds_.x + diff ; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						unloadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
+			
 			previousCenter_.x = frustum_aabb.Center.x;
-			previousExtend_.x = frustum_aabb.Extents.x;
+			maxBounds_.x += diff;
+			minBounds_.x += diff;
 		}
-		else if (right_move < 0.0f && std::round(right_move) < -1) {
-			for (int x = max_bounds.x; x < max_bounds.x + 1; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						unloadList_.push_back(ChunkCoord(x, y, z));
+		else if (right_move < -1.0f * Chunk::DIM) {
+			OutputDebugStringA("Left Extend.\n");
+			int diff = std::round(std::abs(right_move) / Chunk::DIM);
+			for (int x = minBounds_.x - diff; x < minBounds_.x ; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						loadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
 
-			for (int x = min_bounds.x - 1; x < min_bounds.x ; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						loadList_.push_back(ChunkCoord(x, y, z));
+			for (int x = maxBounds_.x - diff + 1; x <= maxBounds_.x; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						unloadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
+
+
 			previousCenter_.x = frustum_aabb.Center.x;
-			previousExtend_.x = frustum_aabb.Extents.x;
+			maxBounds_.x -= diff;
+			minBounds_.x -= diff;
 		}
-
-		if (up_move > 0.0f && std::round(up_move) > 1) {
-
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = max_bounds.y; y < max_bounds.y + 1; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						loadList_.push_back(ChunkCoord(x, y, z));
+		else if (up_move > 1.0f * Chunk::DIM) {
+			OutputDebugStringA("Up Extend.\n");
+			int diff = std::round(std::abs(up_move) / Chunk::DIM);
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = maxBounds_.y + 1; y <= maxBounds_.y + diff; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						loadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
 
-			for (int x = min_bounds.x; x < max_bounds.x ; x++) {
-				for (int y = min_bounds.y - 1; y < min_bounds.y; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						unloadList_.push_back(ChunkCoord(x, y, z));
+			for (int x = minBounds_.x; x <= maxBounds_.x ; x++) {
+				for (int y = minBounds_.y; y < minBounds_.y + diff; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						unloadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
 			previousCenter_.y = frustum_aabb.Center.y;
-			previousExtend_.y = frustum_aabb.Extents.y;
+			maxBounds_.y += diff;
+			minBounds_.y += diff;
 		}
-		else if (up_move < 0.0f && std::round(up_move) < -1) {
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = max_bounds.y; y < max_bounds.y + 1; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						unloadList_.push_back(ChunkCoord(x, y, z));
+		else if (up_move < -1.0f * Chunk::DIM) {
+			OutputDebugStringA("Down Extend.\n");
+			int diff = std::round(std::abs(right_move) / Chunk::DIM);
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = minBounds_.y - diff; y < minBounds_.y; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						loadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
 
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = min_bounds.y - 1; y < min_bounds.y; y++) {
-					for (int z = min_bounds.z; z < max_bounds.z; z++) {
-						loadList_.push_back(ChunkCoord(x, y, z));
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = maxBounds_.y - diff + 1; y <= maxBounds_.y ; y++) {
+					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+						unloadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
 			previousCenter_.y = frustum_aabb.Center.y;
-			previousExtend_.y = frustum_aabb.Extents.y;
+			maxBounds_.y -= diff;
+			minBounds_.y -= diff;
 		}
-
-		if (front_move > 0.0f && std::round(front_move) > 1 ) {
-
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					for (int z = max_bounds.z; z < max_bounds.z + 1; z++) {
-						loadList_.push_back(ChunkCoord(x, y, z));
+		else if (front_move > 1.0f * Chunk::DIM) {
+			OutputDebugStringA("Front Extend.\n");
+			int diff = std::round(right_move / Chunk::DIM);
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = maxBounds_.z + 1; z <= maxBounds_.z + diff; z++) {
+						loadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
-
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					for (int z = min_bounds.z - 1; z < min_bounds.z; z++) {
-						unloadList_.push_back(ChunkCoord(x, y, z));
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = minBounds_.y; y < maxBounds_.y + diff; y++) {
+					for (int z = minBounds_.z; z <= minBounds_.z; z++) {
+						unloadList_.push(ChunkCoord(x, y, z));
 					}
 				}
 			}
 			previousCenter_.z = frustum_aabb.Center.z;
-			previousExtend_.z = frustum_aabb.Extents.z;
+			maxBounds_.z += diff;
+			minBounds_.z += diff;
 		}
-		else if (front_move < 0.0f && std::round(front_move) < -1) {
-			int z_max = max_bounds.z + 1;
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-					unloadList_.push_back(ChunkCoord(x, y, z_max));
+		else if (front_move < -1.0f * Chunk::DIM) {
+			OutputDebugStringA("Back Extend.\n");
+			int diff = std::round(std::abs(right_move) / Chunk::DIM);
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = minBounds_.z - diff; z < minBounds_.z ; z++) {
+						loadList_.push(ChunkCoord(x, y, z));
+					}
 				}
 			}
-			int z_min = min_bounds.z - 1;
-			for (int x = min_bounds.x; x < max_bounds.x; x++) {
-				for (int y = min_bounds.y; y < max_bounds.y; y++) {
-						loadList_.push_back(ChunkCoord(x, y, z_min));
+
+			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+					for (int z = maxBounds_.z + 1 - diff; z <= maxBounds_.z; z++) {
+						unloadList_.push(ChunkCoord(x, y, z));
+					}
 				}
 			}
 			previousCenter_.z = frustum_aabb.Center.z;
-			previousExtend_.z = frustum_aabb.Extents.z;
+			maxBounds_.z -= diff;
+			minBounds_.z -= diff;
 		}
 	}
-
-
-	/*XMVECTOR det = XMMatrixDeterminant(view_matrix);
-	XMMATRIX inv_view = XMMatrixInverse(&det, view_matrix);
-
-	XMVECTOR scale;
-	XMVECTOR rotation;
-	XMVECTOR tranlation;
-
-	XMMatrixDecompose(&scale, &rotation, &tranlation, inv_view);
-	BoundingFrustum world_frustum;
-	frustum.Transform(world_frustum, XMVectorGetX(scale), rotation, tranlation);*/
 
 	renderList_.clear();
 	renderList_ = octree_.collides(world_frustum);
@@ -328,7 +304,8 @@ void ChunkRenderer::unloadChunks() {
 	static int max_unload_number = 20;
 	int count = 0;
 	while (count < max_unload_number && !unloadList_.empty()) {
-		ChunkCoord coord = unloadList_.back();
+		ChunkCoord coord = unloadList_.front();
+
 		auto found = activeChunks_.find(coord);
 		if (found != activeChunks_.end()) {
 			octree_.remove(found->second);
@@ -336,9 +313,7 @@ void ChunkRenderer::unloadChunks() {
 			activeChunks_.erase(found);
 		}
 
-		//world_->remove(chunk);
-		//delete chunk;
-		unloadList_.pop_back();
+		unloadList_.pop();
 		count++;
 	}
 
@@ -346,18 +321,11 @@ void ChunkRenderer::unloadChunks() {
 }
 
 void ChunkRenderer::loadChunks() {
-	static int max_load_number = 20;
+	static int max_load_number = 10;
 	int count = 0;
-	//while (count < max_load_number && !loadList_.empty()) {
-	//	Chunk* chunk = world_->getChunk(loadList_.back());
-	//	//octree_->insert(chunk);
-	//	renderList_.push_back(chunk);
-	//	loadList_.pop_back();
-	//	count++;
-	//}
-	
-	for (auto chunk_coord : loadList_) {
-		//Chunk * chunk = world_->getChunk(chunk_coord);
+
+	while (count < max_load_number && !loadList_.empty()) {
+		ChunkCoord chunk_coord = loadList_.front();
 
 		BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::DIM] = {};
 		world_->generateChunk(blocks, chunk_coord);
@@ -368,15 +336,13 @@ void ChunkRenderer::loadChunks() {
 		chunk->initialize(chunk_coord, blocks);
 		setAdjacentChunks(chunk);
 
+		chunk->initializeMesh(device_, deviceContext_, CBVSObject_, texture_);
 		octree_.insert(chunk);
 		activeChunks_.insert(std::make_pair(chunk->getCoord(), chunk));
 
-		++count;
-		//if (count >= max_load_number) {
-		//	break;
-		//}
+		loadList_.pop();
+		count++;
 	}
-	loadList_.clear();
 }
 
 void ChunkRenderer::rebuildChunks() {
@@ -395,19 +361,10 @@ void ChunkRenderer::rebuildChunks() {
 void ChunkRenderer::initializeChunks() {
 	static int max_init_number = 20;
 	int count = 0;
-	//while (count < max_load_number && !loadList_.empty()) {
-	//	Chunk* chunk = world_->getChunk(loadList_.back());
-	//	//octree_->insert(chunk);
-	//	renderList_.push_back(chunk);
-	//	loadList_.pop_back();
-	//	count++;
-	//}
 
 	for (auto chunk : initList_) {
-		//Chunk * chunk = world_->getChunk(chunk_coord);
 		chunk->initializeMesh(device_, deviceContext_, CBVSObject_, texture_);
 		//octree_.insert(chunk);
-		//activeChunks_.push_back(chunk);
 		++count;
 		if (count >= max_init_number) {
 			break;

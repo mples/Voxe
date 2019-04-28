@@ -31,8 +31,8 @@ private:
 	bool firstDraw_ = true;
 
 	std::vector<Chunk*> initList_;
-	std::vector<ChunkCoord> loadList_;
-	std::vector<ChunkCoord> unloadList_;
+	std::queue<ChunkCoord> loadList_;
+	std::queue<ChunkCoord> unloadList_;
 	std::vector<Chunk*> renderList_;
 	std::vector<Chunk*> rebuildList_;
 
@@ -41,12 +41,14 @@ private:
 	ConstantBuffer<CB_VS_object_buffer> CBVSObject_;
 	Texture * texture_;
 
-	XMFLOAT3 previousExtend_;
 	XMFLOAT3 previousCenter_;
+	XMINT3 minBounds_;
+	XMINT3 maxBounds_;
+
 	bool enableCull_;
 	InputContext chunkContext_;
 
-	ObjectPool<Chunk, 10000> chunkPool_;
+	ObjectPool<Chunk, 100000> chunkPool_;
 	
 };
 

@@ -189,6 +189,13 @@ void Octree<T>::insertIntoNode(T * object, Node<T>* node) {
 				new_objects.push_back(node->objects_[i]);
 			}
 		}
+		if (node->objects_.size() == new_objects.size()) { // if all objects intersects then we should not split the node
+			for (auto child : node->children_) {
+				assert(countOfObjects(child) == 0);
+				delete child;
+			}
+			node->isLeaf_ = true;
+		}
 		node->objects_ = new_objects;
 	}
 	return;
@@ -289,7 +296,7 @@ void Octree<T>::shrink() {
 		return;
 	}
 	int max_count = 0;
-	int sum;
+	int sum = 0;
 	Node<T> * new_root;
 	auto it = std::for_each(root_->children_.begin(), root_->children_.end(), [&](Node<T>* node) {
 		int count_of_objects = countOfObjects(node);
@@ -330,8 +337,8 @@ void Octree<T>::shrink() {
 	root_->isLeaf_ = true;
 	delete root_;
 
-	root_ = new_root;
 	new_root->parent_ = nullptr;
+	root_ = new_root;
 }
 
 template<typename T>

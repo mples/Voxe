@@ -13,6 +13,7 @@ struct MappedInput {
 	std::set<Action> actions_;
 	std::set<State> states_;
 	std::map<Range, double> ranges_;
+	float dt_ = 0.0f;
 
 	void eatAction(Action action) {
 		actions_.erase(action);
@@ -48,7 +49,7 @@ public:
 //Callback
 	void addCallback(InputCallback callback, InputCallbackPriority priority);
 	void removeCallback(InputCallback callback);
-	void dispatch();
+	void dispatch(float dt);
 //Context
 	void pushBackContext(InputContext* input_context);
 	void removeContext(InputContext* input_context);

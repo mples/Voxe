@@ -14,8 +14,9 @@ void SimpleGenerator::generate(BlockType blocks[Chunk::DIM][Chunk::DIM][Chunk::D
 	//Chunk * chunk = new Chunk(x, y, z);
 	for (int i = 0; i < Chunk::DIM; ++i) {
 		for (int j = 0; j < Chunk::DIM; ++j) {
-			float height = noise_->eval(chunkToNoiseCoord(x * Chunk::DIM + i, z * Chunk::DIM + j));
-			height *= 20;
+			//float height = noise_->eval(chunkToNoiseCoord(x * Chunk::DIM + i, z * Chunk::DIM + j));
+			float height = -5;
+			//height *= 20;
 			int terr_height = std::roundf(height);
 
 			for (int k = 0; (y * (int)Chunk::DIM + k <= terr_height && k < (int)Chunk::DIM); ++k) {

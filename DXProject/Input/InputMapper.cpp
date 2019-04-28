@@ -52,7 +52,8 @@ void InputMapper::removeCallback(InputCallback  callback) {
 	}
 }
 
-void InputMapper::dispatch() {
+void InputMapper::dispatch(float dt) {
+	currentInput_.dt_ = dt;
 	for (auto it = callbacks_.begin(); it != callbacks_.end(); ++it) {
 		(it->second)(currentInput_);
 	}
