@@ -105,20 +105,23 @@ void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFr
 		world_frustum.GetCorners(corners);
 		BoundingBox frustum_aabb;
 		frustum_aabb.CreateFromPoints(frustum_aabb, 8, corners, sizeof(XMFLOAT3));
-		if (firstDraw_) {
-			XMFLOAT3 extend = frustum_aabb.Extents;
-			extend.x += 3.0f * Chunk::DIM;
-			extend.y += 3.0f * Chunk::DIM;
-			extend.z += 3.0f * Chunk::DIM;
-
+		if (firstDraw_) {			
 			previousCenter_ = frustum_aabb.Center;
 			firstDraw_ = false;
-			minBounds_ = XMINT3(std::round((previousCenter_.x - extend.x) / 16.0f),
-				std::round((previousCenter_.y - extend.y) / 16.0f),
-				std::round((previousCenter_.z - extend.z) / 16.0f));
-			maxBounds_ = XMINT3(std::round((previousCenter_.x + extend.x) / 16.0f),
-				std::round((previousCenter_.y + extend.y) / 16.0f),
-				std::round((previousCenter_.z + extend.z) / 16.0f));
+			minBounds_ = XMINT3(std::round((previousCenter_.x - frustum_aabb.Extents.x) / 16.0f),
+				std::round((previousCenter_.y - frustum_aabb.Extents.y) / 16.0f),
+				std::round((previousCenter_.z - frustum_aabb.Extents.z) / 16.0f));
+			maxBounds_ = XMINT3(std::round((previousCenter_.x + frustum_aabb.Extents.x) / 16.0f),
+				std::round((previousCenter_.y + frustum_aabb.Extents.y) / 16.0f),
+				std::round((previousCenter_.z + frustum_aabb.Extents.z) / 16.0f));
+
+			minBounds_.x -= 3;
+			minBounds_.y -= 3;
+			minBounds_.z -= 3;
+
+			maxBounds_.x += 3;
+			maxBounds_.y += 3;
+			maxBounds_.z += 3;
 
 			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
 				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
@@ -154,144 +157,61 @@ void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFr
 		float up_move = XMVectorGetY(up_proj);
 		float front_move = XMVectorGetZ(front_proj);
 
-
-		assert(right_move > -32.0f && right_move < 32.0f);
-		assert(front_move > -32.0f && front_move < 32.0f);
-		assert(up_move > -32.0f && up_move < 32.0f);
-
-		if (right_move > 1.0f * Chunk::DIM) {
-			OutputDebugStringA("Right Extend.\n");
-			int diff = std::round(right_move / Chunk::DIM);
-			for (int x = maxBounds_.x + 1; x <= maxBounds_.x + diff; x++) {
-				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						loadList_.push(ChunkCoord(x, y, z));
-					}
-				}
-			}
-
-			for (int x = minBounds_.x; x < minBounds_.x + diff ; x++) {
-				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						unloadList_.push(ChunkCoord(x, y, z));
-					}
-				}
+		if (right_move > static_cast<float>(Chunk::DIM)) {
+			OutputDebugStringA("Right entends.\n");
+			while (right_move > static_cast<float>(Chunk::DIM)) {
+				extendPosX();
+				right_move -= static_cast<float>(Chunk::DIM);
 			}
 			
 			previousCenter_.x = frustum_aabb.Center.x;
-			maxBounds_.x += diff;
-			minBounds_.x += diff;
 		}
-		else if (right_move < -1.0f * Chunk::DIM) {
-			OutputDebugStringA("Left Extend.\n");
-			int diff = std::round(std::abs(right_move) / Chunk::DIM);
-			for (int x = minBounds_.x - diff; x < minBounds_.x ; x++) {
-				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						loadList_.push(ChunkCoord(x, y, z));
-					}
-				}
+		else if (right_move < -1.0f * static_cast<float>(Chunk::DIM)) {
+			OutputDebugStringA("Left entends.\n");
+			while (right_move < -1.0f * static_cast<float>(Chunk::DIM)) {
+				extendNegX();
+				right_move += static_cast<float>(Chunk::DIM);
 			}
-
-			for (int x = maxBounds_.x - diff + 1; x <= maxBounds_.x; x++) {
-				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						unloadList_.push(ChunkCoord(x, y, z));
-					}
-				}
-			}
-
 
 			previousCenter_.x = frustum_aabb.Center.x;
-			maxBounds_.x -= diff;
-			minBounds_.x -= diff;
 		}
-		else if (up_move > 1.0f * Chunk::DIM) {
-			OutputDebugStringA("Up Extend.\n");
-			int diff = std::round(std::abs(up_move) / Chunk::DIM);
-			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
-				for (int y = maxBounds_.y + 1; y <= maxBounds_.y + diff; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						loadList_.push(ChunkCoord(x, y, z));
-					}
-				}
+		else if (up_move > static_cast<float>(Chunk::DIM)) {
+			OutputDebugStringA("Up entends.\n");
+			while (up_move > static_cast<float>(Chunk::DIM)) {
+				extendPosY();
+				up_move -= static_cast<float>(Chunk::DIM);
 			}
 
-			for (int x = minBounds_.x; x <= maxBounds_.x ; x++) {
-				for (int y = minBounds_.y; y < minBounds_.y + diff; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						unloadList_.push(ChunkCoord(x, y, z));
-					}
-				}
+			previousCenter_.y = frustum_aabb.Center.y;
+		}
+		else if (up_move < -1.0f * static_cast<float>(Chunk::DIM)) {
+			OutputDebugStringA("Down entends.\n");
+
+			while (up_move < -1.0f * static_cast<float>(Chunk::DIM)) {
+				extendNegY();
+				up_move += static_cast<float>(Chunk::DIM);
 			}
 			previousCenter_.y = frustum_aabb.Center.y;
-			maxBounds_.y += diff;
-			minBounds_.y += diff;
+
 		}
-		else if (up_move < -1.0f * Chunk::DIM) {
-			OutputDebugStringA("Down Extend.\n");
-			int diff = std::round(std::abs(right_move) / Chunk::DIM);
-			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
-				for (int y = minBounds_.y - diff; y < minBounds_.y; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						loadList_.push(ChunkCoord(x, y, z));
-					}
-				}
+		else if (front_move > static_cast<float>(Chunk::DIM)) {
+			OutputDebugStringA("entends.\n");
+			while (front_move > static_cast<float>(Chunk::DIM)) {
+				extendPosZ();
+				front_move -= static_cast<float>(Chunk::DIM);
 			}
 
-			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
-				for (int y = maxBounds_.y - diff + 1; y <= maxBounds_.y ; y++) {
-					for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
-						unloadList_.push(ChunkCoord(x, y, z));
-					}
-				}
-			}
-			previousCenter_.y = frustum_aabb.Center.y;
-			maxBounds_.y -= diff;
-			minBounds_.y -= diff;
-		}
-		else if (front_move > 1.0f * Chunk::DIM) {
-			OutputDebugStringA("Front Extend.\n");
-			int diff = std::round(right_move / Chunk::DIM);
-			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
-				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
-					for (int z = maxBounds_.z + 1; z <= maxBounds_.z + diff; z++) {
-						loadList_.push(ChunkCoord(x, y, z));
-					}
-				}
-			}
-			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
-				for (int y = minBounds_.y; y < maxBounds_.y + diff; y++) {
-					for (int z = minBounds_.z; z <= minBounds_.z; z++) {
-						unloadList_.push(ChunkCoord(x, y, z));
-					}
-				}
-			}
 			previousCenter_.z = frustum_aabb.Center.z;
-			maxBounds_.z += diff;
-			minBounds_.z += diff;
-		}
-		else if (front_move < -1.0f * Chunk::DIM) {
-			OutputDebugStringA("Back Extend.\n");
-			int diff = std::round(std::abs(right_move) / Chunk::DIM);
-			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
-				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
-					for (int z = minBounds_.z - diff; z < minBounds_.z ; z++) {
-						loadList_.push(ChunkCoord(x, y, z));
-					}
-				}
-			}
 
-			for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
-				for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
-					for (int z = maxBounds_.z + 1 - diff; z <= maxBounds_.z; z++) {
-						unloadList_.push(ChunkCoord(x, y, z));
-					}
-				}
+		}
+		else if (front_move < -1.0f * static_cast<float>(Chunk::DIM)) {
+			OutputDebugStringA("Back entends.\n");
+
+			while (front_move < -1.0f * static_cast<float>(Chunk::DIM)) {
+				extendNegZ();
+				front_move += static_cast<float>(Chunk::DIM);
 			}
 			previousCenter_.z = frustum_aabb.Center.z;
-			maxBounds_.z -= diff;
-			minBounds_.z -= diff;
 		}
 	}
 
@@ -421,4 +341,106 @@ void ChunkRenderer::setAdjacentChunks(Chunk * chunk) {
 		back_chunk->second->neighbours_.front_ = chunk;
 		back_chunk->second->changed_ = true;
 	}
+}
+
+void ChunkRenderer::extendPosX() {
+
+	for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			loadList_.push(ChunkCoord(maxBounds_.x + 1, y, z));
+		}
+	}
+
+	for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			unloadList_.push(ChunkCoord(minBounds_.x + 1, y, z));
+		}
+	}
+	maxBounds_.x += 1;
+	minBounds_.x += 1;
+}
+
+void ChunkRenderer::extendNegX() {
+
+	for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			loadList_.push(ChunkCoord(minBounds_.x - 1, y, z));
+		}
+	}
+
+	for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			unloadList_.push(ChunkCoord(maxBounds_.x, y, z));
+		}
+	}
+	maxBounds_.x -= 1;
+	minBounds_.x -= 1;
+}
+
+void ChunkRenderer::extendPosY() {
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			loadList_.push(ChunkCoord(x, maxBounds_.y + 1, z));
+		}
+	}
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			unloadList_.push(ChunkCoord(x, minBounds_.y, z));
+		}
+	}
+	maxBounds_.y += 1;
+	minBounds_.y += 1;
+}
+
+void ChunkRenderer::extendNegY() {
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			loadList_.push(ChunkCoord(x, minBounds_.y - 1, z));
+		}
+	}
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int z = minBounds_.z; z <= maxBounds_.z; z++) {
+			unloadList_.push(ChunkCoord(x, maxBounds_.y, z));
+		}
+	}
+	maxBounds_.y -= 1;
+	minBounds_.y -= 1;
+}
+
+void ChunkRenderer::extendPosZ() {
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+			loadList_.push(ChunkCoord(x, y, maxBounds_.z + 1));
+		}
+	}
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+			loadList_.push(ChunkCoord(x, y, minBounds_.z));
+		}
+	}
+	maxBounds_.z += 1;
+	minBounds_.z += 1;
+}
+
+void ChunkRenderer::extendNegZ() {
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+			loadList_.push(ChunkCoord(x, y, minBounds_.z - 1));
+		}
+	}
+
+	for (int x = minBounds_.x; x <= maxBounds_.x; x++) {
+		for (int y = minBounds_.y; y <= maxBounds_.y; y++) {
+			loadList_.push(ChunkCoord(x, y, maxBounds_.z));
+		}
+	}
+	maxBounds_.z -= 1;
+	minBounds_.z -= 1;
 }

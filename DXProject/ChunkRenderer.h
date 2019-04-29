@@ -27,6 +27,14 @@ private:
 
 	void setAdjacentChunks(Chunk* chunk);
 
+	// extending world
+	void extendPosX();
+	void extendNegX();
+	void extendPosY();
+	void extendNegY();
+	void extendPosZ();
+	void extendNegZ();
+
 	World* world_;
 	bool firstDraw_ = true;
 
