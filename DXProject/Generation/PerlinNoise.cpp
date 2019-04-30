@@ -1,13 +1,12 @@
 #include "PerlinNoise.h"
 #include "iostream"
 
-PerlinNoise::PerlinNoise(unsigned int seed) : seed_(seed) {
+PerlinNoise::PerlinNoise(unsigned int seed, unsigned int octaves_num, float amplitude, float freq, float offset) : seed_(seed), octavesNumber_(octaves_num), amplitude_(amplitude), frequency_(freq), offset_(offset) {
 	std::mt19937 generator(seed_);
 	std::uniform_real_distribution<float> real_distribution;
 	auto random = std::bind(real_distribution, generator);
 
 	for (unsigned int i = 0; i < SIZE ; ++i) {
-		//float grad_len;
 		DirectX::XMFLOAT2 gradient;
 		do {
 			gradient = DirectX::XMFLOAT2(2 * random() - 1, 2 * random() - 1);
@@ -33,19 +32,18 @@ PerlinNoise::PerlinNoise(unsigned int seed) : seed_(seed) {
 PerlinNoise::~PerlinNoise() {
 }
 
-float PerlinNoise::eval(const DirectX::XMFLOAT2 point) {
-	int latt_x0 = ((int)std::floor(point.x) ) & MASK;
-	int latt_y0 = ((int)std::floor(point.y) ) & MASK;
+float PerlinNoise::eval(float x, float y) {
+	int latt_x0 = ((int)std::floor(x)) & MASK;
+	int latt_y0 = ((int)std::floor(y)) & MASK;
 	int latt_x1 = (latt_x0 + 1) & MASK;
 	int latt_y1 = (latt_y0 + 1) & MASK;
 
-	float diff_x = point.x - (int)std::floor(point.x);
-	float diff_y = point.y - (int)std::floor(point.y);
+	float diff_x = x - (int)std::floor(x);
+	float diff_y = y - (int)std::floor(y);
 
-	float smooth_x = smootstep(point.x);
-	float smooth_y = smootstep(point.y);
+	float smooth_x = smootstep(diff_x);
+	float smooth_y = smootstep(diff_y);
 
-	//std::cout << "latt: " << latt_x0 << " " << latt_y0 << " latt1: " << latt_x1 << " " << latt_y1 << std::endl;
 	DirectX::XMFLOAT2 grad_x0y0 = gradients_[hash(latt_x0, latt_y0)];
 	DirectX::XMFLOAT2 grad_x1y0 = gradients_[hash(latt_x1, latt_y0)];
 	DirectX::XMFLOAT2 grad_x0y1 = gradients_[hash(latt_x0, latt_y1)];
@@ -93,6 +91,22 @@ float PerlinNoise::eval(const DirectX::XMFLOAT2 point) {
 	float c = lerp(a, b, smooth_y);
 	return lerp(a, b, smooth_y);
 }
+
+float PerlinNoise::noise(float x, float y) {
+	float calc_x = x * frequency_;
+	float calc_y = y * frequency_;
+
+	float value = 0.0f;
+	for (int i = 0; i < octavesNumber_; i++) {
+		float frequency = std::powf(2.0, i);
+		float amplitude = std::powf(0.5, i);
+		float e = eval(calc_x * frequency, calc_y * frequency);
+		value += e * amplitude;
+	}
+
+	return (value * amplitude_) + offset_;
+}
+
 
 int PerlinNoise::hash(int x, int y) {
 	return permutationTable_[permutationTable_[x] + y];

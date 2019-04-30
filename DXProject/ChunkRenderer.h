@@ -57,6 +57,5 @@ private:
 	InputContext chunkContext_;
 
 	ObjectPool<Chunk, 100000> chunkPool_;
-	
 };
 

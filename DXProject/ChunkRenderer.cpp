@@ -65,6 +65,8 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 		}
 	}
 
+
+
 	loadChunks();
 	rebuildChunks();
 	//initializeChunks();

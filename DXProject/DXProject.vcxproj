@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkRenderer.cpp" />
     <ClCompile Include="GameStage.cpp" />
@@ -197,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlockType.h" />
+    <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkRenderer.h" />
     <ClInclude Include="GameStage.h" />

@@ -5,6 +5,7 @@
 template <typename T>
 class Octree {
 public:
+	Octree();
 	Octree(BoundingBox bounding_box);
 	Octree(BoundingBox bounding_box, std::vector<T*> objects);
 	~Octree();
@@ -30,6 +31,11 @@ private:
 	Node<T>* root_;
 	std::vector<T*> outsideObjects_;
 };
+
+template<typename T>
+Octree<T>::Octree() {
+	root_ = new Node<T>(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1000.0f,1000.0f, 1000.0f) ));
+}
 
 template<typename T>
 Octree<T>::Octree(BoundingBox bounding_box) : size_(0) {

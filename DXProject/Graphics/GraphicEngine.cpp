@@ -3,7 +3,7 @@
 
 
 GraphicEngine::GraphicEngine() : enableMsaa_(true)  {
-	perlinNoise_ = new PerlinNoise(1234);
+	perlinNoise_ = new PerlinNoise(1234, 4, 50.0, 0.2, -5);
 	simpleGenerator_ = new SimpleGenerator(perlinNoise_);
 	world_ = new World(simpleGenerator_);
 }
