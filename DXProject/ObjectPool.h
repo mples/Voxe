@@ -2,7 +2,7 @@
 #include "Singleton.h"
 #include <array>
 #include<list>
-
+#include <mutex>
 
 template <typename T, unsigned int size>
 class ObjectPool {
@@ -14,6 +14,7 @@ public:
 private:
 	std::array<T, size> objects_;
 	std::list<T*> freeObjects_;
+	std::mutex mutex_;
 };
 
 template<typename T, unsigned int size>
@@ -25,6 +26,7 @@ ObjectPool<T, size>::ObjectPool() : objects_{} {
 
 template<typename T, unsigned int size>
 T * ObjectPool<T, size>::create() {
+	std::lock_guard <std::mutex> lock(mutex_);
 	if (freeObjects_.empty()) {
 		return NULL;
 	}
@@ -37,6 +39,7 @@ T * ObjectPool<T, size>::create() {
 
 template<typename T, unsigned int size>
 void ObjectPool<T, size>::release(T * obj) {
+	std::lock_guard <std::mutex> lock(mutex_);
 	obj->initialize();
 	freeObjects_.push_back(obj);
 }

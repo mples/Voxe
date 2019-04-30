@@ -4,6 +4,7 @@
 #include "Input/InputManager.h"
 #include "Utilities/Octree/Octree.h"
 #include "ObjectPool.h"
+#include "JobSystem.h"
 
 class ChunkRenderer {
 public:

@@ -5,6 +5,7 @@
 
 #include "Input/InputManager.h"
 #include "Stage/StageManager.h"
+#include "JobSystem.h"
 
 class Engine : WindowContainer {
 public:

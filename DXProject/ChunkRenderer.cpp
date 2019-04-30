@@ -20,19 +20,6 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 	HRESULT hr = CBVSObject_.initialize(device, device_context);
 	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer.");
 
-	////debug
-	//for (int i = -1; i < 1; i++) {
-	//	for (int j = -1; j < 1; j++) {
-	//		for (int k = -1; k < 1; k++) {
-	//			loadList_.push_back(ChunkCoord(i, j, k));
-	//			//Chunk * chunk = world_->getChunk(i, j, k);
-	//			//chunk->initialize(device_, deviceContext_, CBVSObject_, texture_);
-	//			//activeChunks_.push_back(chunk);
-	//			//octree_.insert(chunk);
-	//		}
-	//	}
-	//}
-
 	chunkContext_.addActionMapping(Action::CULL, KeyboardEvent(KeyboardEvent::Type::PRESS, 'C'));
 
 	INPUT.addFrontContext(&chunkContext_);
@@ -60,17 +47,29 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 		if (chunk->changed_ == true) {
 			rebuildList_.push_back(chunk);
 		}
-		if (chunk->initialized_ == false) {
+		/*if (chunk->initialized_ == false) {
 			initList_.push_back(chunk);
-		}
+		}*/
 	}
 
+	JOB_SYSTEM.execute([&, this] {
+		loadChunks();
+	});
 
+	JOB_SYSTEM.execute([&, this] {
+		rebuildChunks();
+	});
 
-	loadChunks();
-	rebuildChunks();
+	JOB_SYSTEM.execute([&, this] {
+		unloadChunks();
+	});
+
+	JOB_SYSTEM.wait();
+
+	//loadChunks();
+	//rebuildChunks();
 	//initializeChunks();
-	unloadChunks();
+	//unloadChunks();
 }
 
 void ChunkRenderer::setWorld(World * world) {
@@ -223,7 +222,7 @@ void ChunkRenderer::cullChunks(const DirectX::XMMATRIX & view_matrix, BoundingFr
 }
 
 void ChunkRenderer::unloadChunks() {
-	static int max_unload_number = 20;
+	static int max_unload_number = 5;
 	int count = 0;
 	while (count < max_unload_number && !unloadList_.empty()) {
 		ChunkCoord coord = unloadList_.front();
@@ -243,7 +242,7 @@ void ChunkRenderer::unloadChunks() {
 }
 
 void ChunkRenderer::loadChunks() {
-	static int max_load_number = 10;
+	static int max_load_number = 5;
 	int count = 0;
 
 	while (count < max_load_number && !loadList_.empty()) {
@@ -268,7 +267,7 @@ void ChunkRenderer::loadChunks() {
 }
 
 void ChunkRenderer::rebuildChunks() {
-	static int max_rebuild_number = 3;
+	static int max_rebuild_number = 5;
 	int count = 0;
 	for (auto chunk : rebuildList_) {
 		if (count >= max_rebuild_number) {

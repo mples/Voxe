@@ -177,6 +177,7 @@
     <ClCompile Include="Input\Keyboard\KeyboardManager.cpp" />
     <ClCompile Include="Graphics\Light.cpp" />
     <ClCompile Include="Input\RangeConverter.cpp" />
+    <ClCompile Include="JobSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Input\Mouse\MouseEvent.cpp" />
     <ClCompile Include="Input\Mouse\MouseManager.cpp" />
@@ -242,7 +243,9 @@
     <ClInclude Include="Graphics\Light.h" />
     <ClInclude Include="Input\RangeConverter.h" />
     <ClInclude Include="Input\RawInput.h" />
+    <ClInclude Include="JobSystem.h" />
     <ClInclude Include="ObjectPool.h" />
+    <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="Utilities\Octree\Node.h" />
     <ClInclude Include="Utilities\Octree\Octree.h" />
     <ClInclude Include="RenderWindow.h" />

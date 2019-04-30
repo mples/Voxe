@@ -11,6 +11,7 @@ Engine::~Engine() {
 	KeyboardManager::removeInstance();
 	InputManager::removeInstance();
 	StageManager::removeInstance();
+	JobSystem::removeInstance();
 }
 
 bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring window_class, int width, int height) {
@@ -25,6 +26,7 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	KeyboardManager::createInstance();
 	InputManager::createInstance();
 	StageManager::createInstance();
+	JobSystem::createInstance();
 
 	if (!GRAPHIC_ENGINE.initialize(renderWindow_.getHWND(), width, height)) {
 		return false;
