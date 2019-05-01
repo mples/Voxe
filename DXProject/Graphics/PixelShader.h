@@ -4,7 +4,7 @@
 #include <wrl/client.h>
 #include <d3dcompiler.h>
 
-#include "../ErrorLogger.h"
+#include "../Utilities/ErrorLogger.h"
 
 class PixelShader {
 public:

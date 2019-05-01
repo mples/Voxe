@@ -1,10 +1,10 @@
 #pragma once
 #include "Chunk.h"
 #include "World.h"
-#include "Input/InputManager.h"
-#include "Utilities/Octree/Octree.h"
-#include "ObjectPool.h"
-#include "JobSystem.h"
+#include "../Input/InputManager.h"
+#include "../Utilities/Structures/Octree/Octree.h"
+#include "../Utilities/ObjectPool.h"
+#include "../Utilities/JobSystem.h"
 
 class ChunkRenderer {
 public:
@@ -15,7 +15,6 @@ public:
 	void draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum);
 	void setWorld(World* world);
 	void setEnableCulling(bool state);
-	Octree<Chunk> octree_; // TODO move back to private
 	std::unordered_map<ChunkCoord, Chunk*> activeChunks_;
 private:
 
@@ -38,6 +37,7 @@ private:
 
 	World* world_;
 	bool firstDraw_ = true;
+	Octree<Chunk> octree_; 
 
 	std::vector<Chunk*> initList_;
 	std::queue<ChunkCoord> loadList_;

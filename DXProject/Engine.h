@@ -1,11 +1,11 @@
 #pragma once
 #include "WindowContainer.h"
 #include "Graphics/GraphicEngine.h"
-#include "Timer.h"
+#include "Utilities/Timer.h"
 
 #include "Input/InputManager.h"
 #include "Stage/StageManager.h"
-#include "JobSystem.h"
+#include "Utilities/JobSystem.h"
 
 class Engine : WindowContainer {
 public:

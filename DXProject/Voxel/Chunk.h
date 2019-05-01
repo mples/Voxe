@@ -2,7 +2,7 @@
 #include <DirectXCollision.h>
 
 #include "BlockType.h"
-#include "Graphics/WorldChunkModel.h"
+#include "../Graphics/WorldChunkModel.h"
 #include "ChunkCoord.h"
 
 using namespace DirectX;
@@ -15,7 +15,6 @@ struct ChunkNeighbours {
 
 class Chunk {
 public:
-//	using byte4 = glm::tvec4<GLbyte>;
 	static const unsigned int DIM = 16;
 
 	Chunk();

@@ -2,7 +2,7 @@
 #include <functional>
 #include <atomic>
 
-#include "ThreadSafeQueue.h"
+#include "Structures/ThreadSafeQueue.h"
 #include "Singleton.h"
 
 struct DispatchingArgs {

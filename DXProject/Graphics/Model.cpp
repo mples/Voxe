@@ -1,5 +1,5 @@
 #include "Model.h"
-#include "../StringHelper.h"
+#include "../Utilities/StringHelper.h"
 #include <cassert>
 
 Model::Model() : device_(nullptr), deviceContext_(nullptr), CBVertexShader_(nullptr), directory_{} {

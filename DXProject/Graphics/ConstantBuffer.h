@@ -3,7 +3,7 @@
 #include <wrl/client.h>
 
 #include "ConstantBufferTypes.h"
-#include "../ErrorLogger.h"
+#include "../Utilities/ErrorLogger.h"
 
 template <class T>
 class ConstantBuffer {

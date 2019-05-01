@@ -1,6 +1,6 @@
 #pragma once
 #include "Stage\Stage.h"
-#include "World.h"
+#include "Voxel\World.h"
 #include "Generation/SimpleGenerator.h"
 #include "Generation/PerlinNoise.h"
 

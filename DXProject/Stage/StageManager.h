@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Singleton.h"
+#include "../Utilities/Singleton.h"
 #include "StageFactory.h"
 
 class StageManager : public Singleton<StageManager> {

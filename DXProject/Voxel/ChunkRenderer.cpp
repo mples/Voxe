@@ -5,7 +5,6 @@
 #include <Windows.h>
 
 ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.0f, 100.0f, 100.0f))) {
-	//previousViewBox_ = BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1000.0f, 1000.0f, 1000.0f));
 }
 
 
@@ -66,10 +65,6 @@ void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::X
 
 	JOB_SYSTEM.wait();
 
-	//loadChunks();
-	//rebuildChunks();
-	//initializeChunks();
-	//unloadChunks();
 }
 
 void ChunkRenderer::setWorld(World * world) {
@@ -285,7 +280,6 @@ void ChunkRenderer::initializeChunks() {
 
 	for (auto chunk : initList_) {
 		chunk->initializeMesh(device_, deviceContext_, CBVSObject_, texture_);
-		//octree_.insert(chunk);
 		++count;
 		if (count >= max_init_number) {
 			break;

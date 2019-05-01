@@ -2,7 +2,7 @@
 #include "MouseEvent.h"
 #include <queue>
 
-#include "../../Singleton.h"
+#include "../../Utilities/Singleton.h"
 
 
 class MouseManager : public Singleton<MouseManager> {

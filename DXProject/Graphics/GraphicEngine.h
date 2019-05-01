@@ -11,15 +11,15 @@
 #include "VertexShader.h"
 #include "PixelShader.h"
 #include "Camera.h"
-#include "../Timer.h"
+#include "../Utilities/Timer.h"
 #include "RenderableObject.h"
 #include "Light.h"
 
-#include "../World.h"
-#include "../ChunkRenderer.h"
+#include "../Voxel/World.h"
+#include "../Voxel/ChunkRenderer.h"
 #include "../Generation/PerlinNoise.h"
 #include "../Generation/SimpleGenerator.h"
-#include "../Singleton.h"
+#include "../Utilities/Singleton.h"
 
 #define GRAPHIC_ENGINE GraphicEngine::getInstance()
 

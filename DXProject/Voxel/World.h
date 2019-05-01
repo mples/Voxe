@@ -1,6 +1,6 @@
 #pragma once
 #include <unordered_map>
-#include "Generation/Generator.h"
+#include "../Generation/Generator.h"
 
 class World {
 public:

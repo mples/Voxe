@@ -3,7 +3,7 @@
 #include <functional>
 #include <iostream>
 
-#include "../Singleton.h"
+#include "../Utilities/Singleton.h"
 #include "InputMapper.h"
 
 #include "Keyboard/KeyboardManager.h"
