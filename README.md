@@ -1,5 +1,7 @@
 # Voxe
 
+Work in progress...
+
 An impelemntation of voxel game engine, which is beeing created as a part of my thesis.
 
 In the process of writing my game engine I tried to focus on learning most common design patterns used in game programming and 
