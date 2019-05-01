@@ -1,6 +1,6 @@
 #include "WorldChunkMesh.h"
 
-#include "../ErrorLogger.h"
+#include "../Utilities/ErrorLogger.h"
 
 WorldChunkMesh::WorldChunkMesh() {
 }

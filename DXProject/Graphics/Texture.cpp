@@ -1,6 +1,6 @@
 #include "Texture.h"
-#include "../ErrorLogger.h"
-#include "../StringHelper.h"
+#include "../Utilities//ErrorLogger.h"
+#include "../Utilities/StringHelper.h"
 
 #include <DDSTextureLoader.h>
 #include <WICTextureLoader.h>
