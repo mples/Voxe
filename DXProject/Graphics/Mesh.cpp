@@ -33,6 +33,7 @@ void Mesh::draw() {
 			break;
 		}
 	}
+	
 
 	UINT offset = 0;
 	deviceContext_->IASetVertexBuffers(0, 1, vertexBuffer_.getAddressOf(), vertexBuffer_.stridePtr(), &offset);

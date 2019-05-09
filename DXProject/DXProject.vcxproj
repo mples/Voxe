@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
+    <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="Voxel\Chunk.cpp" />
     <ClCompile Include="Voxel\ChunkRenderer.cpp" />
     <ClCompile Include="GameStage.cpp" />
@@ -198,6 +199,8 @@
     <ClCompile Include="Graphics\WorldChunkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="OcclusionCulling.h" />
+    <ClInclude Include="SpatialHash.h" />
     <ClInclude Include="Voxel\BlockType.h" />
     <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Voxel\Chunk.h" />
@@ -266,6 +269,10 @@
     <ClInclude Include="Graphics\WorldChunkMesh.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="occlusion_culling_vs.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="shader_pixel.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>

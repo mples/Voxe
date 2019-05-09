@@ -12,3 +12,11 @@ struct Vertex {
 	DirectX::XMFLOAT2 texCoord_;
 	DirectX::XMFLOAT3 normal_;
 };
+
+struct SimpleVertex {
+	SimpleVertex() = default;
+	SimpleVertex(float x, float y, float z) : pos_(x, y, z) {}
+	SimpleVertex(XMFLOAT3 pos) : pos_(pos) {}
+
+	XMFLOAT3 pos_;
+};

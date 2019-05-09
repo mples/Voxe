@@ -11,6 +11,7 @@ public:
 	PixelShader();
 	~PixelShader();
 	bool initialize(Microsoft::WRL::ComPtr<ID3D11Device > & device, std::wstring shader_path);
+	bool initialize(ID3D11Device * device, std::wstring shader_path);
 	ID3D11PixelShader* getShader();
 	ID3DBlob* getBuffer();
 private:

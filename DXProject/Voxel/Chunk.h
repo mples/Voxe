@@ -4,6 +4,7 @@
 #include "BlockType.h"
 #include "../Graphics/WorldChunkModel.h"
 #include "ChunkCoord.h"
+#include "../BoundingVolume.h"
 
 using namespace DirectX;
 
@@ -37,6 +38,8 @@ public:
 	BoundingBox & getBoundingVolume();
 	XMMATRIX & getWorldMatrix();
 	ChunkCoord & getCoord();
+	XMINT3 getPos();
+	BoundingVolume & getBV();
 
 	ChunkNeighbours neighbours_;
 	bool initialized_;
@@ -77,5 +80,7 @@ private:
 	BoundingBox worldBoundingBox_;
 	ChunkCoord coord_;
 	XMMATRIX worldMatrix_;
+	BoundingVolume boundingVolume_;
+
 };
 

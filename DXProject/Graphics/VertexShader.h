@@ -11,6 +11,7 @@ public:
 	VertexShader();
 	~VertexShader();
 	bool initialize(Microsoft::WRL::ComPtr<ID3D11Device>& device, std::wstring shader_path, D3D11_INPUT_ELEMENT_DESC* input_element_desc, UINT num_elements);
+	bool initialize(ID3D11Device * device, std::wstring shader_path, D3D11_INPUT_ELEMENT_DESC* input_element_desc, UINT num_elements);
 	ID3D11VertexShader* getShader();
 	ID3DBlob* getBuffer();
 	ID3D11InputLayout* getInputLayout();

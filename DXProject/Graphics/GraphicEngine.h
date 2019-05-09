@@ -21,6 +21,7 @@
 #include "../Generation/SimpleGenerator.h"
 #include "../Utilities/Singleton.h"
 
+
 #define GRAPHIC_ENGINE GraphicEngine::getInstance()
 
 class GraphicEngine : public Singleton<GraphicEngine> {
@@ -30,11 +31,11 @@ public:
 	bool initialize(HWND hwnd, int width, int height);
 	void draw();
 
+	bool isMSAAEnabled();
 	Camera camera_;
 	Light light_;
 private:
 	bool initializeDirectX(HWND hwnd);
-	bool initializeShaders();
 	bool initializeScene();
 
 	bool enableMsaa_;
@@ -45,30 +46,25 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer_;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView_;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_;
 
-	VertexShader vertexShader_;	
-	PixelShader pixelShader_;
+
 	ConstantBuffer<CB_VS_object_buffer> VSconstantBuffer_;
 	ConstantBuffer<CB_PS_point_light> PSpointLightBuffer_;
 	ConstantBuffer<CB_PS_frame_buffer> PSframeBuffer_;
 
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_;
 
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch_;
 	std::unique_ptr<DirectX::SpriteFont> spriteFont_;
 
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState_;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture_;
-	Microsoft::WRL::ComPtr<ID3D11BlendState> blendState_;
 
 	int windowWidth_;
 	int windowHeight_;
 	Timer fpsTimer_;
 	
-	RenderableObject gameObject_;
 	ChunkRenderer chunkRenderer_;
 	World * world_;
 	SimpleGenerator * simpleGenerator_;
 	PerlinNoise * perlinNoise_;
+	RenderableObject obj_;
 };

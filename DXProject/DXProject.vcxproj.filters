@@ -147,6 +147,9 @@
     <ClCompile Include="Voxel\World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OcclusionCulling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderWindow.h">
@@ -347,6 +350,12 @@
     <ClInclude Include="Voxel\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OcclusionCulling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialHash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader_vertex.hlsl">
@@ -355,5 +364,6 @@
     <FxCompile Include="shader_pixel.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
+    <FxCompile Include="occlusion_culling_vs.hlsl" />
   </ItemGroup>
 </Project>

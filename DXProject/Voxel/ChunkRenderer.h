@@ -6,12 +6,23 @@
 #include "../Utilities/ObjectPool.h"
 #include "../Utilities/JobSystem.h"
 
+#include "../BoundingVolume.h"
+#include "../Graphics/VertexShader.h"
+#include "../Graphics/PixelShader.h"
+
+#include "../OcclusionCulling.h"
+//class OcclusionCulling;
+
 class ChunkRenderer {
 public:
 	ChunkRenderer();
 	~ChunkRenderer();
 
 	bool initialize(ID3D11Device* device, ID3D11DeviceContext * device_context);
+	void initializeRenderState();
+	bool initializeShaders();
+
+	void applyRendererState();
 	void draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum);
 	void setWorld(World* world);
 	void setEnableCulling(bool state);
@@ -58,5 +69,17 @@ private:
 	InputContext chunkContext_;
 
 	ObjectPool<Chunk, 100000> chunkPool_;
+
+	BoundingVolume boundingVolume_;
+
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState_;
+	Microsoft::WRL::ComPtr<ID3D11BlendState> blendState_;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_;
+
+	VertexShader vertexShader_;
+	PixelShader pixelShader_;
+
+	OcclusionCulling occlusionCulling_;
 };
 

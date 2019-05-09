@@ -22,9 +22,7 @@ bool GraphicEngine::initialize(HWND hwnd, int width, int height) {
 	if (!initializeDirectX(hwnd)) {
 		return  false;
 	}
-	if (!initializeShaders()) {
-		return false;
-	}
+
 	if (!initializeScene()) {
 		return false;
 	}
@@ -40,41 +38,7 @@ bool GraphicEngine::initialize(HWND hwnd, int width, int height) {
 	return true;
 }
 
-bool GraphicEngine::initializeShaders() {
-	std::wstring shader_folder;
-#pragma region DetermineShaderPath
-	if (IsDebuggerPresent()) {
-#ifdef _DEBUG
-	#ifdef _WIN64 //x64
-		shader_folder = L"../x64/Debug/";
-	#else	//x86
-		shader_folder = L"../Debug/";
-	#endif
-#else
-	#ifdef _WIN64 //x64
-		shader_folder = L"../x64/Release/";
-	#else	//x86
-		shader_folder = L"../Release/";
-	#endif
-#endif
-	} 
 
-	D3D11_INPUT_ELEMENT_DESC layout_desc[] = {
-		{"POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEX_COORD", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_CLASSIFICATION::D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-
-	if (!vertexShader_.initialize(device_, shader_folder + L"shader_vertex.cso", layout_desc, _countof(layout_desc) )) {
-		return false;
-	}
-
-	if (!pixelShader_.initialize(device_, shader_folder + L"shader_pixel.cso")) {
-		return false;
-	}
-
-	return true;
-}
 
 bool GraphicEngine::initializeScene() {
 	try {
@@ -92,10 +56,6 @@ bool GraphicEngine::initializeScene() {
 
 		PSpointLightBuffer_.data_.ambientColor_ = XMFLOAT3(1.0f, 1.0f, 1.0f);
 		PSpointLightBuffer_.data_.ambientStrength_ = 1.0f;
-
-		if (!gameObject_.initialize("Data/Objects/nanosuit/nanosuit.obj", device_.Get(), deviceContext_.Get(), VSconstantBuffer_)) {
-			return false;
-		}
 
 		camera_.setPos(0.0f, 0.0f, -5.0f);
 		camera_.setProjData(90.0f, static_cast<float>(windowWidth_) / static_cast<float>(windowHeight_), 0.1f, 100.0f);
@@ -121,6 +81,10 @@ bool GraphicEngine::initializeScene() {
 
 		chunkRenderer_.setWorld(world_);
 		chunkRenderer_.initialize(device_.Get(), deviceContext_.Get());
+
+		if (!obj_.initialize("Data/Objects/nanosuit/nanosuit.obj", device_.Get(), deviceContext_.Get(), VSconstantBuffer_)) {
+			return false;
+		}
 		
 	}
 	catch (COMException ex) {
@@ -131,21 +95,14 @@ bool GraphicEngine::initializeScene() {
 }
 
 void GraphicEngine::draw() {
+	deviceContext_->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), depthStencilView_.Get());
+
 	float bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), bg_color);
 	deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	deviceContext_->IASetInputLayout(vertexShader_.getInputLayout() );
-	deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	deviceContext_->RSSetState(rasterizerState_.Get());
-	deviceContext_->OMSetBlendState(blendState_.Get(), NULL, 0xffffffff);
-	deviceContext_->OMSetDepthStencilState(depthStencilState_.Get(), 0);
 
-	deviceContext_->PSSetSamplers(0, 1, samplerState_.GetAddressOf());
-
-	deviceContext_->VSSetShader(vertexShader_.getShader(), NULL, 0);
-	deviceContext_->PSSetShader(pixelShader_.getShader(), NULL, 0);
 	//set pont light buffer
 	//PSpointLightBuffer_.data_.diffuseColor_ = light_.color_;
 	//PSpointLightBuffer_.data_.diffuseStrength_ = light_.strength_;
@@ -164,13 +121,14 @@ void GraphicEngine::draw() {
 	deviceContext_->PSSetConstantBuffers(0, 1, PSframeBuffer_.getAddressOf());
 
 	//draw
-	gameObject_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
+	//obj_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
 
-	light_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
+	//light_.draw(camera_.getViewMatrix() * camera_.getProjMatrix());
 
-	//chunk_.draw(XMMatrixIdentity(), camera_.getViewMatrix() * camera_.getProjMatrix());
 
 	chunkRenderer_.draw(camera_.getViewMatrix(), camera_.getProjMatrix(), camera_.getLocalFrustum());
+
+	deviceContext_->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), depthStencilView_.Get());
 
 	static int fps_counter = 0;
 	static std::wstring fps_wstring = L"FPS: 0";
@@ -203,6 +161,10 @@ void GraphicEngine::draw() {
 
 
 	swapChain_->Present(0, NULL);
+}
+
+bool GraphicEngine::isMSAAEnabled() {
+	return enableMsaa_;
 }
 
 bool GraphicEngine::initializeDirectX(HWND hwnd) {
@@ -334,7 +296,7 @@ bool GraphicEngine::initializeDirectX(HWND hwnd) {
 		hr = device_->CreateDepthStencilView(depthStencilBuffer_.Get(), nullptr, depthStencilView_.GetAddressOf());
 		COM_ERROR_IF_FAILED(hr, L"Failed to create ID3D11DepthStencilView.");
 
-		deviceContext_->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), depthStencilView_.Get());
+		//deviceContext_->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), depthStencilView_.Get());
 		D3D11_VIEWPORT viewport;
 		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
@@ -347,59 +309,8 @@ bool GraphicEngine::initializeDirectX(HWND hwnd) {
 
 		deviceContext_->RSSetViewports(1, &viewport);
 
-		D3D11_RASTERIZER_DESC rast_desc;
-		ZeroMemory(&rast_desc, sizeof(D3D11_RASTERIZER_DESC));
-
-		rast_desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-		rast_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK;
-
-		hr = device_->CreateRasterizerState(&rast_desc, rasterizerState_.GetAddressOf());
-		COM_ERROR_IF_FAILED(hr, L"Failed to create ID3D11RasterizerState.");
-
-		D3D11_DEPTH_STENCIL_DESC ds_desc;
-		ZeroMemory(&ds_desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-
-		ds_desc.DepthEnable = true;
-		ds_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK::D3D11_DEPTH_WRITE_MASK_ALL;
-		ds_desc.DepthFunc = D3D11_COMPARISON_FUNC::D3D11_COMPARISON_LESS;
-
-		device_->CreateDepthStencilState(&ds_desc, depthStencilState_.GetAddressOf());
-		COM_ERROR_IF_FAILED(hr, L"Failed to create ID3D11DepthStencilState.");
-
 		spriteBatch_ = std::make_unique<DirectX::SpriteBatch>(deviceContext_.Get());
 		spriteFont_ = std::make_unique<DirectX::SpriteFont>(device_.Get(), L"Data/Fonts/arial_16.spritefont");
-
-		D3D11_SAMPLER_DESC sampl_desc;
-		ZeroMemory(&sampl_desc, sizeof(D3D11_SAMPLER_DESC));
-		sampl_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-		sampl_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampl_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampl_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-		sampl_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-		sampl_desc.MinLOD = 0;
-		sampl_desc.MaxLOD = D3D11_FLOAT32_MAX;
-		hr = device_->CreateSamplerState(&sampl_desc, samplerState_.GetAddressOf());
-		COM_ERROR_IF_FAILED(hr, L"Failed to create ID3D11SampleState.");
-
-		D3D11_BLEND_DESC blend_desc;
-		ZeroMemory(&blend_desc, sizeof(D3D11_BLEND_DESC));
-
-		D3D11_RENDER_TARGET_BLEND_DESC rtbdesc;
-		ZeroMemory(&rtbdesc, sizeof(D3D11_RENDER_TARGET_BLEND_DESC));
-
-		rtbdesc.BlendEnable = true;
-		rtbdesc.SrcBlend = D3D11_BLEND::D3D11_BLEND_SRC_ALPHA;
-		rtbdesc.DestBlend = D3D11_BLEND::D3D11_BLEND_INV_SRC_ALPHA;
-		rtbdesc.BlendOp = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-		rtbdesc.SrcBlendAlpha = D3D11_BLEND::D3D11_BLEND_ONE;
-		rtbdesc.DestBlendAlpha = D3D11_BLEND::D3D11_BLEND_ZERO;
-		rtbdesc.BlendOpAlpha = D3D11_BLEND_OP::D3D11_BLEND_OP_ADD;
-		rtbdesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE::D3D11_COLOR_WRITE_ENABLE_ALL;
-
-		blend_desc.RenderTarget[0] = rtbdesc;
-
-		hr = device_->CreateBlendState(&blend_desc, blendState_.GetAddressOf());
-		COM_ERROR_IF_FAILED(hr, L"Error: Falied to create ID3D11BlendState.");
 
 	}
 	catch (COMException ex) {

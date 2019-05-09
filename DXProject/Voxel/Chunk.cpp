@@ -1,5 +1,5 @@
 #include "Chunk.h"
-#include "Chunk.h"
+#include "../BoundingVolume.h"
 
 Chunk::Chunk() : coord_(0, 0, 0), changed_(false), isEmpty_(false), initialized_(false) {
 	ZeroMemory(blocks_, pow(DIM, 3) * sizeof(BlockType));
@@ -125,6 +125,7 @@ bool Chunk::initializeMesh(ID3D11Device * device, ID3D11DeviceContext * device_c
 		initialized_ = true;
 	}
 	model_.getBoundingBox().Transform(worldBoundingBox_, worldMatrix_);
+	boundingVolume_ = BoundingVolume(getPos(), worldBoundingBox_);
 	return true;
 }
 
@@ -194,6 +195,14 @@ XMMATRIX & Chunk::getWorldMatrix() {
 
 ChunkCoord & Chunk::getCoord() {
 	return coord_;
+}
+
+XMINT3 Chunk::getPos() {
+	return XMINT3(coord_.x_, coord_.y_, coord_.z_);
+}
+
+BoundingVolume & Chunk::getBV() {
+	return boundingVolume_;
 }
 
 void Chunk::insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
