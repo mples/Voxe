@@ -37,7 +37,10 @@ public:
 	Point hash(float x, float y, float z);
 	Point hash(XMFLOAT3 point);
 	void insert(T* obj);
+	void remove(T* obj);
 	void clear();
+	std::vector<T*>* getBucket(int x, int y, int z);
+	std::vector<T*>* getBucket(Point p);
 private:
 	float cellSize_;
 	std::unordered_map<Point, std::vector<T*>> map_;
@@ -79,7 +82,40 @@ void SpatialHash<T>::insert(T* obj) {
 }
 
 template<typename T>
-inline void SpatialHash<T>::clear() {
+void SpatialHash<T>::remove(T * obj) {
+	Point p = hash(obj->getPos());
+	auto found = map_.find(p);
+
+	if (found != map_.end()) {
+		std::vector<T*> bucket = found->second;
+		auto it = std::find(bucket.begin(), bucket.end(), obj);
+		if (it != bucket.end()) {
+			bucket.erase(it);
+		}
+	}
+}
+
+template<typename T>
+void SpatialHash<T>::clear() {
 	map_.clear();
+}
+
+template<typename T>
+std::vector<T*>* SpatialHash<T>::getBucket(int x, int y, int z) {
+	Point p(x, y, z);
+	auto found = map_.find(p);
+	if (found != map_.end()) {
+		return &found->second;
+	}
+	return nullptr;
+}
+
+template<typename T>
+inline std::vector<T*>* SpatialHash<T>::getBucket(Point p) {
+	auto found = map_.find(p);
+	if (found != map_.end()) {
+		return &found->second;
+	}
+	return nullptr;
 }
 

@@ -5,7 +5,7 @@
 #include <Windows.h>
 //#include "../OcclusionCulling.h"
 
-ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(true), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.0f, 100.0f, 100.0f))) {
+ChunkRenderer::ChunkRenderer() : device_(nullptr), deviceContext_(nullptr), enableCull_(false), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.0f, 100.0f, 100.0f))) {
 }
 
 
@@ -27,10 +27,10 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 	chunkContext_.addActionMapping(Action::CULL, KeyboardEvent(KeyboardEvent::Type::PRESS, 'C'));
 
 	INPUT.addFrontContext(&chunkContext_);
-	InputCallback callback = [=](MappedInput& input) {
+	InputCallback callback = [&](MappedInput& input) {
 		auto cull = input.actions_.find(Action::CULL);
 		if (cull != input.actions_.end()) {
-			
+			this->setEnableCulling(!this->getEnableCull());
 
 			input.actions_.erase(cull);
 
@@ -134,6 +134,8 @@ void ChunkRenderer::initializeRenderState() {
 }
 
 void ChunkRenderer::applyRendererState() {
+	//deviceContext_->OMSetRenderTargets(1, renderTargetView_->GetAddressOf(), depthStencilView_->Get());
+	
 	deviceContext_->RSSetState(rasterizerState_.Get());
 	deviceContext_->OMSetBlendState(blendState_.Get(), NULL, 0xffffffff);
 	deviceContext_->OMSetDepthStencilState(depthStencilState_.Get(), 0);
@@ -145,41 +147,63 @@ void ChunkRenderer::applyRendererState() {
 
 	deviceContext_->VSSetShader(vertexShader_.getShader(), NULL, 0);
 	deviceContext_->PSSetShader(pixelShader_.getShader(), NULL, 0);
+
+
 }
 
 void ChunkRenderer::draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum) {
 	applyRendererState();
 
-	
+
+	cullChunks(view_matrix, frustum);
 
 	if (enableCull_) {
-		cullChunks(view_matrix, frustum);
-	}
 
-
-	for (auto chunk : renderList_) {
-		chunk->draw(view_matrix * proj_matrix);
-		if (chunk->changed_ == true) {
-			rebuildList_.push_back(chunk);
-		}
-		/*if (chunk->initialized_ == false) {
-			initList_.push_back(chunk);
+		std::vector<XMINT3> invisible_coord = occlusionCulling_.cull(view_matrix , proj_matrix, renderList_);
+		applyRendererState();
+		std::vector<Chunk*> render_list;
+		/*for (XMINT3 & coord : invisible_coord) {
+			activeChunks_.at(ChunkCoord(coord))->visible_ = false;
 		}*/
-	}
+		applyRendererState();
+		for (auto chunk : renderList_) {
+			if (chunk->visible_) {
+				chunk->draw(view_matrix * proj_matrix);
+				if (chunk->changed_ == true) {
+					rebuildList_.push_back(chunk);
+				}
+				/*if (chunk->initialized_ == false) {
+					initList_.push_back(chunk);
+				}*/
 
+			}
+		}
+	}
+	else {
+		for (auto chunk : renderList_) {
+			chunk->draw(view_matrix * proj_matrix);
+			if (chunk->changed_ == true) {
+				rebuildList_.push_back(chunk);
+			}
+			/*if (chunk->initialized_ == false) {
+				initList_.push_back(chunk);
+			}*/
+		}
+
+	}
 	JOB_SYSTEM.execute([&, this] {
 		loadChunks();
+	});
+
+
+	JOB_SYSTEM.execute([&, this] {
+		unloadChunks();
 	});
 
 	JOB_SYSTEM.execute([&, this] {
 		rebuildChunks();
 	});
 
-	JOB_SYSTEM.execute([&, this] {
-		unloadChunks();
-	});
-
-	occlusionCulling_.cull(view_matrix , proj_matrix, renderList_);
 
 	JOB_SYSTEM.wait();
 
@@ -194,6 +218,10 @@ void ChunkRenderer::setWorld(World * world) {
 
 void ChunkRenderer::setEnableCulling(bool state) {
 	enableCull_ = state;
+}
+
+bool ChunkRenderer::getEnableCull() {
+	return enableCull_;
 }
 
 DirectX::XMMATRIX ChunkRenderer::makeModelMatrix(ChunkCoord coord) {

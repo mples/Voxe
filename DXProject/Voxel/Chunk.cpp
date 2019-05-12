@@ -126,6 +126,7 @@ bool Chunk::initializeMesh(ID3D11Device * device, ID3D11DeviceContext * device_c
 	}
 	model_.getBoundingBox().Transform(worldBoundingBox_, worldMatrix_);
 	boundingVolume_ = BoundingVolume(getPos(), worldBoundingBox_);
+	boundingVolume_.initialize(device, device_context);
 	return true;
 }
 

@@ -26,6 +26,7 @@ public:
 	void draw(const DirectX::XMMATRIX & view_matrix, const DirectX::XMMATRIX & proj_matrix, BoundingFrustum & frustum);
 	void setWorld(World* world);
 	void setEnableCulling(bool state);
+	bool getEnableCull();
 	std::unordered_map<ChunkCoord, Chunk*> activeChunks_;
 private:
 
@@ -76,6 +77,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState_;
 	Microsoft::WRL::ComPtr<ID3D11BlendState> blendState_;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_;
+
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> * renderTargetView_;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> * depthStencilView_;
 
 	VertexShader vertexShader_;
 	PixelShader pixelShader_;

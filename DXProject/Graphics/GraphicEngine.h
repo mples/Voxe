@@ -43,9 +43,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext_;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain_;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView_;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView_;
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencilBuffer_;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView_;
 
 
 	ConstantBuffer<CB_VS_object_buffer> VSconstantBuffer_;

@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
+    <ClCompile Include="OcclusionQuery.cpp" />
     <ClCompile Include="Voxel\Chunk.cpp" />
     <ClCompile Include="Voxel\ChunkRenderer.cpp" />
     <ClCompile Include="GameStage.cpp" />
@@ -200,6 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OcclusionCulling.h" />
+    <ClInclude Include="OcclusionQuery.h" />
     <ClInclude Include="SpatialHash.h" />
     <ClInclude Include="Voxel\BlockType.h" />
     <ClInclude Include="BoundingVolume.h" />

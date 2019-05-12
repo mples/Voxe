@@ -45,6 +45,7 @@ public:
 	bool initialized_;
 	bool isEmpty_;
 	bool changed_;
+	bool visible_ = true;
 private:
 	void insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 	void insertPositiveX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
