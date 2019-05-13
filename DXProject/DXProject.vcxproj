@@ -153,6 +153,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
+    <ClCompile Include="ESC\Allocator\DefaultAllocator.cpp" />
+    <ClCompile Include="ESC\Handle.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
     <ClCompile Include="Voxel\Chunk.cpp" />
@@ -200,6 +202,13 @@
     <ClCompile Include="Graphics\WorldChunkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ESC\Allocator\DefaultAllocator.h" />
+    <ClInclude Include="ESC\Allocator\IAllocator.h" />
+    <ClInclude Include="ESC\Allocator\PoolAllocator.h" />
+    <ClInclude Include="ESC\Entity.h" />
+    <ClInclude Include="ESC\Handle.h" />
+    <ClInclude Include="ESC\IEntity.h" />
+    <ClInclude Include="ESC\TypeId.h" />
     <ClInclude Include="OcclusionCulling.h" />
     <ClInclude Include="OcclusionQuery.h" />
     <ClInclude Include="SpatialHash.h" />
