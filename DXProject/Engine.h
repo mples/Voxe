@@ -6,6 +6,8 @@
 #include "Input/InputManager.h"
 #include "Stage/StageManager.h"
 #include "Utilities/JobSystem.h"
+#include "ECS/EntityManager.h"
+#include "TestEntity.h"
 
 class Engine : WindowContainer {
 public:
@@ -20,5 +22,6 @@ private:
 	Timer timer_;
 
 	InputContext engineContext_;
+	EntityManager entityManager_;
 };
 

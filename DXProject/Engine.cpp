@@ -94,6 +94,11 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	};
 	INPUT.addCallback(callback, InputCallbackPriority::HIGH);
 
+
+	EntityId eid = entityManager_.createEntity<TestEntity>();
+	EntityId eid2 = entityManager_.createEntity<TestEntity>(4);
+	EntityId eid3 = entityManager_.createEntity<TestEntity>(1);
+
 	return true;
 }
 

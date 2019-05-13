@@ -1,18 +1,20 @@
 #pragma once
 #include "DefaultAllocator.h"
 #include <stdexcept>
+#include <new>
 
-template<typename T, class MemoryAllocator = DefaultAllocator>
+
+template<typename T>
 class PoolAllocator {
 public:
 	PoolAllocator(size_t initial_capacity = 1024, size_t max_block_length = 1000000) : 
-		firstDeleted_(nullptr), countInNode_(0), nodeCapacity_(initial_capacity), firstNode_(initial_capacity), maxBlockLength_(max_block_length) {
+		firstDeleted_(nullptr), elementsInBlock_(0), blockCapacity_(initial_capacity), firstBlock_(initial_capacity), maxBlockLength_(max_block_length) {
 		if (max_block_length < 1) {
 			throw std::invalid_argument("Capacity must be at least 1");
 		}
 
-		nodeMemory_ = firstNode_.memory_;
-		lastNode_ = &firstNode_;
+		currentMemory_ = firstBlock_.memory_;
+		lastBlock_ = &firstBlock_;
 	}
 
 	template<class T, class ...P>
@@ -24,13 +26,13 @@ public:
 			return result;
 		}
 
-		if (countInNode_ > nodeCapacity_) {
+		if (elementsInBlock_ > blockCapacity_) {
 			allocateNewNode();
 		}
-		char * address = (char*)nodeMemory_;
-		address += countInNode_ * itemSize_;
+		char * address = (char*)currentMemory_;
+		address += elementsInBlock_ * itemSize_;
 		T* result = new(address) T(std::forward<P>(param)...);
-		countInNode_++;
+		elementsInBlock_++;
 		return result;
 
 	}
@@ -42,48 +44,48 @@ public:
 	}
 
 private:
-	struct Node {
+	struct MemoryBlock {
 		void * memory_;
 		size_t capacity_;
-		Node* nextNode_;
+		MemoryBlock* nextBlock_;
 		
-		Node(size_t capacity) {
+		MemoryBlock(size_t capacity) {
 			if (capacity < 1) {
 				throw std::invalid_argument("Capacity must be at least 1");
 			}
-			memory_ = MemoryAllocator.allocate(itemSize_ * capacity);
+			memory_ = ::operator new(itemSize_ * capacity, ::std::nothrow);
 			if (memory_ == nullptr) {
 				throw std::bad_alloc();
 			}
 			capacity_ = capacity_;
-			nextNode_ = nullptr;
+			nextBlock_ = nullptr;
 		}
-		~Node() {
-			MemoryAllocator.free(memory_, itemSize_ * capacity_);
+		~MemoryBlock() {
+			::operator delete(memory_);
 		}
 	};
 
-	void* nodeMemory_;
+	void* currentMemory_;
 	T* firstDeleted_;
-	size_t countInNode_;
-	size_t nodeCapacity_;
-	Node firstNode_;
-	Node* lastNode_;
+	size_t elementsInBlock_;
+	size_t blockCapacity_;
+	MemoryBlock firstBlock_;
+	MemoryBlock* lastBlock_;
 	rsize_t maxBlockLength_;
 
 	static const size_t itemSize_;
 
-	PoolAllocator(const PoolAllocator<T, MemoryAllocator>& other);
-	void operator= (const PoolAllocator<T, MemoryAllocator>& other);
+	PoolAllocator(const PoolAllocator<T>& other) = delete;
+	PoolAllocator& operator= (const PoolAllocator<T>& other) = delete;
 	
 	void allocateNewNode() {
-		size_t size = countInNode_;
+		size_t size = elementsInBlock_;
 		if (size >= maxBlockLength_) {
 			size = maxBlockLength_;
 		}
 		else {
 			size *= 2;
-			if (size < countInNode_) {
+			if (size < elementsInBlock_) {
 				throw std::overflow_error("Size overflow");
 			}
 			if (size <= maxBlockLength_) {
@@ -91,16 +93,16 @@ private:
 			}
 		}
 
-		Node *new_node = new Node(size);
-		lastNode_->nextNode_ = new_node;
-		lastNode_ = new_node;
+		MemoryBlock *new_block = new MemoryBlock(size);
+		lastBlock_->nextBlock_ = new_block;
+		lastBlock_ = new_block;
 
-		nodeMemory_ = new_node.memory_;
-		countInNode_ = 0;
-		nodeCapacity_ = size;
+		currentMemory_ = new_block->memory_;
+		elementsInBlock_ = 0;
+		blockCapacity_ = size;
 	}
 
 };
 
-template<typename T, class MemoryAllocator>
-const size_t PoolAllocator<T, MemoryAllocator>::itemSize_ = ((sizeof(T) + sizeof(void *) - 1) / sizeof(void *)) * sizeof(void *);
+template<typename T>
+const size_t PoolAllocator<T>::itemSize_ = ((sizeof(T) + sizeof(void *) - 1) / sizeof(void *)) * sizeof(void *);

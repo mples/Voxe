@@ -153,10 +153,16 @@
     <ClCompile Include="OcclusionQuery.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ESC\Handle.cpp">
+    <ClCompile Include="ECS\Allocator\DefaultAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ESC\Allocator\DefaultAllocator.cpp">
+    <ClCompile Include="ECS\EntityManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ECS\ComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -368,25 +374,40 @@
     <ClInclude Include="OcclusionQuery.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESC\IEntity.h">
+    <ClInclude Include="ECS\Allocator\DefaultAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESC\Entity.h">
+    <ClInclude Include="ECS\Allocator\IAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESC\TypeId.h">
+    <ClInclude Include="ECS\Allocator\PoolAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESC\Handle.h">
+    <ClInclude Include="ECS\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESC\Allocator\IAllocator.h">
+    <ClInclude Include="ECS\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESC\Allocator\DefaultAllocator.h">
+    <ClInclude Include="ECS\Handle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ESC\Allocator\PoolAllocator.h">
+    <ClInclude Include="ECS\IEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\TypeId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\IComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\Component.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ComponentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,8 @@ using Id_t = unsigned int;
 
 template<class T>
 class TypeId {
-	static  Id_t count_;
+private:
+	static Id_t count_;
 
 public:
 	template<class T>

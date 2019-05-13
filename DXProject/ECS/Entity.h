@@ -2,6 +2,8 @@
 #include "IEntity.h"
 #include "TypeId.h"
 
+Id_t TypeId<IEntity>::count_ = 0u;
+
 template<class T>
 class Entity : public IEntity {
 public:

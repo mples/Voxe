@@ -1,26 +1,28 @@
 #pragma once
+#include "Handle.h"
 
-using EntityId = unsigned int;
+using EntityId = Handle;
 
 using EntityTypeId = unsigned int;
 
 class IEntity {
+	friend class EntityManager;
 public:
-	IEntity();
-	virtual ~IEntity();
+	IEntity() :active_(true) {}
+	virtual ~IEntity() {}
 
 	template<class T>
 	T* getComponent() const {
-		return nullptr //TODO
+		return nullptr; //TODO
 	}
 
 	template<class T, class ...P>
 	T* addComponent(P&&... param) {
-		return nullptr //TODO
+		return nullptr; //TODO
 	}
 	template<class T>
 	void removeComponent() {
-
+		//TODO
 	}
 
 	inline bool operator==(const IEntity& other) {
