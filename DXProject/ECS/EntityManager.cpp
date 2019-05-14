@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 
-EntityManager::EntityManager() {
+EntityManager::EntityManager(ComponentManager * component_manager) : componentManager_(component_manager) {
 }
 
 EntityManager::~EntityManager() {

@@ -1,8 +1,10 @@
 #pragma once
 
-#include "IEntity.h"
+//#include "IEntity.h"
+#include "Handle.h"
 
-using ComponentId = unsigned int;
+using EntityId = Handle;
+using ComponentId = Handle;
 using ComponentTypeId = unsigned int;
 
 class IComponent {
@@ -34,6 +36,8 @@ public:
 	inline bool isActive() {
 		return active_;
 	}
+
+	virtual const ComponentTypeId getTypeId() const = 0;
 protected:
 	ComponentId id_;
 	EntityId owner_;

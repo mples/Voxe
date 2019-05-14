@@ -81,11 +81,10 @@ public:
 
 	inline T* operator[](Handle& handle) {
 		assert(handle.getIndex() < table_.size() &&  handle.getVersion() == table_[handle.getIndex()].first && "Invalid handle");
-		return (table_[handle.getIndex()].first == table_.getVersion()) ? table_[handle.getIndex()].second : nullptr;
+		return (table_[handle.getIndex()].first == handle.getVersion()) ? table_[handle.getIndex()].second : nullptr;
 	}
 
 private:
-	using Entry = std::pair<unsigned int, T*>;
 	void extendTable() {
 		size_t old_size = table_.size();
 
@@ -98,5 +97,6 @@ private:
 		}
 	}
 
+	using Entry = std::pair<unsigned int, T*>;
 	std::vector<Entry> table_;
 };

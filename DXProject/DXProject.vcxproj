@@ -207,6 +207,7 @@
     <ClInclude Include="ECS\Allocator\DefaultAllocator.h" />
     <ClInclude Include="ECS\Allocator\IAllocator.h" />
     <ClInclude Include="ECS\Allocator\PoolAllocator.h" />
+    <ClInclude Include="ECS\API.h" />
     <ClInclude Include="ECS\Component.h" />
     <ClInclude Include="ECS\ComponentManager.h" />
     <ClInclude Include="ECS\Entity.h" />

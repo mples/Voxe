@@ -1,4 +1,5 @@
 #pragma once
+#include "ComponentManager.h"
 #include "Handle.h"
 
 using EntityId = Handle;
@@ -13,16 +14,16 @@ public:
 
 	template<class T>
 	T* getComponent() const {
-		return nullptr; //TODO
+		return componentManager_->getComponent<T>(id_);
 	}
 
 	template<class T, class ...P>
 	T* addComponent(P&&... param) {
-		return nullptr; //TODO
+		return componentManager_->addComponent<T>(id_, std::forward<P>(param) ...);
 	}
 	template<class T>
 	void removeComponent() {
-		//TODO
+		componentManager_->eraseComponent<T>(id_);
 	}
 
 	inline bool operator==(const IEntity& other) {
@@ -68,5 +69,5 @@ protected:
 
 	bool active_;
 private:
-	//TODO component manager pointer
+	ComponentManager * componentManager_;
 };

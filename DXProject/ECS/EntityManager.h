@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 
+#include "ComponentManager.h"
 #include "IEntity.h"
 #include "Allocator/PoolAllocator.h"
 #include "Handle.h"
@@ -9,7 +10,7 @@
 
 class EntityManager {
 public:
-	EntityManager();	//TODO add component manager pointer
+	EntityManager(ComponentManager * component_manager);
 	~EntityManager();
 
 	template<class T, class ... ARGS>
@@ -18,7 +19,7 @@ public:
 		EntityId id = handleTable_.acquireHandle(entity);
 
 		entity->id_ = id;
-		//insert comopnent manager instance
+		//entity->componentManager_ = componentManager_;
 
 		return id;
 	}
@@ -30,8 +31,8 @@ public:
 
 		auto found = entitiesPools_.find(type_id);
 		if (found != entitiesPools_.end()) {
-
-			//TODO delete components
+			componentManager_->eraseAllComponents(id);
+			
 
 			dynamic_cast<PoolAllocator<T>*>(found->second).free(dynamic_cast<T*>(entity));
 		}
@@ -50,7 +51,7 @@ private:
 	std::unordered_map<EntityTypeId, void*> entitiesPools_;
 
 	HandleTable<IEntity> handleTable_;
-	//TODO component manager
+	ComponentManager * componentManager_;
 
 	EntityId acquireId(IEntity* entity);
 

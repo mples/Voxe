@@ -410,6 +410,9 @@
     <ClInclude Include="ECS\ComponentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ECS\API.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader_vertex.hlsl">

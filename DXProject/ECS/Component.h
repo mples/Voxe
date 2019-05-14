@@ -11,7 +11,7 @@ public:
 	Component() {}
 	virtual ~Component() {};
 
-	inline ComponentTypeId getTypeId() {
+	inline const ComponentTypeId getTypeId() const override {
 		return COMPONENT_TYPE_ID;
 	}
 private:

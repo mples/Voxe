@@ -21,7 +21,7 @@ public:
 };
 
 template<class T>
-const EntityTypeId Entity<T>::ENTITY_TYPE_ID = TypeId<IEntity>::get<T>(); //TODO
+const EntityTypeId Entity<T>::ENTITY_TYPE_ID = TypeId<IEntity>::get<T>(); 
 
 
 

@@ -2,7 +2,7 @@
 
 
 
-Engine::Engine() {
+Engine::Engine() : entityManager_(&componentManager_) {
 }
 
 

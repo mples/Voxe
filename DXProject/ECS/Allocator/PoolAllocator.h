@@ -71,7 +71,7 @@ private:
 	size_t blockCapacity_;
 	MemoryBlock firstBlock_;
 	MemoryBlock* lastBlock_;
-	rsize_t maxBlockLength_;
+	size_t maxBlockLength_;
 
 	static const size_t itemSize_;
 
@@ -101,7 +101,68 @@ private:
 		elementsInBlock_ = 0;
 		blockCapacity_ = size;
 	}
+public:
+	class iterator : public std::iterator<std::forward_iterator_tag, T> {
+		MemoryBlock* currentBlock_;
+		MemoryBlock* firstBlock;
+		size_t objectIndex_;
 
+		iterator(MemoryBlock* first_block, size_t index = 0) : currentBlock_(firstBlock), currentBlock_(first_block), objectIndex_(index) {
+
+		}
+		iterator(MemoryBlock* first_block, MemoryBlock* curr_block, size_t index = 0) : currentBlock_(firstBlock), currentBlock_(curr_block), objectIndex_(index) {
+
+		}
+
+		inline iterator& operator++() {
+			if (currentBlock_->nextBlock == nullptr && objectIndex_ > elementsInBlock_) {
+				
+				//end ?
+				return *this;
+			}
+			objectIndex_++;
+
+			if (size_t > currentBlock_->capcity_) {
+				if (currentBlock_->nextBlock_ != nullptr) {
+					currentBlock_ = currentBlock_->nextBlock_;
+					objectIndex_ = 0;
+				}
+				else {
+					//end ?
+					return *this;
+				}
+			}
+			return *this;
+		}
+
+		inline T& operator*() const {
+			char * address = (char*)currentBlock_->memory_;
+			address += objectIndex_ * itemSize_;
+			return *(static_cast<T*>(address));
+		}
+
+		inline T* operator->() const {
+			char * address = (char*)currentBlock_->memory_;
+			address += objectIndex_ * itemSize_;
+			return static_cast<T*>(address);
+		}
+
+		inline bool operator==(iterator& other) {
+			return currentBlock_ == other.currentBlock_ && objectIndex_ == other.objectIndex_;
+		}
+
+		inline bool operator!=(iterator& other) {
+			return currentBlock_ != other.currentBlock_ || objectIndex_ != other.objectIndex_;
+		}
+	};
+
+	inline iterator begin() {
+		return iterator(&firstBlock_);
+	}
+
+	inline iterator end() {
+		return iterator(&firstBlock_, lastBlock_, elementsInBlock_);
+	}
 };
 
 template<typename T>

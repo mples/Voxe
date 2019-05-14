@@ -7,6 +7,7 @@
 #include "Stage/StageManager.h"
 #include "Utilities/JobSystem.h"
 #include "ECS/EntityManager.h"
+#include "ECS/ComponentManager.h"
 #include "TestEntity.h"
 
 class Engine : WindowContainer {
@@ -23,5 +24,6 @@ private:
 
 	InputContext engineContext_;
 	EntityManager entityManager_;
+	ComponentManager componentManager_;
 };
 
