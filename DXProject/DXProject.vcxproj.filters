@@ -165,6 +165,9 @@
     <ClCompile Include="ECS\ComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ECS\SystemManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderWindow.h">
@@ -411,6 +414,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ECS\API.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\ISystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\System.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ECS\SystemManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

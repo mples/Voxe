@@ -156,6 +156,7 @@
     <ClCompile Include="ECS\Allocator\DefaultAllocator.cpp" />
     <ClCompile Include="ECS\ComponentManager.cpp" />
     <ClCompile Include="ECS\EntityManager.cpp" />
+    <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
     <ClCompile Include="TestEntity.cpp" />
@@ -215,10 +216,13 @@
     <ClInclude Include="ECS\Handle.h" />
     <ClInclude Include="ECS\IComponent.h" />
     <ClInclude Include="ECS\IEntity.h" />
+    <ClInclude Include="ECS\ISystem.h" />
+    <ClInclude Include="ECS\SystemManager.h" />
     <ClInclude Include="ECS\TypeId.h" />
     <ClInclude Include="OcclusionCulling.h" />
     <ClInclude Include="OcclusionQuery.h" />
     <ClInclude Include="SpatialHash.h" />
+    <ClInclude Include="ECS\System.h" />
     <ClInclude Include="TestEntity.h" />
     <ClInclude Include="Voxel\BlockType.h" />
     <ClInclude Include="BoundingVolume.h" />

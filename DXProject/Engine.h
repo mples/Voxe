@@ -8,6 +8,7 @@
 #include "Utilities/JobSystem.h"
 #include "ECS/EntityManager.h"
 #include "ECS/ComponentManager.h"
+#include "ECS/SystemManager.h"
 #include "TestEntity.h"
 
 class Engine : WindowContainer {
@@ -23,7 +24,9 @@ private:
 	Timer timer_;
 
 	InputContext engineContext_;
+
 	EntityManager entityManager_;
 	ComponentManager componentManager_;
+	SystemManager systemManager_;
 };
 
