@@ -156,6 +156,7 @@
     <ClCompile Include="ECS\Allocator\DefaultAllocator.cpp" />
     <ClCompile Include="ECS\ComponentManager.cpp" />
     <ClCompile Include="ECS\EntityManager.cpp" />
+    <ClCompile Include="ECS\Event\EventHandler.cpp" />
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
@@ -213,6 +214,14 @@
     <ClInclude Include="ECS\ComponentManager.h" />
     <ClInclude Include="ECS\Entity.h" />
     <ClInclude Include="ECS\EntityManager.h" />
+    <ClInclude Include="ECS\Event\Event.h" />
+    <ClInclude Include="ECS\Event\EventDelegate.h" />
+    <ClInclude Include="ECS\Event\EventDispatcher.h" />
+    <ClInclude Include="ECS\Event\EventHandler.h" />
+    <ClInclude Include="ECS\Event\IEvent.h" />
+    <ClInclude Include="ECS\Event\IEventDelegate.h" />
+    <ClInclude Include="ECS\Event\IEventDispatcher.h" />
+    <ClInclude Include="ECS\Event\IEventListener.h" />
     <ClInclude Include="ECS\Handle.h" />
     <ClInclude Include="ECS\IComponent.h" />
     <ClInclude Include="ECS\IEntity.h" />
