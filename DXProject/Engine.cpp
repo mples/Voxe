@@ -15,7 +15,7 @@ Engine::~Engine() {
 }
 
 bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring window_class, int width, int height) {
-	if (!renderWindow_.initialize(this, hInstance, window_title, window_class, width, height)) {
+	if (!windowContainer_.renderWindow_.initialize(&windowContainer_, hInstance, window_title, window_class, width, height)) {
 		return false;
 	}
 
@@ -28,7 +28,7 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	StageManager::createInstance();
 	JobSystem::createInstance();
 
-	if (!GRAPHIC_ENGINE.initialize(renderWindow_.getHWND(), width, height)) {
+	if (!GRAPHIC_ENGINE.initialize(windowContainer_.renderWindow_.getHWND(), width, height)) {
 		return false;
 	}
 
@@ -103,7 +103,7 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 }
 
 bool Engine::processMessages() {
-	return renderWindow_.procesMessages();
+	return windowContainer_.renderWindow_.procesMessages();
 }
 
 void Engine::update() {
@@ -115,4 +115,8 @@ void Engine::update() {
 	STAGE_MANAGER.update(dt);
 
 	GRAPHIC_ENGINE.draw();
+}
+
+EventHandler * Engine::getEventHandler() {
+	return &eventHandler_;
 }

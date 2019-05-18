@@ -12,14 +12,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstace,
 		ErrorLogger::log(hr, L"Error: Failed to coinitialize.");
 		return false;
 	}
-	Engine engine;
-	if (engine.init(hInstace, L"Title", L"MyWindowClass", 800, 800) ) {
+	Engine::createInstance();
+
+	if (ENGINE.init(hInstace, L"Title", L"MyWindowClass", 800, 800) ) {
 		STAGE_MANAGER.addStage(StageType::GAME, new TStageBuilder<GameStage>());
 		STAGE_MANAGER.setStartingStage(StageType::GAME);
-		while (engine.processMessages() == true) {
-			engine.update();
+		while (ENGINE.processMessages() == true) {
+			ENGINE.update();
 		}
 	}
 
+	Engine::removeInstance();
 	return 0;
 }

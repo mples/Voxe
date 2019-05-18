@@ -21,6 +21,8 @@ public:
 		eventsBuffer_.push_back(e);
 	}
 
+	void removeEventCallback(IEventDelegate * event_delegate);
+
 	void dispatchEvents();
 private:
 	EventHandler(const EventHandler& other) = delete;
@@ -32,7 +34,7 @@ private:
 
 		auto delegate_it = eventDispatchersMap_.find(event_type_id);
 		if (delegate_it == eventDispatchersMap_.end()) {
-			std::pair<EventTypeId, IEventDispatcher*> new_dispatcher(event_type_id, new IEventDispatcher<EventType>());
+			std::pair<EventTypeId, IEventDispatcher*> new_dispatcher(event_type_id, new EventDispatcher<EventType>());
 			new_dispatcher.second->addEventCallback(event_delegate);
 			eventDispatchersMap_.insert(new_dispatcher);
 		}
@@ -41,7 +43,6 @@ private:
 		}
 	}
 
-	void removeEventCallback(IEventDelegate * event_delegate);
 
 	std::unordered_map<EventTypeId, IEventDispatcher*> eventDispatchersMap_;
 	std::vector<IEvent*> eventsBuffer_;

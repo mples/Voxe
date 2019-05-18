@@ -2,3 +2,5 @@
 
 class ComponentManager;
 class EntityManager;
+
+class Engine;

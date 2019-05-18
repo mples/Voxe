@@ -11,15 +11,15 @@ public:
 
 	// Inherited via IEventDispatcher
 	virtual void dispatch(IEvent * event) override {
-		for (IEventDeleagate* dele : eventCallbacks_) {
+		for (IEventDelegate* dele : eventCallbacks_) {
 			assert(dele != nullptr);
 			dele->invoke(event);
 		}
 	}
-	virtual void addEventCallback(IEventDeleagate * event_delegate) override {
+	virtual void addEventCallback(IEventDelegate * event_delegate) override {
 		eventCallbacks_.push_back(event_delegate);
 	}
-	virtual void removeEventDelegate(IEventDeleagate * event_delegate) override {
+	virtual void removeEventDelegate(IEventDelegate * event_delegate) override {
 		auto found = std::find_if(eventCallbacks_.begin(), eventCallbacks_.end(), [&](const IEventDelegate* other) {
 			return event_delegate == other;
 		});
@@ -36,5 +36,5 @@ public:
 	}
 
 private:
-	std::list<IEventDeleagate*> eventCallbacks_;
+	std::list<IEventDelegate*> eventCallbacks_;
 };

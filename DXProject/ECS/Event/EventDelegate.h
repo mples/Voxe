@@ -46,7 +46,7 @@ public:
 	}
 
 	virtual IEventDelegate * clone() override {
-		return new EventDelegate(receiver_, callback_);
+		return new EventDelegate(callback_);
 	}
 private:
 

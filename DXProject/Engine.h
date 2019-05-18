@@ -9,9 +9,12 @@
 #include "ECS/EntityManager.h"
 #include "ECS/ComponentManager.h"
 #include "ECS/SystemManager.h"
+#include "ECS/Event/EventHandler.h"
 #include "TestEntity.h"
 
-class Engine : WindowContainer {
+#define ENGINE Engine::getInstance()
+
+class Engine : public Singleton<Engine>{
 public:
 	Engine();
 	~Engine();
@@ -19,7 +22,16 @@ public:
 	bool init(HINSTANCE hInstance, std::wstring window_title, std::wstring window_class, int width, int height);
 	bool processMessages();
 	void update();
+
+	EventHandler * getEventHandler();
+
+	template<class EventType, class... ARGS>
+	void sendEvent(ARGS&& ... args) {
+		eventHandler_.send<EventType>(std::forward<ARGS>(args)...);
+	}
+
 private:
+	WindowContainer windowContainer_;
 	//GraphicEngine gfxEngine_;
 	Timer timer_;
 
@@ -28,5 +40,6 @@ private:
 	EntityManager entityManager_;
 	ComponentManager componentManager_;
 	SystemManager systemManager_;
+	EventHandler eventHandler_;
 };
 

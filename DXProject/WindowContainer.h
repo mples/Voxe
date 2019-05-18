@@ -9,10 +9,8 @@ public:
 	~WindowContainer();
 	LRESULT WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-protected:
 	RenderWindow renderWindow_;
-	//KeyboardManager keyboardManager_;
-	//MouseManager mouseManager_;
+
 private:
 };
 
