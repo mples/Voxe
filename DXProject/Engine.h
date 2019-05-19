@@ -10,7 +10,10 @@
 #include "ECS/ComponentManager.h"
 #include "ECS/SystemManager.h"
 #include "ECS/Event/EventHandler.h"
+
 #include "TestEntity.h"
+#include "TestComponent.h"
+#include "TestSystem.h"
 
 #define ENGINE Engine::getInstance()
 
@@ -30,11 +33,13 @@ public:
 		eventHandler_.send<EventType>(std::forward<ARGS>(args)...);
 	}
 
+	double getGlobalTime();
 private:
 	WindowContainer windowContainer_;
 	//GraphicEngine gfxEngine_;
 	Timer timer_;
-
+	Timer globalTimer_;
+	
 	InputContext engineContext_;
 
 	EntityManager entityManager_;

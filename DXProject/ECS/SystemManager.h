@@ -21,7 +21,9 @@ public:
 
 		ISystem* system = new T(std::forward<ARGS>(args)...);
 		systemsMap_[type_id] = system;
-		systemUpdateOrder_.insert(std::make_pair(system->priority_, system));
+		systemUpdateOrder_.insert(std::make_pair(static_cast<int>(system->priority_), system));
+		//return dynamic_cast<T*>(system);
+		return nullptr;
 	} 
 
 	template<class T>

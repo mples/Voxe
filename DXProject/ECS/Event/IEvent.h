@@ -1,13 +1,11 @@
 #pragma once
 
 using EventTypeId = unsigned int;
-using EventTimeStamp = float;
+using EventTimeStamp = double;
 
 class IEvent {
 public:
-	IEvent(EventTypeId id) : typeId_(id) {
-		//TODO set time created as current
-	}
+	IEvent(EventTypeId id);
 
 	inline const EventTypeId getTypeId() {
 		return typeId_;

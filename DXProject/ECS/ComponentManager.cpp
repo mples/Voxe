@@ -14,6 +14,7 @@ ComponentId ComponentManager::acquireId(IComponent * component) {
 	if (found != entityComponentMap_.end()) {
 		result = componentLookUpTable_.acquireHandle(component);
 
+		assert( (found->second.count(component->getTypeId()) == 0) && "Cannot add two components of the same type to one entity");
 		found->second[component->getTypeId()] = component;
 	}
 	else {
@@ -29,6 +30,7 @@ void ComponentManager::releaseId(ComponentId id) {
 
 	auto found = entityComponentMap_.find(e_id.getIndex());
 	if (found != entityComponentMap_.end()) {
+		unsigned int a = componentLookUpTable_[id]->getTypeId();
 		found->second[componentLookUpTable_[id]->getTypeId()] = nullptr;
 		
 		componentLookUpTable_.releaseHandle(id);

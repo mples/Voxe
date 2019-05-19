@@ -14,8 +14,8 @@ public:
 	inline const ComponentTypeId getTypeId() const override {
 		return COMPONENT_TYPE_ID;
 	}
-private:
 	static const ComponentTypeId COMPONENT_TYPE_ID;
+private:
 };
 
 template<class T>

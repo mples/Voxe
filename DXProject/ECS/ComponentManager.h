@@ -15,59 +15,66 @@ class ComponentManager {
 
 	template<class T>
 	class ComponentPoolAllocator : public PoolAllocator<T>, public IComponentAllocator {
+	public:
+		ComponentPoolAllocator() : PoolAllocator<T>() {}
+
 		void freeComponent(IComponent * component) override {
 			//component->~IComponent();
-			free(dynamic_cast<T*>(component));
+			this->freeMemory(dynamic_cast<T*>(component));
 		}
 	};
 public:
 	ComponentManager();
 	~ComponentManager();
 
-	ComponentId acquireId(IComponent * component);
-	void releaseId(ComponentId id);
 
 	template<class T, class ...ARGS>
 	T* addComponent(const EntityId e_id, ARGS&& ...args) {
 		T* component = getComponentPoolAllocator<T>()->allocate<T>(std::forward<ARGS>(args)...);
+
+		component->owner_ = e_id;
 		ComponentId c_id = acquireId(component);
 
 		component->id_ = c_id;
-		component->owner_ = e_id;
 
-		return c_id;
+		return component;
 	}
 
 	template<class T>
 	void eraseComponent(const EntityId e_id) {
-		IComponent* component = entityComponentMap_[e_id.getIndex()][T->getTypeId()];
+		IComponent* component = entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID];
 
 		assert(component != nullptr && "Trying to remove component not in use by this entity");
-		getComponentPoolAllocator<T>()->freeComponent(component);
 
 		releaseId(component->id_);
+		getComponentPoolAllocator<T>()->freeComponent(component);
 	}
 
 	void eraseAllComponents(EntityId e_id) {
 		for (auto comp_it : entityComponentMap_[e_id.getIndex()]) {
-			IComponentAllocator * comp_all = componentsPools_[comp_it.second->getTypeId()];
-			releaseId(comp_it.second->getId());
-			comp_all->freeComponent(comp_it.second);
+			if (comp_it.second != nullptr) {
+				IComponentAllocator * comp_all = componentsPools_[comp_it.second->getTypeId()];
+				releaseId(comp_it.second->getId());
+				comp_all->freeComponent(comp_it.second);
+			}
 		}
 		entityComponentMap_[e_id.getIndex()].clear();
 	}
 
 	template<class T>
 	T* getComponent(const EntityId e_id) {
-		T* component = entityComponentMap_[e_id.getIndex()][T->getTypeId()];
+		IComponent* component = entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID];
 		assert(component != nullptr);
-		return component;
+		return dynamic_cast<T*>(component);
 	}
 
 
 
 
 private:
+	ComponentId acquireId(IComponent * component);
+	void releaseId(ComponentId id);
+
 	template<class T>
 	inline ComponentPoolAllocator<T>* getComponentPoolAllocator() {
 		ComponentTypeId id = T::COMPONENT_TYPE_ID;
@@ -79,7 +86,7 @@ private:
 			return pool_ptr;
 		}
 		else {
-			return static_cast<PoolAllocator<T>*>(found->second);
+			return static_cast<ComponentPoolAllocator<T>*>(found->second);
 		}
 	}
 

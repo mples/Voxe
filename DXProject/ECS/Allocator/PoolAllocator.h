@@ -37,7 +37,7 @@ public:
 
 	}
 
-	void free(T* object) {
+	void freeMemory(T* object) {
 		object->~T();
 		*((T **)object) = firstDeleted_;
 		firstDeleted_ = object;

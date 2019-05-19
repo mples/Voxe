@@ -19,7 +19,7 @@ public:
 		EntityId id = handleTable_.acquireHandle(entity);
 
 		entity->id_ = id;
-		//entity->componentManager_ = componentManager_;
+		entity->componentManager_ = componentManager_;
 
 		return id;
 	}
@@ -32,9 +32,9 @@ public:
 		auto found = entitiesPools_.find(type_id);
 		if (found != entitiesPools_.end()) {
 			componentManager_->eraseAllComponents(id);
-			
 
-			dynamic_cast<PoolAllocator<T>*>(found->second).free(dynamic_cast<T*>(entity));
+
+			static_cast<PoolAllocator<T>*>(found->second)->freeMemory(dynamic_cast<T*>(entity));
 		}
 
 		releaseEntityId(id);

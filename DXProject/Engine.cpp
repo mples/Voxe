@@ -20,6 +20,7 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	}
 
 	timer_.start();
+	globalTimer_.start();
 
 	GraphicEngine::createInstance();
 	MouseManager::createInstance();
@@ -99,6 +100,19 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	EntityId eid2 = entityManager_.createEntity<TestEntity>(4);
 	EntityId eid3 = entityManager_.createEntity<TestEntity>(1);
 
+	TestComponent * comp = componentManager_.addComponent<TestComponent>(eid);
+	TestComponent * comp1 = componentManager_.addComponent<TestComponent>(eid2, 10.0);
+	TestComponent * comp2 = componentManager_.addComponent<TestComponent>(eid3);
+
+	TestEntity* e1 = entityManager_.getEntity<TestEntity>(eid);
+	TestComponent* c1 = componentManager_.getComponent<TestComponent>(eid);
+	e1->removeComponent<TestComponent>();
+
+	entityManager_.eraseEntity<TestEntity>(eid);
+	componentManager_.eraseComponent<TestComponent>(eid3);
+
+	//TestSystem * ts = systemManager_.addSystem<TestSystem>();
+
 	return true;
 }
 
@@ -119,4 +133,8 @@ void Engine::update() {
 
 EventHandler * Engine::getEventHandler() {
 	return &eventHandler_;
+}
+
+double Engine::getGlobalTime() {
+	return globalTimer_.getTimePassedMilisec();
 }
