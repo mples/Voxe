@@ -21,13 +21,6 @@ public:
 		eventsBuffer_.push_back(e);
 	}
 
-	void removeEventCallback(IEventDelegate * event_delegate);
-
-	void dispatchEvents();
-private:
-	EventHandler(const EventHandler& other) = delete;
-	EventHandler& operator=(const EventHandler& other) = delete;
-
 	template<class EventType>
 	void addEventCallback(IEventDelegate* event_delegate) {
 		EventTypeId event_type_id = EventType::TYPE_ID;
@@ -42,6 +35,13 @@ private:
 			delegate_it->second->addEventCallback(event_delegate);
 		}
 	}
+
+	void removeEventCallback(IEventDelegate * event_delegate);
+
+	void dispatchEvents();
+private:
+	EventHandler(const EventHandler& other) = delete;
+	EventHandler& operator=(const EventHandler& other) = delete;
 
 
 	std::unordered_map<EventTypeId, IEventDispatcher*> eventDispatchersMap_;

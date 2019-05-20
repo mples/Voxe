@@ -11,8 +11,8 @@ enum class SystemPriorityLevel {
 class ISystem {
 	friend class SystemManager;
 public:
-	ISystem() : priority_(SystemPriorityLevel::MEDIUM), updateInterval_(0.0f), active_(true), updateReady_(false) {}
-	virtual ~ISystem() = 0;
+	ISystem() : priority_(SystemPriorityLevel::MEDIUM), updateInterval_(0.0f), active_(true), updateReady_(false), sinceLastUpdateTime_(0.0f) {}
+	virtual ~ISystem() {};
 
 	virtual void preUpdate(float dt) = 0;
 	virtual void update(float dt) = 0;

@@ -159,9 +159,6 @@
     <ClCompile Include="ECS\EntityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestEntity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ECS\ComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -172,12 +169,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ECS\Event\IEvent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -413,9 +404,6 @@
     <ClInclude Include="ECS\TypeId.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestEntity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ECS\IComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -459,12 +447,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Event\IEventListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

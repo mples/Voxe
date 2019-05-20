@@ -11,26 +11,25 @@ public:
 	~SystemManager();
 
 	template<class T, class ...ARGS>
-	T* addSystem(ARGS&& ... args) {
+	T * addSystem(ARGS&& ...args) {
 		const unsigned int type_id = T::SYSTEM_TYPE_ID;
 
 		auto found = systemsMap_.find(type_id);
 		if (found != systemsMap_.end()) {
-			return found->second;
+			return dynamic_cast<T*>(found->second);
 		}
 
-		ISystem* system = new T(std::forward<ARGS>(args)...);
+		T* system = new T(std::forward<ARGS>(args)...);
 		systemsMap_[type_id] = system;
 		systemUpdateOrder_.insert(std::make_pair(static_cast<int>(system->priority_), system));
-		//return dynamic_cast<T*>(system);
-		return nullptr;
+		return dynamic_cast<T*>(system);
 	} 
 
 	template<class T>
 	inline T* getSystem() const {
 		auto found = systemsMap_.find(T::SYSTEM_TYPE_ID);
 
-		return (found == systemsMap_.end()) ? dynamic_cast<T*>(found->second) : nullptr;
+		return (found != systemsMap_.end()) ? dynamic_cast<T*>(found->second) : nullptr;
 	}
 
 	template<class T>
@@ -85,8 +84,8 @@ public:
 		}
 	}
 
-private:
 	void update(float dt);
+private:
 
 	SystemManager(const SystemManager& other) = delete;
 	SystemManager& operator=(const SystemManager& other) = delete;

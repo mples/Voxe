@@ -95,24 +95,6 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	};
 	INPUT.addCallback(callback, InputCallbackPriority::HIGH);
 
-
-	EntityId eid = entityManager_.createEntity<TestEntity>();
-	EntityId eid2 = entityManager_.createEntity<TestEntity>(4);
-	EntityId eid3 = entityManager_.createEntity<TestEntity>(1);
-
-	TestComponent * comp = componentManager_.addComponent<TestComponent>(eid);
-	TestComponent * comp1 = componentManager_.addComponent<TestComponent>(eid2, 10.0);
-	TestComponent * comp2 = componentManager_.addComponent<TestComponent>(eid3);
-
-	TestEntity* e1 = entityManager_.getEntity<TestEntity>(eid);
-	TestComponent* c1 = componentManager_.getComponent<TestComponent>(eid);
-	e1->removeComponent<TestComponent>();
-
-	entityManager_.eraseEntity<TestEntity>(eid);
-	componentManager_.eraseComponent<TestComponent>(eid3);
-
-	//TestSystem * ts = systemManager_.addSystem<TestSystem>();
-
 	return true;
 }
 
@@ -123,7 +105,14 @@ bool Engine::processMessages() {
 void Engine::update() {
 	double dt = timer_.getTimePassedMilisec();
 	timer_.restart();
-	const float camera_speed = 0.01f;
+
+	char s[256];
+	sprintf(s, "Dt: %f\n", dt);
+	OutputDebugStringA(s);
+
+	eventHandler_.dispatchEvents();
+	systemManager_.update(dt);
+
 
 	INPUT.processInput(dt);
 	STAGE_MANAGER.update(dt);

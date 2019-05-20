@@ -11,9 +11,5 @@ public:
 
 	virtual EventTypeId getEventTypeId() const = 0;
 
-	virtual bool operator==(const IEventDelegate* other) = 0;
-
-	virtual bool operator!=(const IEventDelegate* other) = 0;
-
 	virtual IEventDelegate* clone() = 0;
 };

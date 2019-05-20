@@ -161,9 +161,6 @@
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
-    <ClCompile Include="TestComponent.cpp" />
-    <ClCompile Include="TestEntity.cpp" />
-    <ClCompile Include="TestSystem.cpp" />
     <ClCompile Include="Voxel\Chunk.cpp" />
     <ClCompile Include="Voxel\ChunkRenderer.cpp" />
     <ClCompile Include="GameStage.cpp" />
@@ -235,9 +232,6 @@
     <ClInclude Include="OcclusionQuery.h" />
     <ClInclude Include="SpatialHash.h" />
     <ClInclude Include="ECS\System.h" />
-    <ClInclude Include="TestComponent.h" />
-    <ClInclude Include="TestEntity.h" />
-    <ClInclude Include="TestSystem.h" />
     <ClInclude Include="Voxel\BlockType.h" />
     <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Voxel\Chunk.h" />

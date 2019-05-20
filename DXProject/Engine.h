@@ -11,10 +11,6 @@
 #include "ECS/SystemManager.h"
 #include "ECS/Event/EventHandler.h"
 
-#include "TestEntity.h"
-#include "TestComponent.h"
-#include "TestSystem.h"
-
 #define ENGINE Engine::getInstance()
 
 class Engine : public Singleton<Engine>{

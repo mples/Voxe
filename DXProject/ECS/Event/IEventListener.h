@@ -4,18 +4,18 @@
 
 #include "EventHandler.h"
 #include "EventDelegate.h"
-#include "../../Engine.h"
 
 class IEventListener {
 public:
-	IEventListener(EventHandler * event_handler = ENGINE.getEventHandler()) : eventHandler_(event_handler) {}
-	virtual ~IEventListener() = 0;
+	IEventListener(EventHandler * event_handler ) : eventHandler_(event_handler) {}
+	virtual ~IEventListener() {};
 
 	template<class EventType>
-	void registerEventCallback(std::function<void(const EventType * e)> callback) {
-		IEventDelegate* callback = new EventDelegate<EventType>(callback);
-		registeredCallbacks_.push_back(callback);
-		eventHandler_->removeEventCallback<EventType>(callback);
+	IEventDelegate* registerEventCallback(std::function<void(const EventType * e)> callback) {
+		IEventDelegate* deleg = new EventDelegate<EventType>(callback);
+		registeredCallbacks_.push_back(deleg);
+		eventHandler_->addEventCallback<EventType>(deleg);
+		return deleg;
 	}
 
 	void unregisterEventCallback(IEventDelegate* deleg) {
