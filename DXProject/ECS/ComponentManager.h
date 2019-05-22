@@ -68,8 +68,18 @@ public:
 		return dynamic_cast<T*>(component);
 	}
 
+	template<class T>
+	using TComponentIterator = typename ComponentPoolAllocator<T>::iterator;
 
+	template<class T>
+	inline TComponentIterator<T> begin() {
+		return getComponentPoolAllocator<T>()->begin();
+	}
 
+	template<class T>
+	inline TComponentIterator<T> end() {
+		return getComponentPoolAllocator<T>()->end();
+	}
 
 private:
 	ComponentId acquireId(IComponent * component);
@@ -90,18 +100,6 @@ private:
 		}
 	}
 
-	template<class T>
-	using TComponentIterator = typename ComponentPoolAllocator<T>::iterator;
-
-	template<class T>
-	inline TComponentIterator<T> begin() {
-		return getComponentPoolAllocator<T>()->begin();
-	}
-
-	template<class T>
-	inline TComponentIterator<T> end() {
-		return getComponentPoolAllocator<T>()->end();
-	}
 
 	std::unordered_map<ComponentTypeId, IComponentAllocator*> componentsPools_;
 

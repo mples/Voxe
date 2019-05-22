@@ -124,6 +124,18 @@ EventHandler * Engine::getEventHandler() {
 	return &eventHandler_;
 }
 
+ComponentManager & Engine::getComponentManager() {
+	return componentManager_;
+}
+
+SystemManager & Engine::getSystemManager() {
+	return systemManager_;
+}
+
+EntityManager & Engine::getEntityManager() {
+	return entityManager_;
+}
+
 double Engine::getGlobalTime() {
 	return globalTimer_.getTimePassedMilisec();
 }

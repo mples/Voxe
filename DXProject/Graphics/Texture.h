@@ -17,18 +17,18 @@ enum class TextureStorageType {
 
 class Texture {
 public:
-	Texture(ID3D11Device * device, const Color & color, aiTextureType type);
-	Texture(ID3D11Device * device, const Color * color_data, UINT width, UINT height, aiTextureType type);
-	Texture(ID3D11Device * device, const std::wstring & file_path, aiTextureType type);
-	Texture(ID3D11Device * device, const uint8_t* data, size_t size, aiTextureType type);
+	Texture(ID3D11Device * device, const Color & color);
+	Texture(ID3D11Device * device, const Color * color_data, UINT width, UINT height);
+	Texture(ID3D11Device * device, const std::wstring & file_path);
+	Texture(ID3D11Device * device, const uint8_t* data, size_t size);
+	Texture(const Texture & other);
 	~Texture();
-	aiTextureType getType();
 	ID3D11ShaderResourceView * getResourceView();
 	ID3D11ShaderResourceView ** getResourceViewAddress();
 private:
-	void initializeColorTexture(ID3D11Device * device, const Color * color_data, UINT width, UINT height, aiTextureType type);
+	void initializeColorTexture(ID3D11Device * device, const Color * color_data, UINT width, UINT height);
+
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource_;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> resourceView_;
-	aiTextureType type_;
 };
 

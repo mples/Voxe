@@ -109,11 +109,11 @@ std::vector<Texture> Model::loadTexturesFromMaterial(aiMaterial * material, aiTe
 		case aiTextureType_DIFFUSE:
 			material->Get(AI_MATKEY_COLOR_DIFFUSE, ai_color);
 			if (ai_color.IsBlack()) {
-				textures.push_back(Texture(device_, Colors::UnloadedColor, type));
+				textures.push_back(Texture(device_, Colors::UnloadedColor));
 				return textures;
 			}
 			else {
-				textures.push_back(Texture(device_, Color(ai_color.r * 255, ai_color.g * 255, ai_color.b * 255), type));
+				textures.push_back(Texture(device_, Color(ai_color.r * 255, ai_color.g * 255, ai_color.b * 255)));
 				return textures;
 			}
 		}
@@ -126,18 +126,18 @@ std::vector<Texture> Model::loadTexturesFromMaterial(aiMaterial * material, aiTe
 			switch (storage_type) {
 			case TextureStorageType::EMBEDDED_INDEX_COMPRESSED: {
 				int index = getTextureIndex(&path);
-				textures.push_back(Texture(device_, reinterpret_cast<uint8_t*>(scene->mTextures[index]->pcData), scene->mTextures[index]->mWidth, type));
+				textures.push_back(Texture(device_, reinterpret_cast<uint8_t*>(scene->mTextures[index]->pcData), scene->mTextures[index]->mWidth));
 				break;
 			}
 			case TextureStorageType::EMBEDDED_COMPRESSED: {
 				const aiTexture * tex = scene->GetEmbeddedTexture(path.C_Str());
-				textures.push_back(Texture(device_, reinterpret_cast<uint8_t*>(tex->pcData), tex->mWidth, type));
+				textures.push_back(Texture(device_, reinterpret_cast<uint8_t*>(tex->pcData), tex->mWidth));
 				break;
 			}
 
 			case TextureStorageType::DISK: {
 				std::wstring filename = directory_ + L"/" + StringHelper::stringToWide(std::string(path.C_Str()));
-				textures.push_back(Texture(device_, filename, type));
+				textures.push_back(Texture(device_, filename));
 				break;
 			}
 
@@ -145,7 +145,7 @@ std::vector<Texture> Model::loadTexturesFromMaterial(aiMaterial * material, aiTe
 		}
 	}
 	if (textures.empty()) {
-		textures.push_back(Texture(device_, Colors::UnhandledColor, type));
+		textures.push_back(Texture(device_, Colors::UnhandledColor));
 	}
 	return textures;
 

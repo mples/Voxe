@@ -23,6 +23,9 @@ public:
 	void update();
 
 	EventHandler * getEventHandler();
+	ComponentManager& getComponentManager();
+	SystemManager& getSystemManager();
+	EntityManager& getEntityManager();
 
 	template<class EventType, class... ARGS>
 	void sendEvent(ARGS&& ... args) {

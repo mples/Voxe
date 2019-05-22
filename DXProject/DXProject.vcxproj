@@ -153,14 +153,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
+    <ClCompile Include="Components\BlocksDataComponent.cpp" />
+    <ClCompile Include="Components\MaterialComponent.cpp" />
+    <ClCompile Include="Components\MeshComponent.cpp" />
+    <ClCompile Include="Components\TerrainNeighboursComponent.cpp" />
+    <ClCompile Include="Components\TransformComponent.cpp" />
+    <ClCompile Include="Components\WorldCoordinateComponent.cpp" />
     <ClCompile Include="ECS\Allocator\DefaultAllocator.cpp" />
     <ClCompile Include="ECS\ComponentManager.cpp" />
     <ClCompile Include="ECS\EntityManager.cpp" />
     <ClCompile Include="ECS\Event\EventHandler.cpp" />
     <ClCompile Include="ECS\Event\IEvent.cpp" />
     <ClCompile Include="ECS\SystemManager.cpp" />
+    <ClCompile Include="Entities\TerrainChunk.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
+    <ClCompile Include="Systems\RenderSystem.cpp" />
+    <ClCompile Include="Systems\TerrainGenerationSystem.cpp" />
+    <ClCompile Include="Systems\TerrainMeshGeneratorSystem.cpp" />
+    <ClCompile Include="Systems\VoxelDataGenerationSystem.cpp" />
     <ClCompile Include="Voxel\Chunk.cpp" />
     <ClCompile Include="Voxel\ChunkRenderer.cpp" />
     <ClCompile Include="GameStage.cpp" />
@@ -206,6 +217,12 @@
     <ClCompile Include="Graphics\WorldChunkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Components\BlocksDataComponent.h" />
+    <ClInclude Include="Components\MaterialComponent.h" />
+    <ClInclude Include="Components\MeshComponent.h" />
+    <ClInclude Include="Components\TerrainNeighboursComponent.h" />
+    <ClInclude Include="Components\TransformComponent.h" />
+    <ClInclude Include="Components\WorldCoordinateComponent.h" />
     <ClInclude Include="ECS\Allocator\DefaultAllocator.h" />
     <ClInclude Include="ECS\Allocator\IAllocator.h" />
     <ClInclude Include="ECS\Allocator\PoolAllocator.h" />
@@ -228,10 +245,19 @@
     <ClInclude Include="ECS\ISystem.h" />
     <ClInclude Include="ECS\SystemManager.h" />
     <ClInclude Include="ECS\TypeId.h" />
+    <ClInclude Include="Entities\TerrainChunk.h" />
+    <ClInclude Include="Events\TerrainChunkEditedEvent.h" />
+    <ClInclude Include="Events\TerrainChunkRequest.h" />
+    <ClInclude Include="Events\VoxelDataGeneratedEvent.h" />
+    <ClInclude Include="Events\VoxelDataRequest.h" />
     <ClInclude Include="OcclusionCulling.h" />
     <ClInclude Include="OcclusionQuery.h" />
     <ClInclude Include="SpatialHash.h" />
     <ClInclude Include="ECS\System.h" />
+    <ClInclude Include="Systems\RenderSystem.h" />
+    <ClInclude Include="Systems\TerrainGenerationSystem.h" />
+    <ClInclude Include="Systems\TerrainMeshGeneratorSystem.h" />
+    <ClInclude Include="Systems\VoxelDataGenerationSystem.h" />
     <ClInclude Include="Voxel\BlockType.h" />
     <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Voxel\Chunk.h" />
@@ -294,6 +320,7 @@
     <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Utilities\Timer.h" />
+    <ClInclude Include="Voxel\TerrainCoord.h" />
     <ClInclude Include="WindowContainer.h" />
     <ClInclude Include="Voxel\World.h" />
     <ClInclude Include="Graphics\WorldChunkModel.h" />

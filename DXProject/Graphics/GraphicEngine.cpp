@@ -71,7 +71,7 @@ bool GraphicEngine::initializeScene() {
 		PSpointLightBuffer_.data_.lightAttenuationB_ = light_.attenuationB_;
 		PSpointLightBuffer_.data_.lightAttenuationC_ = light_.attenuationC_;
 
-		Texture* tex = new Texture(device_.Get(), L"Data/Textures/grass.jpg", aiTextureType_DIFFUSE);
+		Texture* tex = new Texture(device_.Get(), L"Data/Textures/grass.jpg");
 
 		//chunk_.initialize(device_.Get(), deviceContext_.Get(), VSconstantBuffer_, tex);
 

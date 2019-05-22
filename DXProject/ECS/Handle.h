@@ -6,7 +6,10 @@
 
 class Handle {
 public:
-	Handle() {}
+	Handle() {
+		index_ = std::numeric_limits<unsigned int>::max();
+		version_ = std::numeric_limits<unsigned int>::max();
+	}
 	Handle(unsigned int index, unsigned int vers) : index_(index), version_(vers) {}
 
 	bool operator==(const Handle& other) {
@@ -24,13 +27,13 @@ public:
 		return version_;
 	}
 	static unsigned int maxIndex() {
-		return std::numeric_limits<unsigned int>::max();
+		return std::numeric_limits<unsigned int>::max() - 1;
 	}
 	static unsigned int minVersion() {
 		return std::numeric_limits<unsigned int>::min();
 	}
 	static unsigned int maxVersion() {
-		return std::numeric_limits<unsigned int>::max();
+		return std::numeric_limits<unsigned int>::max() - 1;
 	}
 	static unsigned int minIndex() {
 		return std::numeric_limits<unsigned int>::min();

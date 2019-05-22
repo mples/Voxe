@@ -16,7 +16,7 @@ bool ChunkRenderer::initialize(ID3D11Device * device, ID3D11DeviceContext * devi
 	device_ = device;
 	deviceContext_ = device_context;
 
-	texture_ = new Texture(device_, L"Data/Textures/grass.jpg", aiTextureType_DIFFUSE);
+	texture_ = new Texture(device_, L"Data/Textures/grass.jpg");
 	HRESULT hr = CBVSObject_.initialize(device, device_context);
 	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer.");
 
