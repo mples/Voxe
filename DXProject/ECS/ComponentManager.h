@@ -64,7 +64,7 @@ public:
 	template<class T>
 	T* getComponent(const EntityId e_id) {
 		IComponent* component = entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID];
-		assert(component != nullptr);
+		//assert(component != nullptr);
 		return dynamic_cast<T*>(component);
 	}
 

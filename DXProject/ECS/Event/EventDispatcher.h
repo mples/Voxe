@@ -61,7 +61,7 @@ public:
 		}
 	}
 	virtual unsigned int getEventCallbacksCount() override {
-		return eventCallbacks_.size();
+		return static_cast<unsigned int>(eventCallbacks_.size());
 	}
 
 private:

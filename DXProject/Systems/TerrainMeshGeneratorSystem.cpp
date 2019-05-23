@@ -1,11 +1,15 @@
 #include "TerrainMeshGeneratorSystem.h"
 #include "../Components/MeshComponent.h"
 
-TerrainMeshGenerationSystem::TerrainMeshGenerationSystem() : IEventListener(ENGINE.getEventHandler()) {
-	std::function<void(const VoxelDataGeneratedEvent*)> f = [&](const VoxelDataGeneratedEvent* e) {
+TerrainMeshGenerationSystem::TerrainMeshGenerationSystem() : device_(nullptr), IEventListener(ENGINE.getEventHandler()) {
+	std::function<void(const VoxelDataGeneratedEvent*)> voxel_data_callback = [&](const VoxelDataGeneratedEvent* e) {
 		onVoxelDataGeneratedEvent(e);
 	};
-	registerEventCallback<VoxelDataGeneratedEvent>(f);
+	std::function<void(const DirectXDeviceCreated*)> device_created_callback = [&](const DirectXDeviceCreated* e) {
+		onDirectXDeviceCreated(e);
+	};
+	registerEventCallback<VoxelDataGeneratedEvent>(voxel_data_callback);
+	registerEventCallback<DirectXDeviceCreated>(device_created_callback);
 }
 
 TerrainMeshGenerationSystem::~TerrainMeshGenerationSystem() {
@@ -41,6 +45,16 @@ void TerrainMeshGenerationSystem::update(float dt) {
 
 void TerrainMeshGenerationSystem::onVoxelDataGeneratedEvent(const VoxelDataGeneratedEvent * e) {
 	entitiesToUpdate_.push_back(e->id_);
+}
+
+void TerrainMeshGenerationSystem::onDirectXDeviceCreated(const DirectXDeviceCreated * e) {
+	if (device_ == nullptr) {
+		device_ = e->device_;
+	}
+	else {
+		assert(0 && "Trying to set already set device pointer");
+	}
+
 }
 
 void TerrainMeshGenerationSystem::calculateMeshData(std::vector<Vertex>& vertices, std::vector<DWORD>& indices, BlocksDataComponent * blocks_com, NeightbourData neight_data) {
@@ -178,7 +192,7 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeX(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (x == 0) {
-		if (neight_data.left_ != nullptr || neight_data.left_->getBlock(DIMENSION - 1, y, z) == BlockType::AIR ) {
+		if (neight_data.left_ == nullptr || neight_data.left_->getBlock(DIMENSION - 1, y, z) == BlockType::AIR ) {
 			return false;
 		}
 	}
@@ -190,7 +204,7 @@ bool TerrainMeshGenerationSystem::isObscuredPositiveX(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (x + 1 == DIMENSION) {
-		if (neight_data.right_ != nullptr || neight_data.right_->getBlock(0, y, z) == BlockType::AIR) {
+		if (neight_data.right_ == nullptr || neight_data.right_->getBlock(0, y, z) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -202,7 +216,7 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeY(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (y == 0) {
-		if (neight_data.bottom_ != nullptr || neight_data.bottom_->getBlock(x, DIMENSION - 1, z) == BlockType::AIR) {
+		if (neight_data.bottom_ == nullptr || neight_data.bottom_->getBlock(x, DIMENSION - 1, z) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -214,7 +228,7 @@ bool TerrainMeshGenerationSystem::isObscuredPositiveY(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (y == DIMENSION - 1) {
-		if (neight_data.top_ != nullptr || neight_data.top_->getBlock(x, 0, z) == BlockType::AIR) {
+		if (neight_data.top_ == nullptr || neight_data.top_->getBlock(x, 0, z) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -226,7 +240,7 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeZ(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (z == 0) {
-		if (neight_data.back_ != nullptr || neight_data.back_->getBlock(x, y, DIMENSION - 1) == BlockType::AIR) {
+		if (neight_data.back_ == nullptr || neight_data.back_->getBlock(x, y, DIMENSION - 1) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -238,7 +252,7 @@ bool TerrainMeshGenerationSystem::isObscuredPositiveZ(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (z + 1 == DIMENSION) {
-		if (neight_data.front_ != nullptr || neight_data.front_->getBlock(x, y, 0) == BlockType::AIR) {
+		if (neight_data.front_ == nullptr || neight_data.front_->getBlock(x, y, 0) == BlockType::AIR) {
 			return false;
 		}
 	}

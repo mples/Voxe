@@ -1,5 +1,7 @@
 #include "TerrainGenerationSystem.h"
 
+#include "../Engine.h"
+
 #include "../Components/TransformComponent.h"
 #include "../Components/MeshComponent.h"
 #include "../Components/MaterialComponent.h"

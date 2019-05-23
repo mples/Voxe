@@ -4,9 +4,12 @@
 #include "../ECS/System.h"
 #include "../ECS/Event/IEventListener.h"
 #include "../Events/VoxelDataGeneratedEvent.h"
+#include "../Events/DirectXDeviceCreated.h"
 #include "../Entities/TerrainChunk.h"
 #include "../Components/BlocksDataComponent.h"
 #include "../Components/TerrainNeighboursComponent.h"
+
+#include "../Graphics/Vertex.h"
 
 #include <d3d11.h>
 #include <list>
@@ -27,6 +30,8 @@ public:
 	virtual void update(float dt) override;
 private:
 	void onVoxelDataGeneratedEvent(const VoxelDataGeneratedEvent* e);
+
+	void onDirectXDeviceCreated(const DirectXDeviceCreated * e);
 
 	void calculateVertices(UINT x, UINT y, UINT z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices, BlocksDataComponent * blocks_com, NeightbourData neight_data);
 

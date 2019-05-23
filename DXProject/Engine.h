@@ -1,6 +1,5 @@
 #pragma once
 #include "WindowContainer.h"
-#include "Graphics/GraphicEngine.h"
 #include "Utilities/Timer.h"
 
 #include "Input/InputManager.h"
@@ -19,6 +18,7 @@ public:
 	~Engine();
 	
 	bool init(HINSTANCE hInstance, std::wstring window_title, std::wstring window_class, int width, int height);
+	void initializeSystems(HWND hwd, int width, int height);
 	bool processMessages();
 	void update();
 
@@ -35,7 +35,6 @@ public:
 	double getGlobalTime();
 private:
 	WindowContainer windowContainer_;
-	//GraphicEngine gfxEngine_;
 	Timer timer_;
 	Timer globalTimer_;
 	

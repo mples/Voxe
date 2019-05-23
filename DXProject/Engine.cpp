@@ -1,6 +1,9 @@
 #include "Engine.h"
 
-
+#include "Systems/RenderSystem.h"
+#include "Systems/TerrainGenerationSystem.h"
+#include "Systems/TerrainMeshGeneratorSystem.h"
+#include "Systems/VoxelDataGenerationSystem.h"
 
 Engine::Engine() : entityManager_(&componentManager_) {
 }
@@ -22,16 +25,13 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 	timer_.start();
 	globalTimer_.start();
 
-	GraphicEngine::createInstance();
 	MouseManager::createInstance();
 	KeyboardManager::createInstance();
 	InputManager::createInstance();
 	StageManager::createInstance();
 	JobSystem::createInstance();
 
-	if (!GRAPHIC_ENGINE.initialize(windowContainer_.renderWindow_.getHWND(), width, height)) {
-		return false;
-	}
+
 
 
 	engineContext_.addActionMapping(Action::MOVE_FRONT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'W'));
@@ -48,7 +48,7 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 
 	INPUT.addFrontContext(&engineContext_);
 	InputCallback callback = [=](MappedInput& input) {
-		auto move_left = input.actions_.find(Action::MOVE_LEFT);
+	/*	auto move_left = input.actions_.find(Action::MOVE_LEFT);
 		if (move_left != input.actions_.end()) {
 			GRAPHIC_ENGINE.camera_.adjustPos(GRAPHIC_ENGINE.camera_.getLeftVector() * camera_speed * input.dt_);
 			input.actions_.erase(move_left);
@@ -91,11 +91,20 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 			GRAPHIC_ENGINE.camera_.adjustRot(look_y->second * 0.001 * input.dt_, 0.0f, 0.0f);
 
 			input.ranges_.erase(look_y);
-		}
+		}*/
 	};
 	INPUT.addCallback(callback, InputCallbackPriority::HIGH);
 
+	initializeSystems(windowContainer_.renderWindow_.getHWND(), width, height);
+
 	return true;
+}
+
+void Engine::initializeSystems(HWND hwd, int width, int height) {
+	systemManager_.addSystem<RenderSystem>(hwd, width, height);
+	systemManager_.addSystem<TerrainGenerationSystem>();
+	systemManager_.addSystem<TerrainMeshGenerationSystem>();
+	systemManager_.addSystem<VoxelDataGenerationSystem>();
 }
 
 bool Engine::processMessages() {
@@ -117,7 +126,6 @@ void Engine::update() {
 	INPUT.processInput(dt);
 	STAGE_MANAGER.update(dt);
 
-	GRAPHIC_ENGINE.draw();
 }
 
 EventHandler * Engine::getEventHandler() {

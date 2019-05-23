@@ -1,12 +1,15 @@
 #pragma once
-#include "../Engine.h"
 #include "../ECS/System.h"
 #include "../ECS/Event/IEventListener.h"
 #include "../Events/TerrainChunkRequest.h"
 #include "../Entities/TerrainChunk.h"
 #include "../Voxel/TerrainCoord.h"
+
+#include <DirectXMath.h>
 #include <unordered_map>
 #include <list>
+
+using namespace DirectX;
 
 class TerrainGenerationSystem : public System<TerrainGenerationSystem>, public IEventListener {
 public:

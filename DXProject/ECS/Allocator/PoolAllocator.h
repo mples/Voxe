@@ -8,7 +8,7 @@ template<typename T>
 class PoolAllocator {
 public:
 	PoolAllocator(size_t initial_capacity = 1024, size_t max_block_length = 1000000) : 
-		firstDeleted_(nullptr), elementsInBlock_(0), blockCapacity_(initial_capacity), firstBlock_(initial_capacity), maxBlockLength_(max_block_length) {
+		firstDeleted_(nullptr), blockCapacity_(initial_capacity), firstBlock_(initial_capacity), maxBlockLength_(max_block_length) {
 		if (max_block_length < 1) {
 			throw std::invalid_argument("Capacity must be at least 1");
 		}
@@ -26,13 +26,13 @@ public:
 			return result;
 		}
 
-		if (elementsInBlock_ > blockCapacity_) {
+		if (lastBlock_->elementsInBlock_ > blockCapacity_) {
 			allocateNewNode();
 		}
 		char * address = (char*)currentMemory_;
-		address += elementsInBlock_ * itemSize_;
+		address += lastBlock_->elementsInBlock_ * itemSize_;
 		T* result = new(address) T(std::forward<P>(param)...);
-		elementsInBlock_++;
+		lastBlock_->elementsInBlock_++;
 		return result;
 
 	}
@@ -47,6 +47,7 @@ private:
 	struct MemoryBlock {
 		void * memory_;
 		size_t capacity_;
+		size_t elementsInBlock_;
 		MemoryBlock* nextBlock_;
 		
 		MemoryBlock(size_t capacity) {
@@ -59,6 +60,7 @@ private:
 			}
 			capacity_ = capacity_;
 			nextBlock_ = nullptr;
+			elementsInBlock_ = 0;
 		}
 		~MemoryBlock() {
 			::operator delete(memory_);
@@ -67,7 +69,6 @@ private:
 
 	void* currentMemory_;
 	T* firstDeleted_;
-	size_t elementsInBlock_;
 	size_t blockCapacity_;
 	MemoryBlock firstBlock_;
 	MemoryBlock* lastBlock_;
@@ -79,13 +80,13 @@ private:
 	PoolAllocator& operator= (const PoolAllocator<T>& other) = delete;
 	
 	void allocateNewNode() {
-		size_t size = elementsInBlock_;
+		size_t size = lastBlock_->elementsInBlock_;
 		if (size >= maxBlockLength_) {
 			size = maxBlockLength_;
 		}
 		else {
 			size *= 2;
-			if (size < elementsInBlock_) {
+			if (size < lastBlock_->elementsInBlock_) {
 				throw std::overflow_error("Size overflow");
 			}
 			if (size <= maxBlockLength_) {
@@ -98,7 +99,6 @@ private:
 		lastBlock_ = new_block;
 
 		currentMemory_ = new_block->memory_;
-		elementsInBlock_ = 0;
 		blockCapacity_ = size;
 	}
 public:
@@ -106,23 +106,24 @@ public:
 		MemoryBlock* currentBlock_;
 		MemoryBlock* firstBlock;
 		size_t objectIndex_;
+	public:
 
-		iterator(MemoryBlock* first_block, size_t index = 0) : currentBlock_(firstBlock), currentBlock_(first_block), objectIndex_(index) {
+		iterator(MemoryBlock* first_block, size_t index = 0) : currentBlock_(first_block), objectIndex_(index) {
 
 		}
-		iterator(MemoryBlock* first_block, MemoryBlock* curr_block, size_t index = 0) : currentBlock_(firstBlock), currentBlock_(curr_block), objectIndex_(index) {
+		iterator(MemoryBlock* first_block, MemoryBlock* curr_block, size_t index = 0) : currentBlock_(curr_block), objectIndex_(index) {
 
 		}
 
 		inline iterator& operator++() {
-			if (currentBlock_->nextBlock == nullptr && objectIndex_ > elementsInBlock_) {
+			if (currentBlock_->nextBlock_ == nullptr && objectIndex_ > currentBlock_->elementsInBlock_) {
 				
 				//end ?
 				return *this;
 			}
 			objectIndex_++;
 
-			if (size_t > currentBlock_->capcity_) {
+			if (objectIndex_ > currentBlock_->capacity_) {
 				if (currentBlock_->nextBlock_ != nullptr) {
 					currentBlock_ = currentBlock_->nextBlock_;
 					objectIndex_ = 0;
@@ -138,13 +139,13 @@ public:
 		inline T& operator*() const {
 			char * address = (char*)currentBlock_->memory_;
 			address += objectIndex_ * itemSize_;
-			return *(static_cast<T*>(address));
+			return *(reinterpret_cast<T*>(address));
 		}
 
 		inline T* operator->() const {
 			char * address = (char*)currentBlock_->memory_;
 			address += objectIndex_ * itemSize_;
-			return static_cast<T*>(address);
+			return reinterpret_cast<T*>(address);
 		}
 
 		inline bool operator==(iterator& other) {
@@ -161,7 +162,7 @@ public:
 	}
 
 	inline iterator end() {
-		return iterator(&firstBlock_, lastBlock_, elementsInBlock_);
+		return iterator(&firstBlock_, lastBlock_, lastBlock_->elementsInBlock_);
 	}
 };
 

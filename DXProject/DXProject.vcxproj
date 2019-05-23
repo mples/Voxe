@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Components\BlocksDataComponent.cpp" />
+    <ClCompile Include="Components\CameraComponent.cpp" />
     <ClCompile Include="Components\MaterialComponent.cpp" />
     <ClCompile Include="Components\MeshComponent.cpp" />
     <ClCompile Include="Components\TerrainNeighboursComponent.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="ECS\Event\EventHandler.cpp" />
     <ClCompile Include="ECS\Event\IEvent.cpp" />
     <ClCompile Include="ECS\SystemManager.cpp" />
+    <ClCompile Include="Entities\GameCamera.cpp" />
     <ClCompile Include="Entities\TerrainChunk.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
@@ -218,6 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BlocksDataComponent.h" />
+    <ClInclude Include="Components\CameraComponent.h" />
     <ClInclude Include="Components\MaterialComponent.h" />
     <ClInclude Include="Components\MeshComponent.h" />
     <ClInclude Include="Components\TerrainNeighboursComponent.h" />
@@ -245,7 +248,12 @@
     <ClInclude Include="ECS\ISystem.h" />
     <ClInclude Include="ECS\SystemManager.h" />
     <ClInclude Include="ECS\TypeId.h" />
+    <ClInclude Include="Entities\GameCamera.h" />
+    <ClInclude Include="Entities\IGameCamera.h" />
     <ClInclude Include="Entities\TerrainChunk.h" />
+    <ClInclude Include="Events\CameraCreated.h" />
+    <ClInclude Include="Events\CameraDestroyed.h" />
+    <ClInclude Include="Events\DirectXDeviceCreated.h" />
     <ClInclude Include="Events\TerrainChunkEditedEvent.h" />
     <ClInclude Include="Events\TerrainChunkRequest.h" />
     <ClInclude Include="Events\VoxelDataGeneratedEvent.h" />

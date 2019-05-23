@@ -9,7 +9,7 @@ using EntityTypeId = unsigned int;
 class IEntity {
 	friend class EntityManager;
 public:
-	IEntity() :active_(true) {}
+	IEntity() : active_(true) {}
 	virtual ~IEntity() {}
 
 	template<class T>
