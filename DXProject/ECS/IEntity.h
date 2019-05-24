@@ -6,6 +6,7 @@ using EntityId = Handle;
 
 using EntityTypeId = unsigned int;
  
+
 class IEntity {
 	friend class EntityManager;
 public:
@@ -65,7 +66,10 @@ public:
 	virtual void onEnable() {};
 	virtual void onDisable() {};
 
-	const static EntityId INVALID_ID;
+	static EntityId getInvalidId() {
+		return EntityId::getInvalidHandle();
+	}
+
 protected:
 	EntityId id_;
 
@@ -74,4 +78,4 @@ private:
 	ComponentManager * componentManager_;
 };
 
-//const EntityId IEntity::INVALID_ID = EntityId();
+//const EntityId IEntity::INVALID_ID = Handle::INVALID_HANDLE;

@@ -14,7 +14,7 @@ ComponentId ComponentManager::acquireId(IComponent * component) {
 	if (found != entityComponentMap_.end()) {
 		result = componentLookUpTable_.acquireHandle(component);
 
-		assert( (found->second.count(component->getTypeId()) == 0) && "Cannot add two components of the same type to one entity");
+		//assert( (found->second.count(component->getTypeId()) == 0) && "Cannot add two components of the same type to one entity");
 		found->second[component->getTypeId()] = component;
 	}
 	else {

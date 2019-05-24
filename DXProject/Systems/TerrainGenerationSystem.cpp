@@ -8,7 +8,7 @@
 #include "../Components/BlocksDataComponent.h"
 #include "../Components/WorldCoordinateComponent.h"
 #include "../Components/TerrainNeighboursComponent.h"
-#include "../Events/TerrainChunkEditedEvent.h"
+#include "../Events/TerrainChunkChanged.h"
 
 #include "../Events/VoxelDataRequest.h"
 
@@ -48,59 +48,59 @@ void TerrainGenerationSystem::postUpdate(float dt) {
 }
 
 void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coord) {
-	EntityId left_eid;
-	EntityId right_eid;
-	EntityId top_eid;
-	EntityId bottom_eid;
-	EntityId front_eid;
-	EntityId back_eid;
+	EntityId left_eid = IEntity::getInvalidId();
+	EntityId right_eid = IEntity::getInvalidId();
+	EntityId top_eid = IEntity::getInvalidId();
+	EntityId bottom_eid = IEntity::getInvalidId();
+	EntityId front_eid = IEntity::getInvalidId();
+	EntityId back_eid = IEntity::getInvalidId();
 
 	auto left = activeTerrainChunks_.find(TerrainCoord(coord.x - 1, coord.y, coord.z));
 	if (left != activeTerrainChunks_.end()) {
 		left_eid = left->second;
-		TerrainNeightboursComponent* left_comp = ENGINE.getComponentManager().getComponent<TerrainNeightboursComponent>(left->second);
+		TerrainNeightboursComponent* left_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(left->second);
 		left_comp->right_ = id;
-		ENGINE.sendEvent<TerrainChunkEditedEvent>(left->second);
+		ENGINE.sendEvent<TerrainChunkChanged>(left->second);
 	}
 
 	auto right = activeTerrainChunks_.find(TerrainCoord(coord.x + 1, coord.y, coord.z));
 	if (right != activeTerrainChunks_.end()) {
 		right_eid = right->second;
-		TerrainNeightboursComponent* right_comp = ENGINE.getComponentManager().getComponent<TerrainNeightboursComponent>(right->second);
+		TerrainNeightboursComponent* right_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(right->second);
 		right_comp->left_ = id;
-		ENGINE.sendEvent<TerrainChunkEditedEvent>(right->second);
+		ENGINE.sendEvent<TerrainChunkChanged>(right->second);
 	}
 
 	auto top = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y + 1, coord.z));
 	if (top != activeTerrainChunks_.end()) {
 		top_eid = top->second;
-		TerrainNeightboursComponent* top_comp = ENGINE.getComponentManager().getComponent<TerrainNeightboursComponent>(top->second);
+		TerrainNeightboursComponent* top_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(top->second);
 		top_comp->bottom_ = id;
-		ENGINE.sendEvent<TerrainChunkEditedEvent>(top->second);
+		ENGINE.sendEvent<TerrainChunkChanged>(top->second);
 	}
 
 	auto bottom = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y - 1, coord.z));
 	if (bottom != activeTerrainChunks_.end()) {
 		bottom_eid = bottom->second;
-		TerrainNeightboursComponent* bottom_comp = ENGINE.getComponentManager().getComponent<TerrainNeightboursComponent>(bottom->second);
+		TerrainNeightboursComponent* bottom_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(bottom->second);
 		bottom_comp->top_ = id;
-		ENGINE.sendEvent<TerrainChunkEditedEvent>(bottom->second);
+		ENGINE.sendEvent<TerrainChunkChanged>(bottom->second);
 	}
 
 	auto front = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y, coord.z + 1));
 	if (front != activeTerrainChunks_.end()) {
 		front_eid = front->second;
-		TerrainNeightboursComponent* front_comp = ENGINE.getComponentManager().getComponent<TerrainNeightboursComponent>(front->second);
+		TerrainNeightboursComponent* front_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(front->second);
 		front_comp->back_ = id;
-		ENGINE.sendEvent<TerrainChunkEditedEvent>(front->second);
+		ENGINE.sendEvent<TerrainChunkChanged>(front->second);
 	}
 
-	auto back = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y, coord.z + 1));
+	auto back = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y, coord.z - 1));
 	if (back != activeTerrainChunks_.end()) {
 		back_eid = back->second;
-		TerrainNeightboursComponent* back_comp = ENGINE.getComponentManager().getComponent<TerrainNeightboursComponent>(back->second);
-		back_comp->top_ = id;
-		ENGINE.sendEvent<TerrainChunkEditedEvent>(back->second);
+		TerrainNeightboursComponent* back_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(back->second);
+		back_comp->front_ = id;
+		ENGINE.sendEvent<TerrainChunkChanged>(back->second);
 	}
 
 	ENGINE.getComponentManager().addComponent<TerrainNeightboursComponent>(id, left_eid, right_eid, top_eid, bottom_eid, front_eid, back_eid);

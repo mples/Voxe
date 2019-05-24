@@ -5,10 +5,14 @@ TerrainMeshGenerationSystem::TerrainMeshGenerationSystem() : device_(nullptr), I
 	std::function<void(const VoxelDataGeneratedEvent*)> voxel_data_callback = [&](const VoxelDataGeneratedEvent* e) {
 		onVoxelDataGeneratedEvent(e);
 	};
+	std::function<void(const TerrainChunkChanged*)> chunk_changed_callback = [&](const TerrainChunkChanged* e) {
+		onTerrainChunkChanged(e);
+	};
 	std::function<void(const DirectXDeviceCreated*)> device_created_callback = [&](const DirectXDeviceCreated* e) {
 		onDirectXDeviceCreated(e);
 	};
 	registerEventCallback<VoxelDataGeneratedEvent>(voxel_data_callback);
+	registerEventCallback<TerrainChunkChanged>(chunk_changed_callback);
 	registerEventCallback<DirectXDeviceCreated>(device_created_callback);
 }
 
@@ -16,35 +20,76 @@ TerrainMeshGenerationSystem::~TerrainMeshGenerationSystem() {
 }
 
 void TerrainMeshGenerationSystem::update(float dt) {
-	auto it = entitiesToUpdate_.begin();
-	while (it != entitiesToUpdate_.end()) {
-		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponent<BlocksDataComponent>(*it);
+	if (device_ == nullptr) {
+		return;
+	}
+
+	auto it = entitiesToCreateMesh_.begin();
+	while (it != entitiesToCreateMesh_.end()) {
+		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(*it);
 		if (blocks_com != nullptr) {
-			TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponent<TerrainNeightboursComponent>(*it);
+			TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(*it);
 			if (neight_comp != nullptr) {
 				NeightbourData neight_data;
-				neight_data.left_ = ENGINE.getComponentManager().getComponent<BlocksDataComponent>(neight_comp->left_);
-				neight_data.right_ = ENGINE.getComponentManager().getComponent<BlocksDataComponent>(neight_comp->right_);
-				neight_data.top_ = ENGINE.getComponentManager().getComponent<BlocksDataComponent>(neight_comp->top_);
-				neight_data.bottom_ = ENGINE.getComponentManager().getComponent<BlocksDataComponent>(neight_comp->bottom_);
-				neight_data.front_ = ENGINE.getComponentManager().getComponent<BlocksDataComponent>(neight_comp->front_);
-				neight_data.back_ = ENGINE.getComponentManager().getComponent<BlocksDataComponent>(neight_comp->back_);
+				neight_data.left_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->left_);
+				neight_data.right_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->right_);
+				neight_data.top_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->top_);
+				neight_data.bottom_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->bottom_);
+				neight_data.front_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->front_);
+				neight_data.back_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->back_);
 
 				std::vector<Vertex> vertices;
 				std::vector<DWORD> indices;
 
 				calculateMeshData(vertices, indices, blocks_com, neight_data);
-
-				ENGINE.getComponentManager().addComponent<MeshComponent>(*it, device_, vertices, indices);
+				if (vertices.size() != 0) {
+					ENGINE.getComponentManager().addComponent<MeshComponent>(*it, device_, vertices, indices);
+				}
 			}
 		}
 		it++;
 	}
-	entitiesToUpdate_.clear();
+	entitiesToCreateMesh_.clear();
+
+	while (!entitiesToUpdateMesh_.empty()) {
+		auto update_it = entitiesToUpdateMesh_.begin();
+		MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(*update_it);
+		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(*update_it);
+		if (blocks_com != nullptr && mesh != nullptr) {
+			TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(*update_it);
+			if (neight_comp != nullptr) {
+				NeightbourData neight_data;
+				neight_data.left_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->left_);
+				neight_data.right_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->right_);
+				neight_data.top_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->top_);
+				neight_data.bottom_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->bottom_);
+				neight_data.front_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->front_);
+				neight_data.back_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->back_);
+
+				std::vector<Vertex> vertices;
+				std::vector<DWORD> indices;
+
+				calculateMeshData(vertices, indices, blocks_com, neight_data);
+				mesh->clearMesh();
+				if (vertices.size() != 0) {
+					mesh->setMesh(device_, vertices, indices);
+				}
+			}
+			entitiesToUpdateMesh_.pop_front();
+		}
+		else {
+			break;
+		}
+	}
+	//entitiesToUpdateMesh_.clear();
 }
 
 void TerrainMeshGenerationSystem::onVoxelDataGeneratedEvent(const VoxelDataGeneratedEvent * e) {
-	entitiesToUpdate_.push_back(e->id_);
+	entitiesToCreateMesh_.push_back(e->id_);
+}
+
+void TerrainMeshGenerationSystem::onTerrainChunkChanged(const TerrainChunkChanged * e) {
+	entitiesToUpdateMesh_.push_back(e->id_);
 }
 
 void TerrainMeshGenerationSystem::onDirectXDeviceCreated(const DirectXDeviceCreated * e) {

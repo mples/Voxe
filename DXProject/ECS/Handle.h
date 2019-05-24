@@ -15,11 +15,9 @@ public:
 	bool operator==(const Handle& other) {
 		return index_ == other.index_ && version_ == other.version_;
 	}
-
 	bool operator!=(const Handle& other) {
 		return index_ != other.index_ || version_ != other.version_;
 	}
-
 	inline const unsigned int getIndex() const {
 		return index_;
 	}
@@ -38,13 +36,14 @@ public:
 	static unsigned int minIndex() {
 		return std::numeric_limits<unsigned int>::min();
 	}
+	static Handle getInvalidHandle() {
+		return Handle(std::numeric_limits<unsigned int>::max(), std::numeric_limits<unsigned int>::max());
+	}
+
 private:
 	unsigned int index_;
 	unsigned int version_;	//storing version counter to make sure handle is valid 
 };
-
-
-
 
 
 template<class T, size_t size = 1024>
@@ -66,7 +65,6 @@ public:
 			}
 		}
 		extendTable();
-		assert(table_[i].second != nullptr); //table is full
 		
 		table_[i].second = object;
 		table_[i].first = (table_[i].first + 1) % Handle::maxVersion();
@@ -82,7 +80,7 @@ public:
 		return handle.getVersion() == table_[handle.getIndex().first];
 	}
 
-	inline T* operator[](Handle& handle) {
+	inline T* operator[](const Handle& handle) {
 		assert(handle.getIndex() < table_.size() &&  handle.getVersion() == table_[handle.getIndex()].first && "Invalid handle");
 		return (table_[handle.getIndex()].first == handle.getVersion()) ? table_[handle.getIndex()].second : nullptr;
 	}

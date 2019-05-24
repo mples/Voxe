@@ -5,6 +5,7 @@
 #include "../ECS/Event/IEventListener.h"
 #include "../Events/VoxelDataGeneratedEvent.h"
 #include "../Events/DirectXDeviceCreated.h"
+#include "../Events/TerrainChunkChanged.h"
 #include "../Entities/TerrainChunk.h"
 #include "../Components/BlocksDataComponent.h"
 #include "../Components/TerrainNeighboursComponent.h"
@@ -30,6 +31,8 @@ public:
 	virtual void update(float dt) override;
 private:
 	void onVoxelDataGeneratedEvent(const VoxelDataGeneratedEvent* e);
+
+	void onTerrainChunkChanged(const TerrainChunkChanged * e);
 
 	void onDirectXDeviceCreated(const DirectXDeviceCreated * e);
 
@@ -63,5 +66,6 @@ private:
 
 	ID3D11Device * device_;
 
-	std::list<EntityId> entitiesToUpdate_;
+	std::list<EntityId> entitiesToUpdateMesh_;
+	std::list<EntityId> entitiesToCreateMesh_;
 };

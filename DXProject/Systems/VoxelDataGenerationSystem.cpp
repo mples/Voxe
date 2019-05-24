@@ -19,7 +19,7 @@ void VoxelDataGenerationSystem::update(float dt) {
 		BlockType blocks[DIMENSION][DIMENSION][DIMENSION] = {};
 		//ZeroMemory(blocks, pow(DIMENSION, 3) * sizeof(BlockType));
 		ENGINE.getEntityManager().getEntity<TerrainChunk>(*it);
-		WorldCoordinateComponent * coord_comp = ENGINE.getComponentManager().getComponent<WorldCoordinateComponent>(*it);
+		WorldCoordinateComponent * coord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(*it);
 		if (coord_comp != nullptr) {
 			generator_.generate(blocks, coord_comp->getCoord());
 			ENGINE.getComponentManager().addComponent<BlocksDataComponent>(*it, blocks);

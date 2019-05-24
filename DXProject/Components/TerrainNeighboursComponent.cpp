@@ -6,7 +6,7 @@ right_(r),
 top_(t),
 bottom_(bottom),
 front_(f),
-back_(back_)
+back_(back)
 {
 }
 

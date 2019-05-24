@@ -210,6 +210,12 @@
     <ClCompile Include="Components\CameraComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\BoundingVolumeComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Systems\FrustumCullingSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderWindow.h">
@@ -530,9 +536,6 @@
     <ClInclude Include="Components\TerrainNeighboursComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\TerrainChunkEditedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Voxel\TerrainCoord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -552,6 +555,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events\DirectXDeviceCreated.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\BoundingVolumeComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\FrustumCullingSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\BoundingVolumeCreated.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\TerrainChunkChanged.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

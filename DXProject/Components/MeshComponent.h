@@ -12,6 +12,10 @@ public:
 	VertexBuffer<Vertex>& getVertexBuffer();
 	IndexBuffer& getIndexBuffer();
 
+	void setMesh(ID3D11Device * device, std::vector<Vertex>& vertices, std::vector<DWORD>& indices);
+
+	void clearMesh();
+
 private:
 	VertexBuffer<Vertex> vertexBuffer_;
 	IndexBuffer indexBuffer_;

@@ -61,7 +61,7 @@ void RenderSystem::update(float dt) {
 	auto end = ENGINE.getComponentManager().end<MeshComponent>();
 
 	while (it != end) {
-		WorldCoordinateComponent * wcoord_comp = ENGINE.getComponentManager().getComponent<WorldCoordinateComponent>(it->getOwner());
+		WorldCoordinateComponent * wcoord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
 		if (wcoord_comp != nullptr) {
 			drawObject(&(*it), wcoord_comp);
 		}

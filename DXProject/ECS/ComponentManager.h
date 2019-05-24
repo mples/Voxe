@@ -62,8 +62,15 @@ public:
 	}
 
 	template<class T>
-	T* getComponent(const EntityId e_id) {
+	T* getComponentByEntityId(const EntityId e_id) {
 		IComponent* component = entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID];
+		//assert(component != nullptr);
+		return dynamic_cast<T*>(component);
+	}
+
+	template<class T>
+	T* getComponentByComponentId(const ComponentId c_id) {
+		IComponent* component = componentLookUpTable_[c_id];
 		//assert(component != nullptr);
 		return dynamic_cast<T*>(component);
 	}

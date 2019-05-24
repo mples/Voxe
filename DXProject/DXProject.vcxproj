@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Components\BlocksDataComponent.cpp" />
+    <ClCompile Include="Components\BoundingVolumeComponent.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
     <ClCompile Include="Components\MaterialComponent.cpp" />
     <ClCompile Include="Components\MeshComponent.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Entities\TerrainChunk.cpp" />
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
+    <ClCompile Include="Systems\FrustumCullingSystem.cpp" />
     <ClCompile Include="Systems\RenderSystem.cpp" />
     <ClCompile Include="Systems\TerrainGenerationSystem.cpp" />
     <ClCompile Include="Systems\TerrainMeshGeneratorSystem.cpp" />
@@ -220,6 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BlocksDataComponent.h" />
+    <ClInclude Include="Components\BoundingVolumeComponent.h" />
     <ClInclude Include="Components\CameraComponent.h" />
     <ClInclude Include="Components\MaterialComponent.h" />
     <ClInclude Include="Components\MeshComponent.h" />
@@ -251,10 +254,11 @@
     <ClInclude Include="Entities\GameCamera.h" />
     <ClInclude Include="Entities\IGameCamera.h" />
     <ClInclude Include="Entities\TerrainChunk.h" />
+    <ClInclude Include="Events\BoundingVolumeCreated.h" />
     <ClInclude Include="Events\CameraCreated.h" />
     <ClInclude Include="Events\CameraDestroyed.h" />
     <ClInclude Include="Events\DirectXDeviceCreated.h" />
-    <ClInclude Include="Events\TerrainChunkEditedEvent.h" />
+    <ClInclude Include="Events\TerrainChunkChanged.h" />
     <ClInclude Include="Events\TerrainChunkRequest.h" />
     <ClInclude Include="Events\VoxelDataGeneratedEvent.h" />
     <ClInclude Include="Events\VoxelDataRequest.h" />
@@ -262,6 +266,7 @@
     <ClInclude Include="OcclusionQuery.h" />
     <ClInclude Include="SpatialHash.h" />
     <ClInclude Include="ECS\System.h" />
+    <ClInclude Include="Systems\FrustumCullingSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
     <ClInclude Include="Systems\TerrainGenerationSystem.h" />
     <ClInclude Include="Systems\TerrainMeshGeneratorSystem.h" />
