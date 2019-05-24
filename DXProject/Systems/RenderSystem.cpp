@@ -333,7 +333,7 @@ void RenderSystem::drawObject(MeshComponent * mesh, WorldCoordinateComponent* co
 	objectBufferVS_.data_.modelMatrix_ = coord->getWorldMatrix();
 	objectBufferVS_.applyChanges();
 
-	deviceContext_->PSGetShaderResources(0, 1, texture_->getResourceViewAddress());
+	deviceContext_->PSSetShaderResources(0, 1, texture_->getResourceViewAddress());
 	UINT offset = 0;
 	deviceContext_->IASetVertexBuffers(0, 1, mesh->getVertexBuffer().getAddressOf(), mesh->getVertexBuffer().stridePtr(), &offset);
 	deviceContext_->IASetIndexBuffer(mesh->getIndexBuffer().get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);

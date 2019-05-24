@@ -7,8 +7,8 @@
 class Handle {
 public:
 	Handle() {
-		index_ = std::numeric_limits<unsigned int>::max();
-		version_ = std::numeric_limits<unsigned int>::max();
+	/*	index_ = std::numeric_limits<unsigned int>::max();
+		version_ = std::numeric_limits<unsigned int>::max();*/
 	}
 	Handle(unsigned int index, unsigned int vers) : index_(index), version_(vers) {}
 

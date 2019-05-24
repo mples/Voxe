@@ -30,7 +30,7 @@ public:
 
 	template<class T, class ...ARGS>
 	T* addComponent(const EntityId e_id, ARGS&& ...args) {
-		T* component = getComponentPoolAllocator<T>()->allocate<T>(std::forward<ARGS>(args)...);
+		T* component = getComponentPoolAllocator<T>()->allocate(std::forward<ARGS>(args)...);
 
 		component->owner_ = e_id;
 		ComponentId c_id = acquireId(component);

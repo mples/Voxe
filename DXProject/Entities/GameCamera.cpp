@@ -3,16 +3,139 @@
 #include "../Events/CameraCreated.h"
 #include "../Events/CameraDestroyed.h"
 
+XMMATRIX GameCamera::IDENTITY_MATRIX = XMMatrixIdentity();
+
 GameCamera::GameCamera() : cameraComponent_(nullptr) {
-	//addComponent<CameraComponent>();
-	//ENGINE.sendEvent<CameraCreated>(id_);
-	identity_ = XMMatrixIdentity();
+	cameraComponent_ = addComponent<CameraComponent>();
+	ENGINE.sendEvent<CameraCreated>(id_);
+
+	context_.addActionMapping(Action::MOVE_FRONT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'W'));
+	context_.addActionMapping(Action::MOVE_BACK, KeyboardEvent(KeyboardEvent::Type::PRESS, 'S'));
+	context_.addActionMapping(Action::MOVE_RIGHT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'D'));
+	context_.addActionMapping(Action::MOVE_LEFT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'A'));
+	context_.addActionMapping(Action::MOVE_DOWN, KeyboardEvent(KeyboardEvent::Type::PRESS, 'Z'));
+	context_.addActionMapping(Action::MOVE_UP, KeyboardEvent(KeyboardEvent::Type::PRESS, VK_SPACE));
+
+	context_.addRangeMapping(Range::LOOK_X, RawAxis(AxisType::RAW_INPUT_MOUSE_X));
+	context_.addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::RAW_INPUT_MOUSE_Y));
+
+	static float camera_speed = 0.05f;
+
+	INPUT.addFrontContext(&context_);
+	InputCallback callback = [&](MappedInput& input) {
+			auto move_left = input.actions_.find(Action::MOVE_LEFT);
+			if (move_left != input.actions_.end()) {
+				cameraComponent_->adjustPos(cameraComponent_->getLeftVector() * camera_speed * input.dt_);
+				input.actions_.erase(move_left);
+			}
+			auto move_right = input.actions_.find(Action::MOVE_RIGHT);
+			if (move_right != input.actions_.end()) {
+				cameraComponent_->adjustPos(cameraComponent_->getRightVector() * camera_speed * input.dt_);
+				input.actions_.erase(move_right);
+			}
+			auto move_front = input.actions_.find(Action::MOVE_FRONT);
+			if (move_front != input.actions_.end()) {
+				cameraComponent_->adjustPos(cameraComponent_->getForwardVector() * camera_speed * input.dt_);
+				input.actions_.erase(move_front);
+			}
+			auto move_back = input.actions_.find(Action::MOVE_BACK);
+			if (move_back != input.actions_.end()) {
+				cameraComponent_->adjustPos(cameraComponent_->getBackwardVector() * camera_speed * input.dt_);
+				input.actions_.erase(move_back);
+			}
+			auto move_up = input.actions_.find(Action::MOVE_UP);
+			if (move_up != input.actions_.end()) {
+				cameraComponent_->adjustPos(0.0f, camera_speed * input.dt_, 0.0f);
+				input.actions_.erase(move_up);
+			}
+			auto move_down = input.actions_.find(Action::MOVE_DOWN);
+			if (move_down != input.actions_.end()) {
+				cameraComponent_->adjustPos(0.0f, -camera_speed * input.dt_, 0.0f);
+				input.actions_.erase(move_down);
+			}
+
+			auto look_x = input.ranges_.find(Range::LOOK_X);
+			if (look_x != input.ranges_.end()) {
+				cameraComponent_->adjustRot(0.0f, look_x->second* 0.001 * input.dt_, 0.0f);
+
+				input.ranges_.erase(look_x);
+			}
+
+			auto look_y = input.ranges_.find(Range::LOOK_Y);
+			if (look_y != input.ranges_.end()) {
+				cameraComponent_->adjustRot(look_y->second * 0.001 * input.dt_, 0.0f, 0.0f);
+
+				input.ranges_.erase(look_y);
+			}
+	};
+	INPUT.addCallback(callback, InputCallbackPriority::HIGH);
 }
 
 GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, float far_plane, XMFLOAT3 look_at, XMFLOAT3 pos, XMFLOAT3 rot) : cameraComponent_(nullptr) {
-	//addComponent<CameraComponent>(fov_degrees, aspect_ratio, near_plane, far_plane, look_at, pos, rot);
-	//ENGINE.sendEvent<CameraCreated>(id_);
-	identity_ = XMMatrixIdentity();
+	cameraComponent_ = addComponent<CameraComponent>(fov_degrees, aspect_ratio, near_plane, far_plane, look_at, pos, rot);
+	ENGINE.sendEvent<CameraCreated>(id_);
+
+
+	context_.addActionMapping(Action::MOVE_FRONT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'W'));
+	context_.addActionMapping(Action::MOVE_BACK, KeyboardEvent(KeyboardEvent::Type::PRESS, 'S'));
+	context_.addActionMapping(Action::MOVE_RIGHT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'D'));
+	context_.addActionMapping(Action::MOVE_LEFT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'A'));
+	context_.addActionMapping(Action::MOVE_DOWN, KeyboardEvent(KeyboardEvent::Type::PRESS, 'Z'));
+	context_.addActionMapping(Action::MOVE_UP, KeyboardEvent(KeyboardEvent::Type::PRESS, VK_SPACE));
+
+	context_.addRangeMapping(Range::LOOK_X, RawAxis(AxisType::RAW_INPUT_MOUSE_X));
+	context_.addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::RAW_INPUT_MOUSE_Y));
+
+	static float camera_speed = 0.05f;
+
+	INPUT.addFrontContext(&context_);
+	InputCallback callback = [&](MappedInput& input) {
+		auto move_left = input.actions_.find(Action::MOVE_LEFT);
+		if (move_left != input.actions_.end()) {
+			cameraComponent_->adjustPos(cameraComponent_->getLeftVector() * camera_speed * input.dt_);
+			input.actions_.erase(move_left);
+		}
+		auto move_right = input.actions_.find(Action::MOVE_RIGHT);
+		if (move_right != input.actions_.end()) {
+			cameraComponent_->adjustPos(cameraComponent_->getRightVector() * camera_speed * input.dt_);
+			input.actions_.erase(move_right);
+		}
+		auto move_front = input.actions_.find(Action::MOVE_FRONT);
+		if (move_front != input.actions_.end()) {
+			cameraComponent_->adjustPos(cameraComponent_->getForwardVector() * camera_speed * input.dt_);
+			input.actions_.erase(move_front);
+		}
+		auto move_back = input.actions_.find(Action::MOVE_BACK);
+		if (move_back != input.actions_.end()) {
+			cameraComponent_->adjustPos(cameraComponent_->getBackwardVector() * camera_speed * input.dt_);
+			input.actions_.erase(move_back);
+		}
+		auto move_up = input.actions_.find(Action::MOVE_UP);
+		if (move_up != input.actions_.end()) {
+			cameraComponent_->adjustPos(0.0f, camera_speed * input.dt_, 0.0f);
+			input.actions_.erase(move_up);
+		}
+		auto move_down = input.actions_.find(Action::MOVE_DOWN);
+		if (move_down != input.actions_.end()) {
+			cameraComponent_->adjustPos(0.0f, -camera_speed * input.dt_, 0.0f);
+			input.actions_.erase(move_down);
+		}
+
+		auto look_x = input.ranges_.find(Range::LOOK_X);
+		if (look_x != input.ranges_.end()) {
+			cameraComponent_->adjustRot(0.0f, look_x->second* 0.001 * input.dt_, 0.0f);
+
+			input.ranges_.erase(look_x);
+		}
+
+		auto look_y = input.ranges_.find(Range::LOOK_Y);
+		if (look_y != input.ranges_.end()) {
+			cameraComponent_->adjustRot(look_y->second * 0.001 * input.dt_, 0.0f, 0.0f);
+
+			input.ranges_.erase(look_y);
+		}
+	};
+	INPUT.addCallback(callback, InputCallbackPriority::HIGH);
 }
 
 GameCamera::~GameCamera() {
@@ -24,8 +147,8 @@ XMMATRIX & GameCamera::getViewMatrix() {
 		return cameraComponent_->getViewMatrix();
 	}
 	else {
-		return identity_; //TODO remove
-		assert(0 && "Camera Component not assigned");
+		return IDENTITY_MATRIX;
+		//assert(0 && "Camera Component not assigned");
 	}
 }
 
@@ -34,7 +157,7 @@ XMMATRIX & GameCamera::getProjectionMatrix() {
 		return cameraComponent_->getProjectionMatrix();
 	}
 	else {
-		return identity_; //TODO remove
-		assert(0 && "Camera Component not assigned");
+		return IDENTITY_MATRIX;
+		//assert(0 && "Camera Component not assigned");
 	}
 }

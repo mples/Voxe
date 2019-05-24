@@ -15,11 +15,13 @@ public:
 
 	template<class T, class ... ARGS>
 	EntityId createEntity(ARGS&&... args) {
-		T* entity = getEntityPoolAllocator<T>()->allocate<T>(std::forward<ARGS>(args)...);
+		T* entity = getEntityPoolAllocator<T>()->allocateNotInitialized();
 		EntityId id = handleTable_.acquireHandle(entity);
 
 		entity->id_ = id;
 		entity->componentManager_ = componentManager_;
+
+		IEntity* ent = new(entity)T(std::forward<ARGS>(args)...);
 
 		return id;
 	}

@@ -6,6 +6,9 @@
 
 #include "IGameCamera.h"
 
+#include "../Input/InputManager.h"
+
+
 class GameCamera : public Entity<GameCamera>, public IGameCamera {
 public:
 	GameCamera();
@@ -18,7 +21,10 @@ public:
 private:
 	CameraComponent * cameraComponent_;
 
-	XMMATRIX identity_;
+	static XMMATRIX IDENTITY_MATRIX;
+
+	//TODO refector that
+	InputContext context_;
 };
 
 

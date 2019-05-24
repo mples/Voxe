@@ -17,7 +17,7 @@ public:
 		lastBlock_ = &firstBlock_;
 	}
 
-	template<class T, class ...P>
+	template<class ...P>
 	T* allocate(P&&... param) {
 		if (firstDeleted_) {
 			T* result = firstDeleted_;
@@ -35,6 +35,22 @@ public:
 		lastBlock_->elementsInBlock_++;
 		return result;
 
+	}
+
+	T* allocateNotInitialized() {
+		if (firstDeleted_) {
+			T* result = firstDeleted_;
+			firstDeleted_ = *((T **)firstDeleted_);
+			return result;
+		}
+
+		if (lastBlock_->elementsInBlock_ > blockCapacity_) {
+			allocateNewNode();
+		}
+		char * address = (char*)currentMemory_;
+		address += lastBlock_->elementsInBlock_ * itemSize_;
+		lastBlock_->elementsInBlock_++;
+		return reinterpret_cast<T*>(address);
 	}
 
 	void freeMemory(T* object) {
