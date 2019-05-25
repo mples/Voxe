@@ -16,8 +16,11 @@ public:
 
 	void clearMesh();
 
+	void setVisiblility(bool v);
+	bool getVisiblility();
 private:
 	VertexBuffer<Vertex> vertexBuffer_;
 	IndexBuffer indexBuffer_;
 	UINT offset_;
+	bool isVisible_;
 };

@@ -3,7 +3,11 @@
 #include "../Events/CameraCreated.h"
 #include "../Events/CameraDestroyed.h"
 
+#include "../Systems/FrustumCullingSystem.h"
+
 XMMATRIX GameCamera::IDENTITY_MATRIX = XMMatrixIdentity();
+
+BoundingFrustum GameCamera::NOT_INITIALIZED_FRUSTUM = BoundingFrustum();
 
 GameCamera::GameCamera() : cameraComponent_(nullptr) {
 	cameraComponent_ = addComponent<CameraComponent>();
@@ -82,6 +86,7 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 	context_.addActionMapping(Action::MOVE_LEFT, KeyboardEvent(KeyboardEvent::Type::PRESS, 'A'));
 	context_.addActionMapping(Action::MOVE_DOWN, KeyboardEvent(KeyboardEvent::Type::PRESS, 'Z'));
 	context_.addActionMapping(Action::MOVE_UP, KeyboardEvent(KeyboardEvent::Type::PRESS, VK_SPACE));
+	context_.addActionMapping(Action::CULL, KeyboardEvent(KeyboardEvent::Type::PRESS, 'C'));
 
 	context_.addRangeMapping(Range::LOOK_X, RawAxis(AxisType::RAW_INPUT_MOUSE_X));
 	context_.addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::RAW_INPUT_MOUSE_Y));
@@ -90,6 +95,12 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 
 	INPUT.addFrontContext(&context_);
 	InputCallback callback = [&](MappedInput& input) {
+		auto cull = input.actions_.find(Action::CULL);
+		if (cull != input.actions_.end()) {
+			ENGINE.getSystemManager().deactivateSystem<FrustumCullingSystem>();
+			input.actions_.erase(cull);
+		}
+
 		auto move_left = input.actions_.find(Action::MOVE_LEFT);
 		if (move_left != input.actions_.end()) {
 			cameraComponent_->adjustPos(cameraComponent_->getLeftVector() * camera_speed * input.dt_);
@@ -148,7 +159,6 @@ XMMATRIX & GameCamera::getViewMatrix() {
 	}
 	else {
 		return IDENTITY_MATRIX;
-		//assert(0 && "Camera Component not assigned");
 	}
 }
 
@@ -158,6 +168,23 @@ XMMATRIX & GameCamera::getProjectionMatrix() {
 	}
 	else {
 		return IDENTITY_MATRIX;
-		//assert(0 && "Camera Component not assigned");
+	}
+}
+
+BoundingFrustum & GameCamera::getLocalSpaceFrustum() {
+	if (cameraComponent_ != nullptr) {
+		return cameraComponent_->getLocalSpaceFrustum();
+	}
+	else {
+		return NOT_INITIALIZED_FRUSTUM;
+	}
+}
+
+BoundingFrustum & GameCamera::getWorldSpaceFrustum() {
+	if (cameraComponent_ != nullptr) {
+		return cameraComponent_->getWorldSpaceFrustum();
+	}
+	else {
+		return NOT_INITIALIZED_FRUSTUM;
 	}
 }

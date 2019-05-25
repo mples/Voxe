@@ -30,13 +30,13 @@ public:
 
 	template<class T, class ...ARGS>
 	T* addComponent(const EntityId e_id, ARGS&& ...args) {
-		T* component = getComponentPoolAllocator<T>()->allocate(std::forward<ARGS>(args)...);
+		T* component = getComponentPoolAllocator<T>()->allocateNotInitialized();
 
 		component->owner_ = e_id;
-		ComponentId c_id = acquireId(component);
+		ComponentId c_id = acquireId<T>(component);
 
 		component->id_ = c_id;
-
+		component = new(component)T(std::forward<ARGS>(args)...);
 		return component;
 	}
 
@@ -89,7 +89,24 @@ public:
 	}
 
 private:
-	ComponentId acquireId(IComponent * component);
+	template <class T>
+	ComponentId acquireId(IComponent * component) {
+		EntityId e_id = component->getOwner();
+		ComponentId result;
+		auto found = entityComponentMap_.find(e_id.getIndex());
+		if (found != entityComponentMap_.end()) {
+			result = componentLookUpTable_.acquireHandle(component);
+
+			//assert( (found->second.count(component->getTypeId()) == 0) && "Cannot add two components of the same type to one entity");
+			found->second[T::COMPONENT_TYPE_ID] = component;
+		}
+		else {
+			entityComponentMap_[e_id.getIndex()] = std::unordered_map<unsigned int, IComponent*>();
+			result = componentLookUpTable_.acquireHandle(component);
+			entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID] = component;
+		}
+		return result;
+	}
 	void releaseId(ComponentId id);
 
 	template<class T>

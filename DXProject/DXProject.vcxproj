@@ -255,6 +255,7 @@
     <ClInclude Include="Entities\IGameCamera.h" />
     <ClInclude Include="Entities\TerrainChunk.h" />
     <ClInclude Include="Events\BoundingVolumeCreated.h" />
+    <ClInclude Include="Events\BoundingVolumeDestroyed.h" />
     <ClInclude Include="Events\CameraCreated.h" />
     <ClInclude Include="Events\CameraDestroyed.h" />
     <ClInclude Include="Events\DirectXDeviceCreated.h" />

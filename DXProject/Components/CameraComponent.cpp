@@ -21,8 +21,17 @@ XMMATRIX & CameraComponent::getProjectionMatrix() {
 	return projMatrix_;
 }
 
+BoundingFrustum & CameraComponent::getLocalSpaceFrustum() {
+	return frustumLocalSpace_;
+}
+
+BoundingFrustum & CameraComponent::getWorldSpaceFrustum() {
+	return frustumWorldSpace_;
+}
+
 void CameraComponent::setProjData(float fov_degrees, float aspect_ratio, float near_plane, float far_plane) {
 	projMatrix_ = XMMatrixPerspectiveFovLH((fov_degrees / 360.0f) * XM_2PI, aspect_ratio, near_plane, far_plane);
+	frustumLocalSpace_.CreateFromMatrix(frustumLocalSpace_, projMatrix_);
 }
 
 void CameraComponent::setLookAt(XMFLOAT3 look_at) {
@@ -58,5 +67,18 @@ void CameraComponent::updateMatrix() {
 	XMVECTOR up_directory = XMVector3TransformCoord(DEFAULT_UP_VEC, camera_rot);
 	viewMatrix_ = XMMatrixLookAtLH(posVector_, target_vector, up_directory);
 
+	updateFrustum();
 	TransformComponent::updateMatrix();
+}
+
+void CameraComponent::updateFrustum() {
+	XMVECTOR det = XMMatrixDeterminant(viewMatrix_);
+	XMMATRIX inv_view = XMMatrixInverse(&det, viewMatrix_);
+
+	XMVECTOR scale;
+	XMVECTOR rotation;
+	XMVECTOR translation;
+
+	XMMatrixDecompose(&scale, &rotation, &translation, inv_view);
+	frustumLocalSpace_.Transform(frustumWorldSpace_, XMVectorGetX(scale), rotation, translation);
 }

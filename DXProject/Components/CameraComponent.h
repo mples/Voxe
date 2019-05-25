@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 #include "../ECS/Component.h"
 #include "../Components/TransformComponent.h"
 
@@ -14,12 +15,18 @@ public:
 	virtual XMMATRIX & getViewMatrix();
 	virtual XMMATRIX & getProjectionMatrix();
 
+	BoundingFrustum & getLocalSpaceFrustum();
+	BoundingFrustum & getWorldSpaceFrustum();
+
 	void setProjData(float fov_degrees, float aspect_ratio, float near_plane, float far_plane);
 
 	void setLookAt(XMFLOAT3 look_at);
 private:
 	void updateMatrix() override;
+	void updateFrustum();
 
 	XMMATRIX viewMatrix_;
 	XMMATRIX projMatrix_;
+	BoundingFrustum frustumLocalSpace_;
+	BoundingFrustum frustumWorldSpace_;
 };

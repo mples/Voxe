@@ -1,21 +1,55 @@
 #include "FrustumCullingSystem.h"
 #include "../Engine.h"
+#include "../Entities/GameCamera.h"
+#include "../Components/MeshComponent.h"
+#include <vector>
 
-
-FrustumCullingSystem::FrustumCullingSystem() : IEventListener(ENGINE.getEventHandler()) {
+FrustumCullingSystem::FrustumCullingSystem() : IEventListener(ENGINE.getEventHandler()), activeCamera_(nullptr), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.0f, 100.0f, 100.0f))) {
 	std::function<void(const BoundingVolumeCreated * e)> bounding_created_callback = [&](const BoundingVolumeCreated * e) {
 		onBoundingVolumeCreated(e);
 	};
 	registerEventCallback<BoundingVolumeCreated>(bounding_created_callback);
+
+	std::function<void(const BoundingVolumeDestroyed * e)> bounding_destroyed_callback = [&](const BoundingVolumeDestroyed * e) {
+		onBoundingVolumeDestroyed(e);
+	};
+	registerEventCallback<BoundingVolumeDestroyed>(bounding_destroyed_callback);
+
+	std::function<void(const CameraCreated * e)> camera_created_callback = [&](const CameraCreated * e) {
+		onCameraCreated(e);
+	};
+	registerEventCallback<CameraCreated>(camera_created_callback);
+
+	std::function<void(const CameraDestroyed * e)> camera_destroyed_callback = [&](const CameraDestroyed * e) {
+		onCameraDestroyed(e);
+	};
+	registerEventCallback<CameraDestroyed>(camera_destroyed_callback);
 }
 
 FrustumCullingSystem::~FrustumCullingSystem() {
 }
 
 void FrustumCullingSystem::preUpdate(float dt) {
+	auto it = ENGINE.getComponentManager().begin<MeshComponent>();
+	auto end = ENGINE.getComponentManager().end<MeshComponent>();
+	while (it != end) {
+		MeshComponent * mesh_comp = &(*it);
+		it->setVisiblility(false);
+		++it;
+	}
+
 }
 
 void FrustumCullingSystem::update(float dt) {
+	BoundingFrustum fr = activeCamera_->getWorldSpaceFrustum();
+	std::vector<BoundingVolumeComponent*> visible_volumes = octree_.collides(activeCamera_->getWorldSpaceFrustum());
+
+	for (BoundingVolumeComponent* bvc : visible_volumes) {
+		MeshComponent * mesh_comp = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(bvc->getOwner());
+		if (mesh_comp != nullptr) {
+			mesh_comp->setVisiblility(true);
+		}
+	}
 }
 
 void FrustumCullingSystem::postUpdate(float dt) {
@@ -23,5 +57,29 @@ void FrustumCullingSystem::postUpdate(float dt) {
 
 void FrustumCullingSystem::onBoundingVolumeCreated(const BoundingVolumeCreated * e) {
 	BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(e->id_);
-	octree_.insert(bv_comp);
+	if (bv_comp != nullptr) {
+		octree_.insert(bv_comp);
+	}
+
+}
+
+void FrustumCullingSystem::onBoundingVolumeDestroyed(const BoundingVolumeDestroyed * e) {
+	BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(e->id_);
+	if (bv_comp != nullptr) {
+		octree_.remove(bv_comp);
+	}
+}
+
+void FrustumCullingSystem::onCameraCreated(const CameraCreated * e) {
+	if (activeCamera_ == nullptr) {
+		activeCamera_ = dynamic_cast<IGameCamera*>(ENGINE.getEntityManager().getEntity<GameCamera>(e->id_));
+		assert(activeCamera_ != nullptr && "Falied to get IGameCamera pointer.");
+	}
+	else {
+		assert(0 && "There should bo only one active camera");
+	}
+}
+
+void FrustumCullingSystem::onCameraDestroyed(const CameraDestroyed * e) {
+	activeCamera_ = nullptr;
 }

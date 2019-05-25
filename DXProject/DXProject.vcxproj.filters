@@ -569,6 +569,9 @@
     <ClInclude Include="Events\TerrainChunkChanged.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Events\BoundingVolumeDestroyed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader_vertex.hlsl">

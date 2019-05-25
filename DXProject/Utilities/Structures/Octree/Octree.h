@@ -15,7 +15,7 @@ public:
 	static bool equalsBoundingBox(BoundingBox a, BoundingBox b);
 	BoundingBox & getBoundingBox();
 
-	int size_;
+	int size();
 private:
 	void insertIntoNode(T* object, Node<T>* node);
 	void splitNode(Node<T>* node);
@@ -38,12 +38,12 @@ Octree<T>::Octree() {
 }
 
 template<typename T>
-Octree<T>::Octree(BoundingBox bounding_box) : size_(0) {
+Octree<T>::Octree(BoundingBox bounding_box) {
 	root_ = new Node<T>(bounding_box);
 }
 
 template<typename T>
-Octree<T>::Octree(BoundingBox bounding_box, std::vector<T*> objects) : size_(0) {
+Octree<T>::Octree(BoundingBox bounding_box, std::vector<T*> objects) {
 	root_ = new Node<T>(bounding_box, nullptr);
 	for (T* o : objects) {
 		root_.insert(o);
@@ -168,6 +168,11 @@ inline bool Octree<T>::equalsBoundingBox(BoundingBox a, BoundingBox b) {
 template<typename T>
 inline BoundingBox & Octree<T>::getBoundingBox() {
 	return root_->boundingBox_;
+}
+
+template<typename T>
+inline int Octree<T>::size() {
+	return outsideObjects_.size() + countOfObjects(root_);
 }
 
 template<typename T>

@@ -1,7 +1,7 @@
 #include "MeshComponent.h"
 #include "../Utilities/ErrorLogger.h"
 
-MeshComponent::MeshComponent(ID3D11Device * device, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) : offset_(0u) {
+MeshComponent::MeshComponent(ID3D11Device * device, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) : offset_(0u), isVisible_(false) {
 	setMesh(device, vertices, indices);
 }
 
@@ -32,4 +32,12 @@ void MeshComponent::setMesh(ID3D11Device * device, std::vector<Vertex>& vertices
 void MeshComponent::clearMesh() {
 	vertexBuffer_.reset();
 	indexBuffer_.reset();
+}
+
+void MeshComponent::setVisiblility(bool v) {
+	isVisible_ = v;
+}
+
+bool MeshComponent::getVisiblility() {
+	return isVisible_;
 }

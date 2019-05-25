@@ -1,12 +1,18 @@
 #include "BoundingVolumeComponent.h"
-
-BoundingVolumeComponent::BoundingVolumeComponent() {
-}
+#include "../Engine.h"
+#include "../Events/BoundingVolumeCreated.h"
+#include "../Events/BoundingVolumeDestroyed.h"
 
 BoundingVolumeComponent::BoundingVolumeComponent(BoundingBox bounding_box) : boundingBox_(bounding_box) {
+	ENGINE.sendEvent<BoundingVolumeCreated>(getId());
 }
 
 BoundingVolumeComponent::~BoundingVolumeComponent() {
+	ENGINE.sendEvent<BoundingVolumeDestroyed>(getId());
+}
+
+void BoundingVolumeComponent::setBoundingVolume(BoundingBox box) {
+	boundingBox_ = box;
 }
 
 BoundingBox & BoundingVolumeComponent::getBoundingVolume() {

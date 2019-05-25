@@ -81,8 +81,12 @@ public:
 	}
 
 	inline T* operator[](const Handle& handle) {
-		assert(handle.getIndex() < table_.size() &&  handle.getVersion() == table_[handle.getIndex()].first && "Invalid handle");
-		return (table_[handle.getIndex()].first == handle.getVersion()) ? table_[handle.getIndex()].second : nullptr;
+		if (handle.getIndex() < table_.size() && handle.getVersion() == table_[handle.getIndex()].first && "Invalid handle") {
+			return (table_[handle.getIndex()].first == handle.getVersion()) ? table_[handle.getIndex()].second : nullptr;
+		}
+		else {
+			return nullptr;
+		}
 	}
 
 private:

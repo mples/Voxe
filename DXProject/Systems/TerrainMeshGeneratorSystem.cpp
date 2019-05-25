@@ -1,5 +1,8 @@
 #include "TerrainMeshGeneratorSystem.h"
 #include "../Components/MeshComponent.h"
+#include "../Components/BoundingVolumeComponent.h"
+#include "../Components/WorldCoordinateComponent.h"
+#include <DirectXCollision.h>
 
 TerrainMeshGenerationSystem::TerrainMeshGenerationSystem() : device_(nullptr), IEventListener(ENGINE.getEventHandler()) {
 	std::function<void(const VoxelDataGeneratedEvent*)> voxel_data_callback = [&](const VoxelDataGeneratedEvent* e) {
@@ -44,6 +47,13 @@ void TerrainMeshGenerationSystem::update(float dt) {
 				calculateMeshData(vertices, indices, blocks_com, neight_data);
 				if (vertices.size() != 0) {
 					ENGINE.getComponentManager().addComponent<MeshComponent>(*it, device_, vertices, indices);
+					BoundingBox bounding_box;
+					bounding_box.CreateFromPoints(bounding_box, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
+					WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(*it);
+					if (wc_comp) {
+						bounding_box.Transform(bounding_box, wc_comp->getWorldMatrix());
+					}
+					ENGINE.getComponentManager().addComponent<BoundingVolumeComponent>(*it, bounding_box);
 				}
 			}
 		}
@@ -55,7 +65,8 @@ void TerrainMeshGenerationSystem::update(float dt) {
 		auto update_it = entitiesToUpdateMesh_.begin();
 		MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(*update_it);
 		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(*update_it);
-		if (blocks_com != nullptr && mesh != nullptr) {
+		BoundingVolumeComponent * bv_com = ENGINE.getComponentManager().getComponentByEntityId<BoundingVolumeComponent>(*update_it);
+		if (blocks_com != nullptr && mesh != nullptr && bv_com != nullptr) {
 			TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(*update_it);
 			if (neight_comp != nullptr) {
 				NeightbourData neight_data;
@@ -73,6 +84,15 @@ void TerrainMeshGenerationSystem::update(float dt) {
 				mesh->clearMesh();
 				if (vertices.size() != 0) {
 					mesh->setMesh(device_, vertices, indices);
+					BoundingBox bounding_box;
+					bounding_box.CreateFromPoints(bounding_box, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
+					WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(*update_it);
+					if (wc_comp) {
+						bounding_box.Transform(bounding_box, wc_comp->getWorldMatrix());
+					}
+					bv_com->setBoundingVolume(bounding_box);
+					/*ENGINE.getComponentManager().eraseComponent<BoundingVolumeComponent>(*update_it);
+					ENGINE.getComponentManager().addComponent<BoundingVolumeComponent>(*update_it, bounding_box);*/
 				}
 			}
 			entitiesToUpdateMesh_.pop_front();

@@ -18,13 +18,19 @@ public:
 	// Inherited via IGameCamera
 	virtual XMMATRIX & getViewMatrix() override;
 	virtual XMMATRIX & getProjectionMatrix() override;
+	virtual BoundingFrustum & getLocalSpaceFrustum() override;
+	virtual BoundingFrustum & getWorldSpaceFrustum() override;
 private:
 	CameraComponent * cameraComponent_;
 
 	static XMMATRIX IDENTITY_MATRIX;
 
+	static BoundingFrustum NOT_INITIALIZED_FRUSTUM;
+
 	//TODO refector that
 	InputContext context_;
+
+	// Inherited via IGameCamera
 };
 
 
