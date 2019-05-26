@@ -37,6 +37,7 @@ private:
 	WindowContainer windowContainer_;
 	Timer timer_;
 	Timer globalTimer_;
+	Timer fpsTimer_;
 	
 	InputContext engineContext_;
 

@@ -148,7 +148,11 @@ std::vector<T*> Octree<T>::collides(BoundingFrustum & frustum) {
 		Node<T>* node = queue.front();
 		queue.pop();
 		if (ContainmentType::DISJOINT != frustum.Contains(node->boundingBox_)) {
-			result.insert(result.end(), node->objects_.begin(), node->objects_.end());
+			for (T* obj : node->objects_) {
+				if (ContainmentType::DISJOINT != frustum.Contains(obj->getBoundingVolume())) {
+					result.push_back(obj);
+				}
+			}
 			if (!node->isLeaf_) {
 				for (int i = 0; i < node->children_.size(); i++) {
 					queue.push(node->children_[i]);

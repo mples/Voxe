@@ -25,6 +25,7 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 
 	timer_.start();
 	globalTimer_.start();
+	fpsTimer_.start();
 
 	MouseManager::createInstance();
 	KeyboardManager::createInstance();
@@ -53,8 +54,14 @@ void Engine::update() {
 	double dt = timer_.getTimePassedMilisec();
 	timer_.restart();
 
-	char s[256];
-	sprintf(s, "Dt: %f\n", dt);
+	static int fps_counter = 0;
+	static char s[256];
+	fps_counter++;
+	if (fpsTimer_.getTimePassedMilisec() > 1000.0) {
+		sprintf(s, "FPS: %u\n", fps_counter);
+		fps_counter = 0;
+		fpsTimer_.restart();
+	}
 	OutputDebugStringA(s);
 
 	eventHandler_.dispatchEvents();

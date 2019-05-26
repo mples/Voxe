@@ -97,7 +97,15 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 	InputCallback callback = [&](MappedInput& input) {
 		auto cull = input.actions_.find(Action::CULL);
 		if (cull != input.actions_.end()) {
-			ENGINE.getSystemManager().deactivateSystem<FrustumCullingSystem>();
+			static bool cull_flag = true;
+			if(cull_flag) {
+				ENGINE.getSystemManager().deactivateSystem<FrustumCullingSystem>();
+				cull_flag = false;
+			}
+			else {
+				ENGINE.getSystemManager().activateSystem<FrustumCullingSystem>();
+				cull_flag = true;
+			}
 			input.actions_.erase(cull);
 		}
 

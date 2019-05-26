@@ -4,7 +4,7 @@
 #include "../Components/MeshComponent.h"
 #include <vector>
 
-FrustumCullingSystem::FrustumCullingSystem() : IEventListener(ENGINE.getEventHandler()), activeCamera_(nullptr), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(100.0f, 100.0f, 100.0f))) {
+FrustumCullingSystem::FrustumCullingSystem() : IEventListener(ENGINE.getEventHandler()), activeCamera_(nullptr), octree_(BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(50.0f, 50.0f, 50.0f))) {
 	std::function<void(const BoundingVolumeCreated * e)> bounding_created_callback = [&](const BoundingVolumeCreated * e) {
 		onBoundingVolumeCreated(e);
 	};
@@ -43,6 +43,10 @@ void FrustumCullingSystem::preUpdate(float dt) {
 void FrustumCullingSystem::update(float dt) {
 	BoundingFrustum fr = activeCamera_->getWorldSpaceFrustum();
 	std::vector<BoundingVolumeComponent*> visible_volumes = octree_.collides(activeCamera_->getWorldSpaceFrustum());
+
+	char s[256];
+	sprintf(s, "Visible Chunks: %u\n", visible_volumes.size());
+	OutputDebugStringA(s);
 
 	for (BoundingVolumeComponent* bvc : visible_volumes) {
 		MeshComponent * mesh_comp = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(bvc->getOwner());
