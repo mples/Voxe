@@ -9,7 +9,7 @@ RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width
 																activeCamera_(nullptr) {
 	initializeDirectX(hwd);
 
-	ENGINE.sendEvent<DirectXDeviceCreated>(device_.Get());
+	ENGINE.sendEvent<DirectXDeviceCreated>(device_.Get(), deviceContext_.Get());
 
 	initializeRenderState();
 	if (!initializeShaders()) {
@@ -60,15 +60,20 @@ void RenderSystem::update(float dt) {
 	auto it = ENGINE.getComponentManager().begin<MeshComponent>();
 	auto end = ENGINE.getComponentManager().end<MeshComponent>();
 
+	int drawn_meshes = 0;
 	while (it != end) {
 		if (it->getVisiblility() == true) {
 			WorldCoordinateComponent * wcoord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
 			if (wcoord_comp != nullptr) {
 				drawObject(&(*it), wcoord_comp);
+				drawn_meshes++;
 			}
 		}
 		++it;
 	}
+	char s[256];
+	sprintf(s, "Meshes drawn: %u\n", drawn_meshes);
+	OutputDebugStringA(s);
 }
 
 void RenderSystem::postUpdate(float dt) {

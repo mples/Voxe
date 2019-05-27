@@ -11,6 +11,10 @@ public:
 
 	void setBoundingVolume(BoundingBox box);
 	BoundingBox & getBoundingVolume();
+
+	void setInsindeFrustum(bool v);
+	bool isInsideFrusutm();
 private:
 	BoundingBox boundingBox_;
+	bool isInsideFrustum_;
 };

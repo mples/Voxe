@@ -5,6 +5,7 @@
 #include "Systems/TerrainMeshGeneratorSystem.h"
 #include "Systems/VoxelDataGenerationSystem.h"
 #include "Systems/FrustumCullingSystem.h"
+#include "Systems/OcclusionCullingSystem.h"
 
 Engine::Engine() : entityManager_(&componentManager_) {
 }
@@ -44,6 +45,8 @@ void Engine::initializeSystems(HWND hwd, int width, int height) {
 	systemManager_.addSystem<TerrainMeshGenerationSystem>();
 	systemManager_.addSystem<VoxelDataGenerationSystem>();
 	systemManager_.addSystem<FrustumCullingSystem>();
+	systemManager_.addSystem<OcclusionCullingSystem>();
+	systemManager_.setSystemUpdateInterval<FrustumCullingSystem>(33.33f);
 }
 
 bool Engine::processMessages() {

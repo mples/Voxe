@@ -30,11 +30,10 @@ FrustumCullingSystem::~FrustumCullingSystem() {
 }
 
 void FrustumCullingSystem::preUpdate(float dt) {
-	auto it = ENGINE.getComponentManager().begin<MeshComponent>();
-	auto end = ENGINE.getComponentManager().end<MeshComponent>();
+	auto it = ENGINE.getComponentManager().begin<BoundingVolumeComponent>();
+	auto end = ENGINE.getComponentManager().end<BoundingVolumeComponent>();
 	while (it != end) {
-		MeshComponent * mesh_comp = &(*it);
-		it->setVisiblility(false);
+		it->setInsindeFrustum(false);
 		++it;
 	}
 
@@ -49,10 +48,7 @@ void FrustumCullingSystem::update(float dt) {
 	OutputDebugStringA(s);
 
 	for (BoundingVolumeComponent* bvc : visible_volumes) {
-		MeshComponent * mesh_comp = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(bvc->getOwner());
-		if (mesh_comp != nullptr) {
-			mesh_comp->setVisiblility(true);
-		}
+		bvc->setInsindeFrustum(true);
 	}
 }
 

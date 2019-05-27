@@ -216,6 +216,9 @@
     <ClCompile Include="Systems\FrustumCullingSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Systems\OcclusionCullingSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderWindow.h">
@@ -570,6 +573,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events\BoundingVolumeDestroyed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Systems\OcclusionCullingSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

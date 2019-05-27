@@ -14,5 +14,4 @@ public:
 	virtual BoundingFrustum & getLocalSpaceFrustum() = 0;
 
 	virtual BoundingFrustum & getWorldSpaceFrustum() = 0;
-
 };

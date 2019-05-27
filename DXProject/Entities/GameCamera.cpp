@@ -4,6 +4,7 @@
 #include "../Events/CameraDestroyed.h"
 
 #include "../Systems/FrustumCullingSystem.h"
+#include "../Systems/OcclusionCullingSystem.h"
 
 XMMATRIX GameCamera::IDENTITY_MATRIX = XMMatrixIdentity();
 
@@ -99,11 +100,11 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 		if (cull != input.actions_.end()) {
 			static bool cull_flag = true;
 			if(cull_flag) {
-				ENGINE.getSystemManager().deactivateSystem<FrustumCullingSystem>();
+				ENGINE.getSystemManager().deactivateSystem<OcclusionCullingSystem>();
 				cull_flag = false;
 			}
 			else {
-				ENGINE.getSystemManager().activateSystem<FrustumCullingSystem>();
+				ENGINE.getSystemManager().activateSystem<OcclusionCullingSystem>();
 				cull_flag = true;
 			}
 			input.actions_.erase(cull);
@@ -196,3 +197,4 @@ BoundingFrustum & GameCamera::getWorldSpaceFrustum() {
 		return NOT_INITIALIZED_FRUSTUM;
 	}
 }
+

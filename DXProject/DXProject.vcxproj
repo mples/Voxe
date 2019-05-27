@@ -172,6 +172,7 @@
     <ClCompile Include="OcclusionCulling.cpp" />
     <ClCompile Include="OcclusionQuery.cpp" />
     <ClCompile Include="Systems\FrustumCullingSystem.cpp" />
+    <ClCompile Include="Systems\OcclusionCullingSystem.cpp" />
     <ClCompile Include="Systems\RenderSystem.cpp" />
     <ClCompile Include="Systems\TerrainGenerationSystem.cpp" />
     <ClCompile Include="Systems\TerrainMeshGeneratorSystem.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="SpatialHash.h" />
     <ClInclude Include="ECS\System.h" />
     <ClInclude Include="Systems\FrustumCullingSystem.h" />
+    <ClInclude Include="Systems\OcclusionCullingSystem.h" />
     <ClInclude Include="Systems\RenderSystem.h" />
     <ClInclude Include="Systems\TerrainGenerationSystem.h" />
     <ClInclude Include="Systems\TerrainMeshGeneratorSystem.h" />

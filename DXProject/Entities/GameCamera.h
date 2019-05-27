@@ -29,8 +29,6 @@ private:
 
 	//TODO refector that
 	InputContext context_;
-
-	// Inherited via IGameCamera
 };
 
 
