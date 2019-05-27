@@ -4,17 +4,15 @@
 #include "../Voxel/BlockType.h"
 #include <Windows.h>
 
-static const UINT DIMENSION = 16;
-
 class BlocksDataComponent : public Component<BlocksDataComponent> {
 public:
 public:
 	BlocksDataComponent();
-	BlocksDataComponent(BlockType b[DIMENSION][DIMENSION][DIMENSION]);
+	BlocksDataComponent(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM]);
 	~BlocksDataComponent();
 
-	void setBlocks(BlockType b[DIMENSION][DIMENSION][DIMENSION]);
+	void setBlocks(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM]);
 	BlockType getBlock(UINT x, UINT y, UINT z);
 private:
-	BlockType blocks_[DIMENSION][DIMENSION][DIMENSION];
+	BlockType blocks_[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM];
 };

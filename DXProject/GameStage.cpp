@@ -26,7 +26,6 @@ void GameStage::init() {
 }
 
 void GameStage::update(float dt) {
-//	OutputDebugStringW(L"Game stage");
 }
 
 void GameStage::shutdown() {

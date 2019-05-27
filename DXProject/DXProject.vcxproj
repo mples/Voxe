@@ -152,7 +152,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Components\BlocksDataComponent.cpp" />
     <ClCompile Include="Components\BoundingVolumeComponent.cpp" />
     <ClCompile Include="Components\CameraComponent.cpp" />
@@ -169,26 +168,19 @@
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="Entities\GameCamera.cpp" />
     <ClCompile Include="Entities\TerrainChunk.cpp" />
-    <ClCompile Include="OcclusionCulling.cpp" />
-    <ClCompile Include="OcclusionQuery.cpp" />
     <ClCompile Include="Systems\FrustumCullingSystem.cpp" />
     <ClCompile Include="Systems\OcclusionCullingSystem.cpp" />
     <ClCompile Include="Systems\RenderSystem.cpp" />
     <ClCompile Include="Systems\TerrainGenerationSystem.cpp" />
     <ClCompile Include="Systems\TerrainMeshGeneratorSystem.cpp" />
     <ClCompile Include="Systems\VoxelDataGenerationSystem.cpp" />
-    <ClCompile Include="Voxel\Chunk.cpp" />
-    <ClCompile Include="Voxel\ChunkRenderer.cpp" />
     <ClCompile Include="GameStage.cpp" />
     <ClCompile Include="Generation\PerlinNoise.cpp" />
     <ClCompile Include="Generation\SimpleGenerator.cpp" />
     <ClCompile Include="Graphics\Color.cpp" />
-    <ClCompile Include="Graphics\GameObject.cpp" />
-    <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\AdapterReader.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Utilities\ErrorLogger.cpp" />
-    <ClCompile Include="Graphics\GraphicEngine.cpp" />
     <ClCompile Include="Graphics\imgui\imgui.cpp" />
     <ClCompile Include="Graphics\imgui\imgui_draw.cpp" />
     <ClCompile Include="Graphics\imgui\imgui_impl_dx11.cpp" />
@@ -199,7 +191,6 @@
     <ClCompile Include="Input\InputMapper.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardEvent.cpp" />
     <ClCompile Include="Input\Keyboard\KeyboardManager.cpp" />
-    <ClCompile Include="Graphics\Light.cpp" />
     <ClCompile Include="Input\RangeConverter.cpp" />
     <ClCompile Include="Utilities\JobSystem.cpp" />
     <ClCompile Include="main.cpp" />
@@ -208,7 +199,6 @@
     <ClCompile Include="Graphics\PixelShader.cpp" />
     <ClCompile Include="Graphics\Model.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
-    <ClCompile Include="Graphics\RenderableObject.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
     <ClCompile Include="Graphics\VertexShader.cpp" />
     <ClCompile Include="Stage\StageFactory.cpp" />
@@ -217,9 +207,6 @@
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Utilities\Timer.cpp" />
     <ClCompile Include="WindowContainer.cpp" />
-    <ClCompile Include="Voxel\World.cpp" />
-    <ClCompile Include="Graphics\WorldChunkModel.cpp" />
-    <ClCompile Include="Graphics\WorldChunkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\BlocksDataComponent.h" />
@@ -264,9 +251,7 @@
     <ClInclude Include="Events\TerrainChunkRequest.h" />
     <ClInclude Include="Events\VoxelDataGeneratedEvent.h" />
     <ClInclude Include="Events\VoxelDataRequest.h" />
-    <ClInclude Include="OcclusionCulling.h" />
-    <ClInclude Include="OcclusionQuery.h" />
-    <ClInclude Include="SpatialHash.h" />
+    <ClInclude Include="Utilities\SpatialHash.h" />
     <ClInclude Include="ECS\System.h" />
     <ClInclude Include="Systems\FrustumCullingSystem.h" />
     <ClInclude Include="Systems\OcclusionCullingSystem.h" />
@@ -275,25 +260,18 @@
     <ClInclude Include="Systems\TerrainMeshGeneratorSystem.h" />
     <ClInclude Include="Systems\VoxelDataGenerationSystem.h" />
     <ClInclude Include="Voxel\BlockType.h" />
-    <ClInclude Include="BoundingVolume.h" />
-    <ClInclude Include="Voxel\Chunk.h" />
-    <ClInclude Include="Voxel\ChunkRenderer.h" />
     <ClInclude Include="GameStage.h" />
-    <ClInclude Include="Voxel\ChunkCoord.h" />
     <ClInclude Include="Generation\Generator.h" />
     <ClInclude Include="Generation\Noise.h" />
     <ClInclude Include="Generation\PerlinNoise.h" />
     <ClInclude Include="Generation\SimpleGenerator.h" />
     <ClInclude Include="Graphics\Color.h" />
     <ClInclude Include="Utilities\ComException.h" />
-    <ClInclude Include="Graphics\GameObject.h" />
-    <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\AdapterReader.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Utilities\ErrorLogger.h" />
     <ClInclude Include="Graphics\ConstantBuffer.h" />
     <ClInclude Include="Graphics\ConstantBufferTypes.h" />
-    <ClInclude Include="Graphics\GraphicEngine.h" />
     <ClInclude Include="Graphics\imgui\imconfig.h" />
     <ClInclude Include="Graphics\imgui\imgui.h" />
     <ClInclude Include="Graphics\imgui\imgui_impl_dx11.h" />
@@ -315,8 +293,6 @@
     <ClInclude Include="Graphics\PixelShader.h" />
     <ClInclude Include="Graphics\Model.h" />
     <ClInclude Include="Graphics\Mesh.h" />
-    <ClInclude Include="Graphics\RenderableObject.h" />
-    <ClInclude Include="Graphics\Light.h" />
     <ClInclude Include="Input\RangeConverter.h" />
     <ClInclude Include="Input\RawInput.h" />
     <ClInclude Include="Utilities\JobSystem.h" />
@@ -338,9 +314,6 @@
     <ClInclude Include="Utilities\Timer.h" />
     <ClInclude Include="Voxel\TerrainCoord.h" />
     <ClInclude Include="WindowContainer.h" />
-    <ClInclude Include="Voxel\World.h" />
-    <ClInclude Include="Graphics\WorldChunkModel.h" />
-    <ClInclude Include="Graphics\WorldChunkMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="occlusion_culling_vs.hlsl">

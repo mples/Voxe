@@ -42,16 +42,10 @@
     <ClCompile Include="Graphics\AdapterReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\GraphicEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\PixelShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\VertexShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\imgui\imgui.cpp">
@@ -75,19 +69,10 @@
     <ClCompile Include="Graphics\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\RenderableObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Input\InputContext.cpp">
@@ -100,12 +85,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Input\InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\WorldChunkModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\WorldChunkMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Generation\PerlinNoise.cpp">
@@ -123,9 +102,6 @@
     <ClCompile Include="Stage\StageFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BoundingVolume.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utilities\ErrorLogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -136,21 +112,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Utilities\JobSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Voxel\Chunk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Voxel\ChunkRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Voxel\World.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OcclusionCulling.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OcclusionQuery.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ECS\Allocator\DefaultAllocator.cpp">
@@ -245,9 +206,6 @@
     <ClInclude Include="Graphics\AdapterReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GraphicEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -267,9 +225,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\ConstantBufferTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\imgui\imconfig.h">
@@ -302,19 +257,10 @@
     <ClInclude Include="Graphics\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\RenderableObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Input\input_const.h">
@@ -333,12 +279,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\WorldChunkModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\WorldChunkMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Generation\Generator.h">
@@ -371,9 +311,6 @@
     <ClInclude Include="Stage\StageBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BoundingVolume.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utilities\Structures\Octree\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -404,28 +341,7 @@
     <ClInclude Include="Voxel\BlockType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Voxel\Chunk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Voxel\ChunkCoord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Voxel\ChunkRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utilities\ErrorLogger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Voxel\World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OcclusionCulling.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpatialHash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OcclusionQuery.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ECS\Allocator\DefaultAllocator.h">
@@ -576,6 +492,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Systems\OcclusionCullingSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\SpatialHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

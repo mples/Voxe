@@ -16,7 +16,7 @@ void VoxelDataGenerationSystem::update(float dt) {
 	auto it = entitiesToUpdate_.begin();
 	while (it != entitiesToUpdate_.end() ) {
 		
-		BlockType blocks[DIMENSION][DIMENSION][DIMENSION] = {};
+		BlockType blocks[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM] = {};
 		//ZeroMemory(blocks, pow(DIMENSION, 3) * sizeof(BlockType));
 		ENGINE.getEntityManager().getEntity<TerrainChunk>(*it);
 		WorldCoordinateComponent * coord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(*it);

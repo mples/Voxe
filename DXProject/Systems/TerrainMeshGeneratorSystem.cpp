@@ -123,9 +123,9 @@ void TerrainMeshGenerationSystem::onDirectXDeviceCreated(const DirectXDeviceCrea
 }
 
 void TerrainMeshGenerationSystem::calculateMeshData(std::vector<Vertex>& vertices, std::vector<DWORD>& indices, BlocksDataComponent * blocks_com, NeightbourData neight_data) {
-	for (UINT x = 0; x < DIMENSION; ++x) {
-		for (UINT y = 0; y < DIMENSION; ++y) {
-			for (UINT z = 0; z < DIMENSION; ++z) {
+	for (UINT x = 0; x < TERRAIN_CHUNK_DIM; ++x) {
+		for (UINT y = 0; y < TERRAIN_CHUNK_DIM; ++y) {
+			for (UINT z = 0; z < TERRAIN_CHUNK_DIM; ++z) {
 				BlockType type = blocks_com->getBlock(x,y,z);
 				if (type != BlockType::AIR) {
 					calculateVertices(x, y, z, type, vertices, indices, blocks_com, neight_data);
@@ -257,7 +257,7 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeX(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (x == 0) {
-		if (neight_data.left_ == nullptr || neight_data.left_->getBlock(DIMENSION - 1, y, z) == BlockType::AIR ) {
+		if (neight_data.left_ == nullptr || neight_data.left_->getBlock(TERRAIN_CHUNK_DIM - 1, y, z) == BlockType::AIR ) {
 			return false;
 		}
 	}
@@ -265,10 +265,10 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeX(UINT x, UINT y, UINT z, Bl
 }
 
 bool TerrainMeshGenerationSystem::isObscuredPositiveX(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data) {
-	if (x + 1 < DIMENSION && blocks_com->getBlock(x + 1, y, z) == BlockType::AIR) {
+	if (x + 1 < TERRAIN_CHUNK_DIM && blocks_com->getBlock(x + 1, y, z) == BlockType::AIR) {
 		return false;
 	}
-	else if (x + 1 == DIMENSION) {
+	else if (x + 1 == TERRAIN_CHUNK_DIM) {
 		if (neight_data.right_ == nullptr || neight_data.right_->getBlock(0, y, z) == BlockType::AIR) {
 			return false;
 		}
@@ -281,7 +281,7 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeY(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (y == 0) {
-		if (neight_data.bottom_ == nullptr || neight_data.bottom_->getBlock(x, DIMENSION - 1, z) == BlockType::AIR) {
+		if (neight_data.bottom_ == nullptr || neight_data.bottom_->getBlock(x, TERRAIN_CHUNK_DIM - 1, z) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -289,10 +289,10 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeY(UINT x, UINT y, UINT z, Bl
 }
 
 bool TerrainMeshGenerationSystem::isObscuredPositiveY(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data) {
-	if (y + 1 < DIMENSION && blocks_com->getBlock(x, y + 1, z) == BlockType::AIR) {
+	if (y + 1 < TERRAIN_CHUNK_DIM && blocks_com->getBlock(x, y + 1, z) == BlockType::AIR) {
 		return false;
 	}
-	else if (y == DIMENSION - 1) {
+	else if (y == TERRAIN_CHUNK_DIM - 1) {
 		if (neight_data.top_ == nullptr || neight_data.top_->getBlock(x, 0, z) == BlockType::AIR) {
 			return false;
 		}
@@ -305,7 +305,7 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeZ(UINT x, UINT y, UINT z, Bl
 		return false;
 	}
 	else if (z == 0) {
-		if (neight_data.back_ == nullptr || neight_data.back_->getBlock(x, y, DIMENSION - 1) == BlockType::AIR) {
+		if (neight_data.back_ == nullptr || neight_data.back_->getBlock(x, y, TERRAIN_CHUNK_DIM - 1) == BlockType::AIR) {
 			return false;
 		}
 	}
@@ -313,10 +313,10 @@ bool TerrainMeshGenerationSystem::isObscuredNegativeZ(UINT x, UINT y, UINT z, Bl
 }
 
 bool TerrainMeshGenerationSystem::isObscuredPositiveZ(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data) {
-	if (z + 1 < DIMENSION && blocks_com->getBlock(x, y, z + 1) == BlockType::AIR) {
+	if (z + 1 < TERRAIN_CHUNK_DIM && blocks_com->getBlock(x, y, z + 1) == BlockType::AIR) {
 		return false;
 	}
-	else if (z + 1 == DIMENSION) {
+	else if (z + 1 == TERRAIN_CHUNK_DIM) {
 		if (neight_data.front_ == nullptr || neight_data.front_->getBlock(x, y, 0) == BlockType::AIR) {
 			return false;
 		}

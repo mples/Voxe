@@ -258,8 +258,5 @@ UINT64 OcclusionCullingSystem::getQueryDataBlocking(OcclusinQuery query) {
 	UINT64 query_data;
 
 	while (S_OK != deviceContext_->GetData(query.query_, &query_data, sizeof(UINT64), 0)) {}
-	/*char buffer[100];
-	sprintf_s(buffer, "Pixels drawn: %d\n", query_data);
-	OutputDebugStringA(buffer);*/
 	return query_data;
 }
