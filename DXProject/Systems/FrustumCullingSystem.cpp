@@ -37,9 +37,28 @@ void FrustumCullingSystem::preUpdate(float dt) {
 		++it;
 	}
 
+	for (ComponentId & c_id : boundingVolumesToInsert_) {
+		BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(c_id);
+		if (bv_comp != nullptr) {
+			octree_.insert(bv_comp);
+		}
+	}
+	boundingVolumesToInsert_.clear();
+
+	for (ComponentId & c_id : boundingVolumesToRemove_) {
+		BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(c_id);
+		if (bv_comp != nullptr) {
+			octree_.remove(bv_comp);
+		}
+	}
+	boundingVolumesToRemove_.clear();
+
 }
 
 void FrustumCullingSystem::update(float dt) {
+	if (activeCamera_ == nullptr) {
+		return;
+	}
 	BoundingFrustum fr = activeCamera_->getWorldSpaceFrustum();
 	std::vector<BoundingVolumeComponent*> visible_volumes = octree_.collides(activeCamera_->getWorldSpaceFrustum());
 
@@ -56,18 +75,11 @@ void FrustumCullingSystem::postUpdate(float dt) {
 }
 
 void FrustumCullingSystem::onBoundingVolumeCreated(const BoundingVolumeCreated * e) {
-	BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(e->id_);
-	if (bv_comp != nullptr) {
-		octree_.insert(bv_comp);
-	}
-
+	boundingVolumesToInsert_.push_back(e->id_);
 }
 
 void FrustumCullingSystem::onBoundingVolumeDestroyed(const BoundingVolumeDestroyed * e) {
-	BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(e->id_);
-	if (bv_comp != nullptr) {
-		octree_.remove(bv_comp);
-	}
+	boundingVolumesToRemove_.push_back(e->id_);
 }
 
 void FrustumCullingSystem::onCameraCreated(const CameraCreated * e) {

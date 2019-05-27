@@ -1,5 +1,5 @@
 #pragma once
-
+#include <vector>
 #include "../ECS/System.h"
 #include "../ECS/Event/IEventListener.h"
 
@@ -33,4 +33,6 @@ private:
 
 	Octree<BoundingVolumeComponent> octree_;
 	IGameCamera * activeCamera_;
+	std::vector<ComponentId> boundingVolumesToInsert_;
+	std::vector<ComponentId> boundingVolumesToRemove_;
 };

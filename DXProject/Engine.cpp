@@ -6,7 +6,7 @@
 #include "Systems/VoxelDataGenerationSystem.h"
 #include "Systems/FrustumCullingSystem.h"
 #include "Systems/OcclusionCullingSystem.h"
-
+#include "Utilities/JobSystem.h"
 Engine::Engine() : entityManager_(&componentManager_) {
 }
 
@@ -67,13 +67,14 @@ void Engine::update() {
 	}
 	OutputDebugStringA(s);
 
-	eventHandler_.dispatchEvents();
-	systemManager_.update(dt);
 
+	systemManager_.update(dt);
+	eventHandler_.dispatchEvents();
 
 	INPUT.processInput(dt);
 	STAGE_MANAGER.update(dt);
 
+	JOB_SYSTEM.wait();
 }
 
 EventHandler * Engine::getEventHandler() {
