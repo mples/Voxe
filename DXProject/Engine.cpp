@@ -47,6 +47,7 @@ void Engine::initializeSystems(HWND hwd, int width, int height) {
 	systemManager_.addSystem<FrustumCullingSystem>();
 	systemManager_.addSystem<OcclusionCullingSystem>();
 	systemManager_.setSystemUpdateInterval<FrustumCullingSystem>(33.33f);
+	systemManager_.setSystemUpdateInterval<OcclusionCullingSystem>(33.33f);
 }
 
 bool Engine::processMessages() {

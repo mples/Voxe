@@ -27,7 +27,7 @@ void OcclusionCullingSystem::preUpdate(float dt) {
 	static float since_last_update = 0;
 	since_last_update += dt;
 	bool query_visible = false;
-	if (since_last_update >= 33.33f) {
+	if (since_last_update >= 66.66f) {
 		since_last_update = 0.0f;
 		query_visible = true;
 	}
