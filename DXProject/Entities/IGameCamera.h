@@ -14,4 +14,7 @@ public:
 	virtual BoundingFrustum & getLocalSpaceFrustum() = 0;
 
 	virtual BoundingFrustum & getWorldSpaceFrustum() = 0;
+
+	virtual void setProjData(float fov_degrees, float aspect_ratio, float near_plane, float far_plane) = 0;
+
 };

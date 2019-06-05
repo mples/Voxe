@@ -54,11 +54,15 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> spriteBatch_;
 	std::unique_ptr<DirectX::SpriteFont> spriteFont_;
 
+	D3D11_VIEWPORT viewport_;
+
 	//Render state
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState_;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState_;
 	Microsoft::WRL::ComPtr<ID3D11BlendState> blendState_;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState_;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilStateOff_;
+
 
 	VertexShader vertexShader_;
 	PixelShader pixelShader_;
@@ -66,6 +70,8 @@ private:
 	ConstantBuffer<CB_VS_object_buffer> objectBufferVS_;
 
 	Texture * texture_;
+
+	Texture * invalidTexture_;
 
 	IGameCamera * activeCamera_;
 };

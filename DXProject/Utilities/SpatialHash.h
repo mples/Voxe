@@ -7,6 +7,7 @@
 using namespace DirectX;
 
 struct Point {
+	Point() : x_(0), y_(0), z_(0) {}
 	Point(float x, float y, float z) : x_(x), y_(y), z_(z) {}
 	int x_;
 	int y_;
@@ -36,14 +37,23 @@ public:
 	~SpatialHash();
 	Point hash(float x, float y, float z);
 	Point hash(XMFLOAT3 point);
-	void insert(T* obj);
-	void remove(T* obj);
+	void insert(T obj);
+	void remove(T obj);
 	void clear();
 	std::vector<T*>* getBucket(int x, int y, int z);
 	std::vector<T*>* getBucket(Point p);
+	std::vector<std::pair<Point, std::vector<T>>> getAllBuckets() {
+		std::vector<std::pair<Point, std::vector<T>>> result;
+		for (auto it : map_) {
+			result.push_back((it));
+			
+		}
+		return result;
+	}
+
 private:
 	float cellSize_;
-	std::unordered_map<Point, std::vector<T*>> map_;
+	std::unordered_map<Point, std::vector<T>> map_;
 };
 
 template<typename T>
@@ -66,13 +76,13 @@ Point SpatialHash<T>::hash(XMFLOAT3 point) {
 }
 
 template<typename T>
-void SpatialHash<T>::insert(T* obj) {
-	Point p = hash(obj->getPos());
+void SpatialHash<T>::insert(T obj) {
+	Point p = hash(obj.getPos());
 
 	auto found = map_.find(p);
 
 	if (found == map_.end()) {
-		std::vector<T*> bucket;
+		std::vector<T> bucket;
 		bucket.push_back(obj);
 		map_.insert(std::make_pair(p, bucket));
 	}
@@ -82,12 +92,12 @@ void SpatialHash<T>::insert(T* obj) {
 }
 
 template<typename T>
-void SpatialHash<T>::remove(T * obj) {
-	Point p = hash(obj->getPos());
+void SpatialHash<T>::remove(T obj) {
+	Point p = hash(obj.getPos());
 	auto found = map_.find(p);
 
 	if (found != map_.end()) {
-		std::vector<T*> bucket = found->second;
+		std::vector<T> bucket = found->second;
 		auto it = std::find(bucket.begin(), bucket.end(), obj);
 		if (it != bucket.end()) {
 			bucket.erase(it);

@@ -13,6 +13,9 @@ public:
 
 	void setBlocks(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM]);
 	BlockType getBlock(UINT x, UINT y, UINT z);
+
+	bool isEmpty();
 private:
 	BlockType blocks_[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM];
+	bool isEmpty_;
 };

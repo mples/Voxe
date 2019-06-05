@@ -6,7 +6,10 @@
 #include "Systems/VoxelDataGenerationSystem.h"
 #include "Systems/FrustumCullingSystem.h"
 #include "Systems/OcclusionCullingSystem.h"
+#include "Systems/OcclusionQuadGenerationSystem.h"
+
 #include "Utilities/JobSystem.h"
+
 Engine::Engine() : entityManager_(&componentManager_) {
 }
 
@@ -48,6 +51,8 @@ void Engine::initializeSystems(HWND hwd, int width, int height) {
 	systemManager_.addSystem<OcclusionCullingSystem>();
 	systemManager_.setSystemUpdateInterval<FrustumCullingSystem>(33.33f);
 	systemManager_.setSystemUpdateInterval<OcclusionCullingSystem>(33.33f);
+
+	systemManager_.addSystem<OcclusionQuadGenerationSystem>();
 }
 
 bool Engine::processMessages() {
