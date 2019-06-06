@@ -1,7 +1,6 @@
 #include "RenderSystem.h"
 #include "../Engine.h"
 #include "../Events/DirectXDeviceCreated.h"
-#include "../Components/OcclusionQuadsComponent.h"
 
 RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width), 
 																windowHeight_(height), 
@@ -68,62 +67,11 @@ void RenderSystem::update(float dt) {
 	while (it != end) {
 		if (it->getVisiblility() == true) {
 			WorldCoordinateComponent * wcoord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
-			OcclusionQuadsComponent * quads = ENGINE.getComponentManager().getComponentByEntityId<OcclusionQuadsComponent>(it->getOwner());
 			if (wcoord_comp != nullptr) {
 				drawObject(&(*it), wcoord_comp);
 				drawn_meshes++;
 			}
 
-			//deviceContext_->OMSetDepthStencilState(depthStencilStateOff_.Get(), 0);
-
-			//if (quads != nullptr) {
-			//	deviceContext_->VSSetConstantBuffers(0, 1, objectBufferVS_.getAddressOf());
-			//	if (activeCamera_ != nullptr) {
-			//		objectBufferVS_.data_.mvpMatrix_ = wcoord_comp->getWorldMatrix() * activeCamera_->getViewMatrix() * activeCamera_->getProjectionMatrix();
-			//	}
-			//	else {
-			//		objectBufferVS_.data_.mvpMatrix_ = wcoord_comp->getWorldMatrix();
-			//	}
-			//	objectBufferVS_.data_.modelMatrix_ = wcoord_comp->getWorldMatrix();
-			//	objectBufferVS_.applyChanges();
-
-			//	deviceContext_->PSSetShaderResources(0, 1, invalidTexture_->getResourceViewAddress());
-			//	UINT offset = 0;
-			//	deviceContext_->IASetVertexBuffers(0, 1, quads->negativeX_.vertexBuffer_.getAddressOf(), quads->negativeX_.vertexBuffer_.stridePtr(), &offset);
-			//	deviceContext_->IASetIndexBuffer(quads->negativeX_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-			//	deviceContext_->DrawIndexed(quads->negativeX_.indexBuffer_.indicesCount(), 0, 0);
-
-			//	deviceContext_->IASetVertexBuffers(0, 1, quads->positiveX_.vertexBuffer_.getAddressOf(), quads->positiveX_.vertexBuffer_.stridePtr(), &offset);
-			//	deviceContext_->IASetIndexBuffer(quads->positiveX_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-			//	deviceContext_->DrawIndexed(quads->positiveX_.indexBuffer_.indicesCount(), 0, 0);
-
-			//	//y
-			//	deviceContext_->IASetVertexBuffers(0, 1, quads->negativeY_.vertexBuffer_.getAddressOf(), quads->negativeY_.vertexBuffer_.stridePtr(), &offset);
-			//	deviceContext_->IASetIndexBuffer(quads->negativeY_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-			//	deviceContext_->DrawIndexed(quads->negativeY_.indexBuffer_.indicesCount(), 0, 0);
-
-			//	deviceContext_->IASetVertexBuffers(0, 1, quads->positiveY_.vertexBuffer_.getAddressOf(), quads->positiveY_.vertexBuffer_.stridePtr(), &offset);
-			//	deviceContext_->IASetIndexBuffer(quads->positiveY_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-			//	deviceContext_->DrawIndexed(quads->positiveY_.indexBuffer_.indicesCount(), 0, 0);
-
-			//	//z
-			//	deviceContext_->IASetVertexBuffers(0, 1, quads->negativeZ_.vertexBuffer_.getAddressOf(), quads->negativeZ_.vertexBuffer_.stridePtr(), &offset);
-			//	deviceContext_->IASetIndexBuffer(quads->negativeZ_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-			//	deviceContext_->DrawIndexed(quads->negativeZ_.indexBuffer_.indicesCount(), 0, 0);
-
-			//	deviceContext_->IASetVertexBuffers(0, 1, quads->positiveZ_.vertexBuffer_.getAddressOf(), quads->positiveZ_.vertexBuffer_.stridePtr(), &offset);
-			//	deviceContext_->IASetIndexBuffer(quads->positiveZ_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-			//	deviceContext_->DrawIndexed(quads->positiveZ_.indexBuffer_.indicesCount(), 0, 0);
-
-
-			//}
-			//deviceContext_->OMSetDepthStencilState(depthStencilState_.Get(), 0);
 
 		}
 		++it;

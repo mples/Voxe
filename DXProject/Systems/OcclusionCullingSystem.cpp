@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-OcclusionCullingSystem::OcclusionCullingSystem() : IEventListener(ENGINE.getEventHandler()), device_(nullptr), deviceContext_(nullptr), activeCamera_(nullptr) , spatialMap_(60.0f) {
+OcclusionCullingSystem::OcclusionCullingSystem() : IEventListener(ENGINE.getEventHandler()), device_(nullptr), deviceContext_(nullptr), activeCamera_(nullptr) {
 	std::function<void(const DirectXDeviceCreated * e)> device_created = [&](const DirectXDeviceCreated * e) {
 		onDirectXDeviceCreated(e);
 	};
@@ -24,52 +24,19 @@ OcclusionCullingSystem::~OcclusionCullingSystem() {
 }
 
 void OcclusionCullingSystem::preUpdate(float dt) {
-	static float since_last_update = 0;
-	since_last_update += dt;
-	bool query_visible = false;
-	if (since_last_update >= 66.66f) {
-		since_last_update = 0.0f;
-		query_visible = true;
-	}
-
-	meshesInsideFrustum_.clear();
-	spatialMap_.clear();
+	meshesToQuery_.clear();
 
 	auto it = ENGINE.getComponentManager().begin<BoundingVolumeComponent>();
 	auto end = ENGINE.getComponentManager().end<BoundingVolumeComponent>();
 
-	//while (it != end) {
-	//	OcclusionQuadsComponent * occlusion_quads = ENGINE.getComponentManager().getComponentByEntityId<OcclusionQuadsComponent>(it->getOwner());
-	//	WorldCoordinateComponent * coord = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
-	//	if (occlusion_quads != nullptr && coord != nullptr) {
-	//		//meshesInsideFrustum_.push_back(OcclusionInstance(mesh, coord));
-	//		spatialMap_.insert(OcclusionInstance(occlusion_quads, coord));
-	//	}
-	//	++it;
-	//}
 
-	if (!query_visible) {
-		while (it != end) {
-			OcclusionQuadsComponent * occlusion_quads = ENGINE.getComponentManager().getComponentByEntityId<OcclusionQuadsComponent>(it->getOwner());
-			WorldCoordinateComponent * coord = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
-			if (occlusion_quads != nullptr && coord != nullptr) {
-				meshesInsideFrustum_.push_back(OcclusionInstance(occlusion_quads, coord));
-			}
-			++it;
+	while (it != end) {
+		MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(it->getOwner());
+		WorldCoordinateComponent * coord = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
+		if (mesh != nullptr && coord != nullptr) {
+			meshesToQuery_.push_back(OcclusionInstance(mesh, coord));
 		}
-	}
-	else {
-		while (it != end) {
-			MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(it->getOwner());
-			OcclusionQuadsComponent * occlusion_quads = ENGINE.getComponentManager().getComponentByEntityId<OcclusionQuadsComponent>(it->getOwner());
-			WorldCoordinateComponent * coord = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
-			if (mesh != nullptr && coord != nullptr && occlusion_quads != nullptr) {
-				if (!mesh->getVisiblility()) {
-					meshesInsideFrustum_.push_back(OcclusionInstance(occlusion_quads, coord));
-				}
-			}
-			++it;
-		}
+		++it;
 	}
 }
 
@@ -80,97 +47,53 @@ void OcclusionCullingSystem::update(float dt) {
 
 	XMFLOAT4X4 view;
 	XMStoreFloat4x4(&view, activeCamera_->getViewMatrix());
-	XMFLOAT3 camera_front (-view._31, -view._31, -view._33);
+	XMFLOAT3 camera_front (-view._31, -view._32, view._33);
 
 	XMFLOAT3 camera_front_abs(abs(camera_front.x), abs(camera_front.y), abs(camera_front.z));
 
 	if (camera_front_abs.x >= camera_front_abs.y && camera_front_abs.x >= camera_front_abs.z) {
 		int move = 0;
 		if (camera_front.x > 0) {
-			std::sort(meshesInsideFrustum_.begin(), meshesInsideFrustum_.end(), [](OcclusionInstance a, OcclusionInstance b) {
-				return a.coord_->getCoord().x > b.coord_->getCoord().x;
-			});
-		}
-		else {
-			std::sort(meshesInsideFrustum_.begin(), meshesInsideFrustum_.end(), [](OcclusionInstance a, OcclusionInstance b) {
+			std::sort(meshesToQuery_.begin(), meshesToQuery_.end(), [](OcclusionInstance a, OcclusionInstance b) {
 				return a.coord_->getCoord().x < b.coord_->getCoord().x;
 			});
 		}
+		else {
+			std::sort(meshesToQuery_.begin(), meshesToQuery_.end(), [](OcclusionInstance a, OcclusionInstance b) {
+				return a.coord_->getCoord().x > b.coord_->getCoord().x;
+			});
+		}
 
 	}
 	else if (camera_front_abs.y >= camera_front_abs.x && camera_front_abs.y >= camera_front_abs.z) {
 		int move = 0;
 		if (camera_front.y > 0) {
-			std::sort(meshesInsideFrustum_.begin(), meshesInsideFrustum_.end(), [](OcclusionInstance a, OcclusionInstance b) {
-				return a.coord_->getCoord().y > b.coord_->getCoord().y;
-			});
-		}
-		else {
-			std::sort(meshesInsideFrustum_.begin(), meshesInsideFrustum_.end(), [](OcclusionInstance a, OcclusionInstance b) {
+			std::sort(meshesToQuery_.begin(), meshesToQuery_.end(), [](OcclusionInstance a, OcclusionInstance b) {
 				return a.coord_->getCoord().y < b.coord_->getCoord().y;
 			});
 		}
+		else {
+			std::sort(meshesToQuery_.begin(), meshesToQuery_.end(), [](OcclusionInstance a, OcclusionInstance b) {
+				return a.coord_->getCoord().y > b.coord_->getCoord().y;
+			});
+		}
 
 	}
 	else if (camera_front_abs.z >= camera_front_abs.x && camera_front_abs.z >= camera_front_abs.y) {
 		int move = 0;
 		if (camera_front.z > 0) {
-			std::sort(meshesInsideFrustum_.begin(), meshesInsideFrustum_.end(), [](OcclusionInstance a, OcclusionInstance b) {
-				return a.coord_->getCoord().z > b.coord_->getCoord().z;
-			});
-		}
-		else {
-			std::sort(meshesInsideFrustum_.begin(), meshesInsideFrustum_.end(), [](OcclusionInstance a, OcclusionInstance b) {
+			std::sort(meshesToQuery_.begin(), meshesToQuery_.end(), [](OcclusionInstance a, OcclusionInstance b) {
 				return a.coord_->getCoord().z < b.coord_->getCoord().z;
 			});
 		}
-
-	}
-
-	/*std::vector<std::pair<Point, std::vector<OcclusionInstance>>> buckets = spatialMap_.getAllBuckets();
-
-	if (camera_front_abs.x >= camera_front_abs.y && camera_front_abs.x >= camera_front_abs.z) {
-		int move = 0;
-		if (camera_front.x > 0) {
-			std::sort(buckets.begin(), buckets.end(), [](std::pair<Point, std::vector<OcclusionInstance>> a, std::pair<Point, std::vector<OcclusionInstance>> b) {
-				return a.first.x_ > b.first.x_;
-			});
-		}
 		else {
-			std::sort(buckets.begin(), buckets.end(), [](std::pair<Point, std::vector<OcclusionInstance>> a, std::pair<Point, std::vector<OcclusionInstance>> b) {
-				return a.first.x_ < b.first.x_;
+			std::sort(meshesToQuery_.begin(), meshesToQuery_.end(), [](OcclusionInstance a, OcclusionInstance b) {
+				return a.coord_->getCoord().z > b.coord_->getCoord().z;
 			});
 		}
 
 	}
-	else if (camera_front_abs.y >= camera_front_abs.x && camera_front_abs.y >= camera_front_abs.z) {
-		int move = 0;
-		if (camera_front.y > 0) {
-			std::sort(buckets.begin(), buckets.end(), [](std::pair<Point, std::vector<OcclusionInstance>> a, std::pair<Point, std::vector<OcclusionInstance>> b) {
-				return a.first.y_ > b.first.y_;
-			});
-		}
-		else {
-			std::sort(buckets.begin(), buckets.end(), [](std::pair<Point, std::vector<OcclusionInstance>> a, std::pair<Point, std::vector<OcclusionInstance>> b) {
-				return a.first.y_ < b.first.y_;
-			});
-		}
 
-	}
-	else if (camera_front_abs.z >= camera_front_abs.x && camera_front_abs.z >= camera_front_abs.y) {
-		int move = 0;
-		if (camera_front.z > 0) {
-			std::sort(buckets.begin(), buckets.end(), [](std::pair<Point, std::vector<OcclusionInstance>> a, std::pair<Point, std::vector<OcclusionInstance>> b) {
-				return a.first.z_ > b.first.z_;
-			});
-		}
-		else {
-			std::sort(buckets.begin(), buckets.end(), [](std::pair<Point, std::vector<OcclusionInstance>> a, std::pair<Point, std::vector<OcclusionInstance>> b) {
-				return a.first.z_ < b.first.z_;
-			});
-		}
-
-	}*/
 
 	ID3D11RenderTargetView * rtv[1];
 	ID3D11DepthStencilView * dsv = nullptr;
@@ -183,15 +106,11 @@ void OcclusionCullingSystem::update(float dt) {
 
 
 	deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	//deviceContext_->IASetInputLayout(vertexShader_.getInputLayout());
 	deviceContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//deviceContext_->VSSetShader(vertexShader_.getShader(), NULL, 0);
-	//deviceContext_->PSSetShader(NULL, NULL, 0);
 	deviceContext_->VSSetConstantBuffers(0, 1, objectBufferVS_.getAddressOf());
 
-
-	for (auto occlusion_instance : meshesInsideFrustum_) {
+	for (auto occlusion_instance : meshesToQuery_) {
 		D3D11_QUERY_DESC query_desc;
 		query_desc.Query = D3D11_QUERY::D3D11_QUERY_OCCLUSION;
 		query_desc.MiscFlags = 0u;
@@ -213,38 +132,11 @@ void OcclusionCullingSystem::update(float dt) {
 		objectBufferVS_.applyChanges();
 
 		UINT offset = 0;
-		//X
-		deviceContext_->IASetVertexBuffers(0, 1, occlusion_instance.quads->negativeX_.vertexBuffer_.getAddressOf(), occlusion_instance.quads->negativeX_.vertexBuffer_.stridePtr(), &offset);
-		deviceContext_->IASetIndexBuffer(occlusion_instance.quads->negativeX_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 
-		deviceContext_->DrawIndexed(occlusion_instance.quads->negativeX_.indexBuffer_.indicesCount(), 0, 0);
-	
-		deviceContext_->IASetVertexBuffers(0, 1, occlusion_instance.quads->positiveX_.vertexBuffer_.getAddressOf(), occlusion_instance.quads->positiveX_.vertexBuffer_.stridePtr(), &offset);
-		deviceContext_->IASetIndexBuffer(occlusion_instance.quads->positiveX_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
+		deviceContext_->IASetVertexBuffers(0, 1, occlusion_instance.mesh_->getVertexBuffer().getAddressOf(), occlusion_instance.mesh_->getVertexBuffer().stridePtr(), &offset);
+		deviceContext_->IASetIndexBuffer(occlusion_instance.mesh_->getIndexBuffer().get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 
-		deviceContext_->DrawIndexed(occlusion_instance.quads->positiveX_.indexBuffer_.indicesCount(), 0, 0);
-
-		//Y
-		deviceContext_->IASetVertexBuffers(0, 1, occlusion_instance.quads->negativeY_.vertexBuffer_.getAddressOf(), occlusion_instance.quads->negativeY_.vertexBuffer_.stridePtr(), &offset);
-		deviceContext_->IASetIndexBuffer(occlusion_instance.quads->negativeY_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-		deviceContext_->DrawIndexed(occlusion_instance.quads->negativeY_.indexBuffer_.indicesCount(), 0, 0);
-
-		deviceContext_->IASetVertexBuffers(0, 1, occlusion_instance.quads->positiveY_.vertexBuffer_.getAddressOf(), occlusion_instance.quads->positiveY_.vertexBuffer_.stridePtr(), &offset);
-		deviceContext_->IASetIndexBuffer(occlusion_instance.quads->positiveY_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-		deviceContext_->DrawIndexed(occlusion_instance.quads->positiveY_.indexBuffer_.indicesCount(), 0, 0);
-
-		//Z
-		deviceContext_->IASetVertexBuffers(0, 1, occlusion_instance.quads->negativeZ_.vertexBuffer_.getAddressOf(), occlusion_instance.quads->negativeZ_.vertexBuffer_.stridePtr(), &offset);
-		deviceContext_->IASetIndexBuffer(occlusion_instance.quads->negativeZ_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-		deviceContext_->DrawIndexed(occlusion_instance.quads->negativeZ_.indexBuffer_.indicesCount(), 0, 0);
-
-		deviceContext_->IASetVertexBuffers(0, 1, occlusion_instance.quads->positiveZ_.vertexBuffer_.getAddressOf(), occlusion_instance.quads->positiveZ_.vertexBuffer_.stridePtr(), &offset);
-		deviceContext_->IASetIndexBuffer(occlusion_instance.quads->positiveZ_.indexBuffer_.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-		deviceContext_->DrawIndexed(occlusion_instance.quads->positiveZ_.indexBuffer_.indicesCount(), 0, 0);
+		deviceContext_->DrawIndexed(occlusion_instance.mesh_->getIndexBuffer().indicesCount(), 0, 0);
 
 		deviceContext_->End(query);
 		queriesBuffer_.push(OcclusionQuery(query, occlusion_instance.coord_->getOwner()));
@@ -252,9 +144,7 @@ void OcclusionCullingSystem::update(float dt) {
 	}
 
 	
-
-	
-
+	//set render target back
 	deviceContext_->OMSetRenderTargets(1, rtv, dsv);
 
 }
@@ -381,96 +271,4 @@ UINT64 OcclusionCullingSystem::getQueryDataBlocking(OcclusionQuery query) {
 
 	while (S_OK != deviceContext_->GetData(query.query_, &query_data, sizeof(UINT64), 0)) {}
 	return query_data;
-}
-
-void OcclusionCullingSystem::drawBucketBoundingVolume(Point p, float extends) {
-	VertexBuffer<Vertex> vertex_buffer;
-	IndexBuffer index_buffer;
-	std::vector<Vertex> vertices;
-	std::vector<DWORD> indices;
-
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends - extends,
-		p.y_ * extends - extends,
-		p.z_ * extends - extends)));
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends - extends,
-		p.y_ * extends + extends,
-		p.z_ * extends - extends)));
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends + extends,
-		p.y_ * extends + extends,
-		p.z_ * extends - extends)));
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends + extends,
-		p.y_ * extends + extends,
-		p.z_ * extends + extends)));
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends - extends,
-		p.y_ * extends - extends,
-		p.z_ * extends + extends)));
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends - extends,
-		p.y_ * extends + extends,
-		p.z_ * extends + extends)));
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends + extends,
-		p.y_ * extends + extends,
-		p.z_ * extends + extends)));
-	vertices.push_back(Vertex(XMFLOAT3(p.x_ * extends + extends,
-		p.y_ * extends - extends,
-		p.z_ * extends + extends)));
-
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(2);
-
-	indices.push_back(2);
-	indices.push_back(3);
-	indices.push_back(0);
-
-	indices.push_back(4);
-	indices.push_back(6);
-	indices.push_back(5);
-
-	indices.push_back(4);
-	indices.push_back(7);
-	indices.push_back(6);
-
-	indices.push_back(1);
-	indices.push_back(5);
-	indices.push_back(6);
-
-	indices.push_back(1);
-	indices.push_back(6);
-	indices.push_back(2);
-
-	indices.push_back(0);
-	indices.push_back(3);
-	indices.push_back(7);
-
-	indices.push_back(0);
-	indices.push_back(7);
-	indices.push_back(4);
-
-	indices.push_back(0);
-	indices.push_back(4);
-	indices.push_back(5);
-
-	indices.push_back(0);
-	indices.push_back(5);
-	indices.push_back(1);
-
-	indices.push_back(3);
-	indices.push_back(2);
-	indices.push_back(6);
-
-	indices.push_back(3);
-	indices.push_back(6);
-	indices.push_back(7);
-
-	HRESULT hr = vertex_buffer.initialize(device_, vertices.data(), vertices.size());
-	COM_ERROR_IF_FAILED(hr, L"Failed to initizlize vertex buffer in bounding volume");
-
-	hr = index_buffer.initialize(device_, indices.data(), indices.size());
-	COM_ERROR_IF_FAILED(hr, L"Failed to initizlize vertex buffer in bounding volume");
-
-	UINT offset = 0;
-	deviceContext_->IASetVertexBuffers(0, 1, vertex_buffer.getAddressOf(), vertex_buffer.stridePtr(), &offset);
-	deviceContext_->IASetIndexBuffer(index_buffer.get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
-
-	deviceContext_->DrawIndexed(index_buffer.indicesCount(), 0, 0);
 }

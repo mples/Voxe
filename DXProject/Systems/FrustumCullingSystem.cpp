@@ -59,7 +59,7 @@ void FrustumCullingSystem::update(float dt) {
 	if (activeCamera_ == nullptr) {
 		return;
 	}
-	BoundingFrustum fr = activeCamera_->getWorldSpaceFrustum();
+
 	std::vector<BoundingVolumeComponent*> visible_volumes = octree_.collides(activeCamera_->getWorldSpaceFrustum());
 
 	char s[256];

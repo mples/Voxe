@@ -157,7 +157,6 @@
     <ClCompile Include="Components\CameraComponent.cpp" />
     <ClCompile Include="Components\MaterialComponent.cpp" />
     <ClCompile Include="Components\MeshComponent.cpp" />
-    <ClCompile Include="Components\OcclusionQuadsComponent.cpp" />
     <ClCompile Include="Components\TerrainNeighboursComponent.cpp" />
     <ClCompile Include="Components\TransformComponent.cpp" />
     <ClCompile Include="Components\WorldCoordinateComponent.cpp" />
@@ -170,7 +169,6 @@
     <ClCompile Include="Entities\GameCamera.cpp" />
     <ClCompile Include="Entities\TerrainChunk.cpp" />
     <ClCompile Include="Systems\FrustumCullingSystem.cpp" />
-    <ClCompile Include="Systems\OcclusionQuadGenerationSystem.cpp" />
     <ClCompile Include="Systems\OcclusionCullingSystem.cpp" />
     <ClCompile Include="Systems\RenderSystem.cpp" />
     <ClCompile Include="Systems\TerrainGenerationSystem.cpp" />
@@ -216,7 +214,6 @@
     <ClInclude Include="Components\CameraComponent.h" />
     <ClInclude Include="Components\MaterialComponent.h" />
     <ClInclude Include="Components\MeshComponent.h" />
-    <ClInclude Include="Components\OcclusionQuadsComponent.h" />
     <ClInclude Include="Components\TerrainNeighboursComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Components\WorldCoordinateComponent.h" />
@@ -254,7 +251,6 @@
     <ClInclude Include="Events\TerrainChunkRequest.h" />
     <ClInclude Include="Events\VoxelDataGeneratedEvent.h" />
     <ClInclude Include="Events\VoxelDataRequest.h" />
-    <ClInclude Include="Systems\OcclusionQuadGenerationSystem.h" />
     <ClInclude Include="Utilities\SpatialHash.h" />
     <ClInclude Include="ECS\System.h" />
     <ClInclude Include="Systems\FrustumCullingSystem.h" />

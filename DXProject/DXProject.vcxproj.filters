@@ -180,12 +180,6 @@
     <ClCompile Include="Systems\OcclusionCullingSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\OcclusionQuadsComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Systems\OcclusionQuadGenerationSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderWindow.h">
@@ -501,12 +495,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilities\SpatialHash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\OcclusionQuadsComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Systems\OcclusionQuadGenerationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utilities\Structures\Array2D.h">
