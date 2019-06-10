@@ -13,13 +13,13 @@ GameStage::~GameStage() {
 }
 
 void GameStage::init() {
-	for (int x = -5; x < 5; x++) {
-		for (int y = -5; y < 5; y++) {
-			for (int z = -5; z < 5; z++) {
-				ENGINE.sendEvent<TerrainChunkRequest>(x, y, z);
-			}
-		}
-	}
+	//for (int x = -9; x < 9; x++) {
+	//	for (int y = -9; y < 9; y++) {
+	//		for (int z = -9; z < 9; z++) {
+	//			ENGINE.sendEvent<TerrainChunkRequest>(x, y, z);
+	//		}
+	//	}
+	//}
 
 	ENGINE.getEntityManager().createEntity<GameCamera>(90.0f, 800 / 800, 0.1f, 100.0f, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 5.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 

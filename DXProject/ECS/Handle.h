@@ -1,6 +1,7 @@
 #pragma once
 #include <limits>
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <cassert>
 
@@ -49,13 +50,31 @@ private:
 template<class T, size_t size = 1024>
 class HandleTable {
 public:
-	HandleTable() {
+	HandleTable() : firstEmptyIndex_(0) {
 		extendTable();
 	}
 
 	~HandleTable() {}
 
 	Handle acquireHandle(T* object) {
+		if (!emptyIndexes_.empty()) {
+			unsigned int index = emptyIndexes_.front();
+			table_[index].second = object;
+			table_[index].first = (table_[index].first + 1) % Handle::maxVersion();
+			emptyIndexes_.pop_front();
+			return Handle(index, table_[index].first);
+		}
+		else {
+			if (firstEmptyIndex_ == table_.size()) {
+				extendTable();
+			}
+			table_[firstEmptyIndex_].second = object;
+			table_[firstEmptyIndex_].first = (table_[firstEmptyIndex_].first + 1) % Handle::maxVersion();
+			Handle created_handle (firstEmptyIndex_, table_[firstEmptyIndex_].first);
+			firstEmptyIndex_++;
+			return created_handle;
+		}
+/*
 		unsigned int i = 0;
 		for (; i < table_.size(); i++) {
 			if (table_[i].second == nullptr) {
@@ -68,12 +87,13 @@ public:
 		
 		table_[i].second = object;
 		table_[i].first = (table_[i].first + 1) % Handle::maxVersion();
-		return Handle(i, table_[i].first);
+		return Handle(i, table_[i].first);*/
 	}
 
 	void releaseHandle(Handle handle) {
 		assert(handle.getIndex() < table_.size() && handle.getVersion() == table_[handle.getIndex()].first && "Invalid handle");
 		table_[handle.getIndex()].second = nullptr;
+		emptyIndexes_.push_back(handle.getIndex());
 	}
 
 	inline bool isHandleValid(Handle handle) {
@@ -104,4 +124,6 @@ private:
 
 	using Entry = std::pair<unsigned int, T*>;
 	std::vector<Entry> table_;
+	std::list<unsigned int> emptyIndexes_;
+	unsigned int firstEmptyIndex_;
 };

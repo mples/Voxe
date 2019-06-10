@@ -1,16 +1,15 @@
 #include "BlocksDataComponent.h"
 
 BlocksDataComponent::BlocksDataComponent() : isEmpty_(true) {
-	ZeroMemory(blocks_, pow(TERRAIN_CHUNK_DIM, 3) * sizeof(BlockType));
+	blocks_.fillWith(BlockType::AIR);
 }
 
-BlocksDataComponent::BlocksDataComponent(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM]) : isEmpty_(true) {
-	CopyMemory(blocks_, b, sizeof(BlockType) * TERRAIN_CHUNK_DIM * TERRAIN_CHUNK_DIM * TERRAIN_CHUNK_DIM);
-
+BlocksDataComponent::BlocksDataComponent(Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> &b) : isEmpty_(true) {
+	blocks_ = b;
 	for (int x = 0; x < TERRAIN_CHUNK_DIM; x++) {
 		for (int y = 0; y < TERRAIN_CHUNK_DIM; y++) {
 			for (int z = 0; z < TERRAIN_CHUNK_DIM; z++) {
-				if (blocks_[x][y][z] != BlockType::AIR) {
+				if (blocks_.at(x, y, z) != BlockType::AIR) {
 					isEmpty_ = false;
 					return;
 				}
@@ -22,15 +21,14 @@ BlocksDataComponent::BlocksDataComponent(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_
 BlocksDataComponent::~BlocksDataComponent() {
 }
 
-void BlocksDataComponent::setBlocks(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM]) {
-	CopyMemory(blocks_, b, sizeof(BlockType) * TERRAIN_CHUNK_DIM * TERRAIN_CHUNK_DIM * TERRAIN_CHUNK_DIM);
-
+void BlocksDataComponent::setBlocks(Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> &b) {
+	blocks_ = b;
 	isEmpty_ = true;
 
 	for (int x = 0; x < TERRAIN_CHUNK_DIM; x++) {
 		for (int y = 0; y < TERRAIN_CHUNK_DIM; y++) {
 			for (int z = 0; z < TERRAIN_CHUNK_DIM; z++) {
-				if (blocks_[x][y][z] != BlockType::AIR) {
+				if (blocks_.at(x,y,z) != BlockType::AIR) {
 					isEmpty_ = false;
 					return;
 				}
@@ -40,7 +38,7 @@ void BlocksDataComponent::setBlocks(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK
 }
 
 BlockType BlocksDataComponent::getBlock(UINT x, UINT y, UINT z) {
-	return blocks_[x][y][z];
+	return blocks_.at(x, y, z);
 }
 
 bool BlocksDataComponent::isEmpty() {

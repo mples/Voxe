@@ -20,6 +20,7 @@ public:
 	virtual XMMATRIX & getProjectionMatrix() override;
 	virtual BoundingFrustum & getLocalSpaceFrustum() override;
 	virtual BoundingFrustum & getWorldSpaceFrustum() override;
+	virtual XMFLOAT3 getCameraPosition() override;
 
 	virtual void setProjData(float fov_degrees, float aspect_ratio, float near_plane, float far_plane) override;
 

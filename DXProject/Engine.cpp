@@ -6,6 +6,7 @@
 #include "Systems/VoxelDataGenerationSystem.h"
 #include "Systems/FrustumCullingSystem.h"
 #include "Systems/OcclusionCullingSystem.h"
+#include "Systems/InfiniteWorldSystem.h"
 
 #include "Utilities/JobSystem.h"
 
@@ -44,12 +45,24 @@ bool Engine::init(HINSTANCE hInstance, std::wstring window_title, std::wstring w
 void Engine::initializeSystems(HWND hwd, int width, int height) {
 	systemManager_.addSystem<RenderSystem>(hwd, width, height);
 	systemManager_.addSystem<TerrainGenerationSystem>();
+	systemManager_.setSystemUpdateInterval<TerrainGenerationSystem>(66.66f);
+
 	systemManager_.addSystem<TerrainMeshGenerationSystem>();
+	systemManager_.setSystemUpdateInterval<TerrainMeshGenerationSystem>(66.66f);
+
 	systemManager_.addSystem<VoxelDataGenerationSystem>();
+	systemManager_.setSystemUpdateInterval<VoxelDataGenerationSystem>(66.66f);
+
+
 	systemManager_.addSystem<FrustumCullingSystem>();
-	systemManager_.addSystem<OcclusionCullingSystem>();
 	systemManager_.setSystemUpdateInterval<FrustumCullingSystem>(33.33f);
+
+	systemManager_.addSystem<OcclusionCullingSystem>();
 	systemManager_.setSystemUpdateInterval<OcclusionCullingSystem>(33.33f);
+
+	systemManager_.addSystem<InfiniteWorldSystem>();
+	systemManager_.setSystemUpdateInterval<InfiniteWorldSystem>(33.33f);
+
 }
 
 bool Engine::processMessages() {
@@ -63,6 +76,15 @@ void Engine::update() {
 	static int fps_counter = 0;
 	static char s[256];
 	fps_counter++;
+
+
+	systemManager_.update(dt);
+	//JOB_SYSTEM.wait();
+	eventHandler_.dispatchEvents();
+
+	INPUT.processInput(dt);
+	STAGE_MANAGER.update(dt);
+
 	if (fpsTimer_.getTimePassedMilisec() > 1000.0) {
 		sprintf(s, "FPS: %u\n", fps_counter);
 		fps_counter = 0;
@@ -70,14 +92,6 @@ void Engine::update() {
 	}
 	OutputDebugStringA(s);
 
-
-	systemManager_.update(dt);
-	eventHandler_.dispatchEvents();
-
-	INPUT.processInput(dt);
-	STAGE_MANAGER.update(dt);
-
-	JOB_SYSTEM.wait();
 }
 
 EventHandler * Engine::getEventHandler() {

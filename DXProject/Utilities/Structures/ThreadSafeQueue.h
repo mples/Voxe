@@ -30,11 +30,17 @@ public:
 			return false;
 		}
 	}
+	inline void clear() {
+		std::lock_guard<std::mutex> lock(mutex_);
 
+		size_t head_ = 0;
+		size_t tail_ = 0;
+	}
 private:
 	T data_[size];
 	size_t head_ = 0;
 	size_t tail_ = 0;
 	std::mutex mutex_;
 };
+
 

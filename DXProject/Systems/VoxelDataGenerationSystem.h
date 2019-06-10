@@ -19,5 +19,8 @@ private:
 
 	SimpleGenerator generator_;
 	PerlinNoise noise_;
-	std::list<EntityId> entitiesToUpdate_;
+	std::list<EntityId> chunksToGenerateData_;
+
+	unsigned int MAX_CHUNK_GENERATED_PER_UDPATE = 2;
+
 };

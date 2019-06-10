@@ -17,4 +17,6 @@ public:
 
 	virtual void setProjData(float fov_degrees, float aspect_ratio, float near_plane, float far_plane) = 0;
 
+	virtual XMFLOAT3 getCameraPosition() = 0;
+
 };

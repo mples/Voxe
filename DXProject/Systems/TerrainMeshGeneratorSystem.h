@@ -11,6 +11,7 @@
 #include "../Components/TerrainNeighboursComponent.h"
 
 #include "../Graphics/Vertex.h"
+#include <set>
 
 #include <d3d11.h>
 #include <list>
@@ -68,4 +69,6 @@ private:
 
 	std::list<EntityId> entitiesToUpdateMesh_;
 	std::list<EntityId> entitiesToCreateMesh_;
+
+	unsigned int MAX_CHUNK_GENERATED_PER_UDPATE = 2;
 };

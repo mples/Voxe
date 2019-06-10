@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-
+#include "../../Utilities/Structures/ThreadSafeQueue.h"
 #include "EventDispatcher.h"
 
 class EventHandler {
@@ -19,6 +19,13 @@ public:
 		EventType* e = new EventType(std::forward<ARGS>(args)...);
 
 		eventsBuffer_.push_back(e);
+		/*if (eventsBuffer_.push(e)) {
+			return true;
+		}
+		else {
+			delete e;
+			return false;
+		}*/
 	}
 
 	template<class EventType>
@@ -46,5 +53,6 @@ private:
 
 	std::unordered_map<EventTypeId, IEventDispatcher*> eventDispatchersMap_;
 	std::vector<IEvent*> eventsBuffer_;
+	//ThreadSafeQueue<IEvent*, 1024> eventsBuffer_;
 
 };

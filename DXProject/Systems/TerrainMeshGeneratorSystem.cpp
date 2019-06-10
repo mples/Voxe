@@ -27,89 +27,140 @@ void TerrainMeshGenerationSystem::update(float dt) {
 		return;
 	}
 
-	auto it = entitiesToCreateMesh_.begin();
-	while (it != entitiesToCreateMesh_.end()) {
-		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(*it);
-		if (blocks_com != nullptr) {
-			TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(*it);
-			if (neight_comp != nullptr) {
-				NeightbourData neight_data;
-				neight_data.left_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->left_);
-				neight_data.right_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->right_);
-				neight_data.top_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->top_);
-				neight_data.bottom_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->bottom_);
-				neight_data.front_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->front_);
-				neight_data.back_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->back_);
-
-				std::vector<Vertex> vertices;
-				std::vector<DWORD> indices;
-
-				calculateMeshData(vertices, indices, blocks_com, neight_data);
-				if (vertices.size() != 0) {
-					ENGINE.getComponentManager().addComponent<MeshComponent>(*it, device_, vertices, indices);
-					BoundingBox bounding_box;
-					bounding_box.CreateFromPoints(bounding_box, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
-					WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(*it);
-					if (wc_comp) {
-						bounding_box.Transform(bounding_box, wc_comp->getWorldMatrix());
-					}
-					ENGINE.getComponentManager().addComponent<BoundingVolumeComponent>(*it, bounding_box);
-				}
-			}
-		}
-		it++;
-	}
-	entitiesToCreateMesh_.clear();
+	int updated_count = 0;
 
 	while (!entitiesToUpdateMesh_.empty()) {
-		auto update_it = entitiesToUpdateMesh_.begin();
-		MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(*update_it);
-		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(*update_it);
-		BoundingVolumeComponent * bv_com = ENGINE.getComponentManager().getComponentByEntityId<BoundingVolumeComponent>(*update_it);
-		if (blocks_com != nullptr && mesh != nullptr && bv_com != nullptr) {
-			TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(*update_it);
-			if (neight_comp != nullptr) {
-				NeightbourData neight_data;
-				neight_data.left_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->left_);
-				neight_data.right_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->right_);
-				neight_data.top_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->top_);
-				neight_data.bottom_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->bottom_);
-				neight_data.front_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->front_);
-				neight_data.back_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->back_);
+		if (updated_count == MAX_CHUNK_GENERATED_PER_UDPATE) {
+			break;
+		}
 
-				std::vector<Vertex> vertices;
-				std::vector<DWORD> indices;
+		EntityId& e_id = entitiesToUpdateMesh_.front();
 
-				calculateMeshData(vertices, indices, blocks_com, neight_data);
-				mesh->clearMesh();
-				if (vertices.size() != 0) {
-					mesh->setMesh(device_, vertices, indices);
-					BoundingBox bounding_box;
-					bounding_box.CreateFromPoints(bounding_box, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
-					WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(*update_it);
-					if (wc_comp) {
-						bounding_box.Transform(bounding_box, wc_comp->getWorldMatrix());
-					}
-					bv_com->setBoundingVolume(bounding_box);
-					/*ENGINE.getComponentManager().eraseComponent<BoundingVolumeComponent>(*update_it);
-					ENGINE.getComponentManager().addComponent<BoundingVolumeComponent>(*update_it, bounding_box);*/
+		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(e_id);
+		if (blocks_com != nullptr) {
+			MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(e_id);
+			BoundingVolumeComponent * bv_com = ENGINE.getComponentManager().getComponentByEntityId<BoundingVolumeComponent>(e_id);
+			if (blocks_com->isEmpty()) {
+				if (mesh != nullptr) {
+					ENGINE.getComponentManager().eraseComponent<MeshComponent>(e_id);
 				}
+				if (bv_com != nullptr) {
+					ENGINE.getComponentManager().eraseComponent<BoundingVolumeComponent>(e_id);
+				}
+				entitiesToUpdateMesh_.pop_front();
+				//updated_count++;
 			}
-			entitiesToUpdateMesh_.pop_front();
+			else {
+				//WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(e_id);
+
+				if (bv_com == nullptr || mesh == nullptr) {
+					entitiesToUpdateMesh_.pop_front();
+					//entitiesToCreateMesh_.push_back(e_id);
+					//updated_count++;
+					continue;
+				}
+
+				TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(e_id);
+				if (neight_comp != nullptr) {
+					NeightbourData neight_data;
+					neight_data.left_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->left_);
+					neight_data.right_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->right_);
+					neight_data.top_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->top_);
+					neight_data.bottom_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->bottom_);
+					neight_data.front_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->front_);
+					neight_data.back_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->back_);
+
+					std::vector<Vertex> vertices;
+					std::vector<DWORD> indices;
+
+					calculateMeshData(vertices, indices, blocks_com, neight_data);
+					mesh->clearMesh();
+					if (vertices.size() != 0) {
+						mesh->setMesh(device_, vertices, indices);
+						BoundingBox bounding_box;
+						bounding_box.CreateFromPoints(bounding_box, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
+						WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(e_id);
+						if (wc_comp) {
+							bounding_box.Transform(bounding_box, wc_comp->getWorldMatrix());
+						}
+						bv_com->setBoundingVolume(bounding_box);
+					}
+				}
+				else {
+					int a = 0;
+					a++;
+				}
+				entitiesToUpdateMesh_.pop_front();
+				updated_count++;
+			}
 		}
 		else {
 			break;
 		}
 	}
+
+
+	updated_count = 0;
+
+	while (!entitiesToCreateMesh_.empty()) {
+		if (updated_count == MAX_CHUNK_GENERATED_PER_UDPATE) {
+			break;
+		}
+
+		EntityId & e_id = entitiesToCreateMesh_.front();
+
+		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(e_id);
+		TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(e_id);
+		if (blocks_com != nullptr && neight_comp != nullptr) {
+
+			NeightbourData neight_data;
+			neight_data.left_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->left_);
+			neight_data.right_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->right_);
+			neight_data.top_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->top_);
+			neight_data.bottom_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->bottom_);
+			neight_data.front_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->front_);
+			neight_data.back_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->back_);
+
+			std::vector<Vertex> vertices;
+			std::vector<DWORD> indices;
+
+			calculateMeshData(vertices, indices, blocks_com, neight_data);
+			if (vertices.size() != 0) {
+				ENGINE.getComponentManager().addComponent<MeshComponent>(e_id, device_, vertices, indices);
+				BoundingBox bounding_box;
+				bounding_box.CreateFromPoints(bounding_box, vertices.size(), &(vertices.data()->pos_), sizeof(Vertex));
+				WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(e_id);
+				if (wc_comp) {
+					bounding_box.Transform(bounding_box, wc_comp->getWorldMatrix());
+				}
+				ENGINE.getComponentManager().addComponent<BoundingVolumeComponent>(e_id, bounding_box);
+			}
+			
+			updated_count++;
+			entitiesToCreateMesh_.pop_front();
+		}
+		else {
+			entitiesToCreateMesh_.pop_front();
+		}
+	}
+	//entitiesToCreateMesh_.clear();
+
 	//entitiesToUpdateMesh_.clear();
 }
 
 void TerrainMeshGenerationSystem::onVoxelDataGeneratedEvent(const VoxelDataGeneratedEvent * e) {
-	entitiesToCreateMesh_.push_back(e->id_);
+	auto found = std::find(entitiesToCreateMesh_.begin(), entitiesToCreateMesh_.end(), e->id_);
+	if (found == entitiesToCreateMesh_.end()) {
+		entitiesToCreateMesh_.push_back(e->id_);
+	}
+
 }
 
 void TerrainMeshGenerationSystem::onTerrainChunkChanged(const TerrainChunkChanged * e) {
-	entitiesToUpdateMesh_.push_back(e->id_);
+	auto found = std::find(entitiesToUpdateMesh_.begin(), entitiesToUpdateMesh_.end(), e->id_);
+	if (found == entitiesToUpdateMesh_.end()) {
+		entitiesToUpdateMesh_.push_back(e->id_);
+	}
 }
 
 void TerrainMeshGenerationSystem::onDirectXDeviceCreated(const DirectXDeviceCreated * e) {

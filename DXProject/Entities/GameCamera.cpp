@@ -198,6 +198,10 @@ BoundingFrustum & GameCamera::getWorldSpaceFrustum() {
 	}
 }
 
+XMFLOAT3 GameCamera::getCameraPosition() {
+	return cameraComponent_->getPos();
+}
+
 void GameCamera::setProjData(float fov_degrees, float aspect_ratio, float near_plane, float far_plane) {
 	cameraComponent_->setProjData(fov_degrees, aspect_ratio, near_plane, far_plane);
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <vector>
+#include <mutex>
 
 #include "API.h"
 #include "IComponent.h"
@@ -30,6 +31,7 @@ public:
 
 	template<class T, class ...ARGS>
 	T* addComponent(const EntityId e_id, ARGS&& ...args) {
+		std::lock_guard<std::mutex> lock(mutex_);
 		T* component = getComponentPoolAllocator<T>()->allocateNotInitialized();
 
 		component->owner_ = e_id;
@@ -42,6 +44,7 @@ public:
 
 	template<class T>
 	void eraseComponent(const EntityId e_id) {
+		std::lock_guard<std::mutex> lock(mutex_);
 		IComponent* component = entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID];
 
 		assert(component != nullptr && "Trying to remove component not in use by this entity");
@@ -51,6 +54,7 @@ public:
 	}
 
 	void eraseAllComponents(EntityId e_id) {
+		std::lock_guard<std::mutex> lock(mutex_);
 		for (auto comp_it : entityComponentMap_[e_id.getIndex()]) {
 			if (comp_it.second != nullptr) {
 				IComponentAllocator * comp_all = componentsPools_[comp_it.second->getTypeId()];
@@ -63,6 +67,7 @@ public:
 
 	template<class T>
 	T* getComponentByEntityId(const EntityId e_id) {
+		std::lock_guard<std::mutex> lock(mutex_);
 		IComponent* component = entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID];
 		//assert(component != nullptr);
 		return dynamic_cast<T*>(component);
@@ -70,6 +75,7 @@ public:
 
 	template<class T>
 	T* getComponentByComponentId(const ComponentId c_id) {
+		std::lock_guard<std::mutex> lock(mutex_);
 		IComponent* component = componentLookUpTable_[c_id];
 		//assert(component != nullptr);
 		return dynamic_cast<T*>(component);
@@ -129,4 +135,6 @@ private:
 
 	std::unordered_map<unsigned int, std::unordered_map<unsigned int, IComponent*>> entityComponentMap_;
 	HandleTable<IComponent> componentLookUpTable_;
+
+	std::mutex mutex_;
 };

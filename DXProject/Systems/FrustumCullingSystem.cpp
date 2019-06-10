@@ -72,6 +72,18 @@ void FrustumCullingSystem::update(float dt) {
 }
 
 void FrustumCullingSystem::postUpdate(float dt) {
+	/*auto it = ENGINE.getComponentManager().begin<BoundingVolumeComponent>();
+	auto end = ENGINE.getComponentManager().end<BoundingVolumeComponent>();
+	while (it != end) {
+		MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(it->getOwner());
+		if (mesh && !it->isInsideFrusutm()) {
+			mesh->setVisiblility(false);
+		}
+		++it;
+	}*/
+
+	
+
 }
 
 void FrustumCullingSystem::onBoundingVolumeCreated(const BoundingVolumeCreated * e) {

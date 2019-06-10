@@ -2,20 +2,21 @@
 
 #include "../ECS/Component.h"
 #include "../Voxel/BlockType.h"
+#include "../Utilities/Structures/Array3D.h"
 #include <Windows.h>
 
 class BlocksDataComponent : public Component<BlocksDataComponent> {
 public:
 public:
 	BlocksDataComponent();
-	BlocksDataComponent(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM]);
+	BlocksDataComponent(Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> &b);
 	~BlocksDataComponent();
 
-	void setBlocks(BlockType b[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM]);
+	void setBlocks(Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> &b);
 	BlockType getBlock(UINT x, UINT y, UINT z);
 
 	bool isEmpty();
 private:
-	BlockType blocks_[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM];
+	Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> blocks_;
 	bool isEmpty_;
 };

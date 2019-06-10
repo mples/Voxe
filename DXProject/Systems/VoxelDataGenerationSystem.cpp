@@ -13,25 +13,34 @@ VoxelDataGenerationSystem::~VoxelDataGenerationSystem() {
 }
 
 void VoxelDataGenerationSystem::update(float dt) {
-	auto it = entitiesToUpdate_.begin();
-	while (it != entitiesToUpdate_.end() ) {
-		
-		BlockType blocks[TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM][TERRAIN_CHUNK_DIM] = {};
-		//ZeroMemory(blocks, pow(DIMENSION, 3) * sizeof(BlockType));
-		ENGINE.getEntityManager().getEntity<TerrainChunk>(*it);
-		WorldCoordinateComponent * coord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(*it);
+
+	int generated_count = 0;
+
+	while (!chunksToGenerateData_.empty()) {
+		if (generated_count == MAX_CHUNK_GENERATED_PER_UDPATE) {
+			break;
+		}
+		EntityId & e_id = chunksToGenerateData_.front();
+
+		Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> blocks(BlockType::AIR);
+		WorldCoordinateComponent * coord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(e_id);
 		if (coord_comp != nullptr) {
 			generator_.generate(blocks, coord_comp->getCoord());
-			ENGINE.getComponentManager().addComponent<BlocksDataComponent>(*it, blocks);
-			ENGINE.sendEvent<VoxelDataGeneratedEvent>(*it);
+			ENGINE.getComponentManager().addComponent<BlocksDataComponent>(e_id, blocks);
+			ENGINE.sendEvent<VoxelDataGeneratedEvent>(e_id);
+
+			chunksToGenerateData_.pop_front();
+			generated_count++;
+		}
+		else {
+			break;
 		}
 
-		it++;
 	}
-	entitiesToUpdate_.clear();
+
 }
 
 
 void VoxelDataGenerationSystem::onVoxelDataRequest(const VoxelDataRequest * e) {
-	entitiesToUpdate_.push_back(e->id_);
+	chunksToGenerateData_.push_back(e->id_);
 }

@@ -12,6 +12,7 @@
 #include "../Events/CameraDestroyed.h"
 #include "../Components/MeshComponent.h"
 #include "../Components/WorldCoordinateComponent.h"
+#include "../Components/BoundingVolumeComponent.h"
 
 #include "../Graphics/ConstantBuffer.h"
 #include "../Graphics/ConstantBufferTypes.h"
@@ -29,6 +30,12 @@ class OcclusionCullingSystem : public System<OcclusionCullingSystem>, public IEv
 		WorldCoordinateComponent * coord_;
 	};
 
+	struct PreviouslyVisible {
+		PreviouslyVisible(MeshComponent * m, BoundingVolumeComponent * bv) : mesh_(m), bv_(bv) {}
+
+		MeshComponent * mesh_;
+		BoundingVolumeComponent * bv_;
+	};
 	struct OcclusionQuery {
 		OcclusionQuery(ID3D11Query * q, EntityId id) : query_(q), ownerId_(id) {}
 		ID3D11Query * query_;
@@ -71,4 +78,5 @@ private:
 
 	std::vector<OcclusionInstance> meshesToQuery_;
 	std::queue<OcclusionQuery> queriesBuffer_;
+	std::vector<PreviouslyVisible> previouslyVisibleEntities_;
 };

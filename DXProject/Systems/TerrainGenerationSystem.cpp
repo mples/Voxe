@@ -10,6 +10,7 @@
 #include "../Components/TerrainNeighboursComponent.h"
 #include "../Events/TerrainChunkChanged.h"
 
+
 #include "../Events/VoxelDataRequest.h"
 
 TerrainGenerationSystem::TerrainGenerationSystem() :  IEventListener(ENGINE.getEventHandler()) { //TODO parametize 
@@ -26,22 +27,41 @@ void TerrainGenerationSystem::preUpdate(float dt) {
 }
 
 void TerrainGenerationSystem::update(float dt) {
-	auto it = entitiesToGenerate_.begin();
-	while (it != entitiesToGenerate_.end()) {
-		EntityId id = ENGINE.getEntityManager().createEntity<TerrainChunk>();
+	int generated_chunks = 0;
 
-		ENGINE.getComponentManager().addComponent<WorldCoordinateComponent>(id, *it);
+	while (!entitiesToGenerate_.empty()) {
+		if (generated_chunks == MAX_CHUNK_TO_GENERATE) {
+			break;
+		}
+		XMINT3 coord = entitiesToGenerate_.front();
 
-		insertTerrainNeightbours(id, *it);
+		EntityId id = ENGINE.getEntityManager().createEntity<TerrainChunk>(coord);
 
-		activeTerrainChunks_[TerrainCoord(*it)] = id;
+		insertTerrainNeightbours(id, coord);
+
+		activeTerrainChunks_[TerrainCoord(coord)] = id;
 
 		ENGINE.sendEvent<VoxelDataRequest>(id);
 
-		it++;
+		entitiesToGenerate_.pop_front();
+		generated_chunks++;
 	}
 
-	entitiesToGenerate_.clear();
+	while(!entitiesToDestroy_.empty()) {
+		if (generated_chunks == MAX_CHUNK_TO_GENERATE) {
+			break;
+		}
+		XMINT3 coord = entitiesToDestroy_.front();
+
+		auto found = activeTerrainChunks_.find(TerrainCoord(coord));
+		if (found != activeTerrainChunks_.end()) {
+			ENGINE.getEntityManager().eraseEntity<TerrainChunk>(found->second);
+			activeTerrainChunks_.erase(found);
+		}
+
+		entitiesToDestroy_.pop_front();
+		generated_chunks++;
+	}
 }
 
 void TerrainGenerationSystem::postUpdate(float dt) {
@@ -109,4 +129,8 @@ void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coo
 
 void TerrainGenerationSystem::onTerrainChunkRequest(const TerrainChunkRequest * e) {
 	entitiesToGenerate_.push_back(e->coord_);
+}
+
+void TerrainGenerationSystem::onTerrainChunkDestroyedEvent(const TerrainChunkDestroyedEvent * e) {
+	entitiesToDestroy_.push_back(e->coord_);
 }

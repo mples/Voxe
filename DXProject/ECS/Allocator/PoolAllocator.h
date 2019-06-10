@@ -26,7 +26,7 @@ public:
 			return result;
 		}
 
-		if (lastBlock_->elementsInBlock_ > blockCapacity_) {
+		if (lastBlock_->elementsInBlock_ == blockCapacity_) {
 			allocateNewNode();
 		}
 		char * address = (char*)currentMemory_;
@@ -44,7 +44,7 @@ public:
 			return result;
 		}
 
-		if (lastBlock_->elementsInBlock_ > blockCapacity_) {
+		if (lastBlock_->elementsInBlock_ == blockCapacity_) {
 			allocateNewNode();
 		}
 		char * address = (char*)currentMemory_;
@@ -74,7 +74,7 @@ private:
 			if (memory_ == nullptr) {
 				throw std::bad_alloc();
 			}
-			capacity_ = capacity_;
+			capacity_ = capacity;
 			nextBlock_ = nullptr;
 			elementsInBlock_ = 0;
 		}
@@ -105,7 +105,7 @@ private:
 			if (size < lastBlock_->elementsInBlock_) {
 				throw std::overflow_error("Size overflow");
 			}
-			if (size <= maxBlockLength_) {
+			if (size >= maxBlockLength_) {
 				size = maxBlockLength_;
 			}
 		}

@@ -1,6 +1,5 @@
 #include "OcclusionCullingSystem.h"
 #include "../Engine.h"
-#include "../Components/BoundingVolumeComponent.h"
 
 #include <algorithm>
 
@@ -24,6 +23,13 @@ OcclusionCullingSystem::~OcclusionCullingSystem() {
 }
 
 void OcclusionCullingSystem::preUpdate(float dt) {
+	for (PreviouslyVisible & pv : previouslyVisibleEntities_) {
+		if (!pv.bv_->isInsideFrusutm()) {
+			pv.mesh_->setVisiblility(false);
+		}
+	}
+
+	previouslyVisibleEntities_.clear();
 	meshesToQuery_.clear();
 
 	auto it = ENGINE.getComponentManager().begin<BoundingVolumeComponent>();
@@ -31,11 +37,15 @@ void OcclusionCullingSystem::preUpdate(float dt) {
 
 
 	while (it != end) {
-		MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(it->getOwner());
-		WorldCoordinateComponent * coord = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
-		if (mesh != nullptr && coord != nullptr) {
-			meshesToQuery_.push_back(OcclusionInstance(mesh, coord));
+		if (it->isInsideFrusutm()) {
+			MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(it->getOwner());
+			WorldCoordinateComponent * coord = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
+			if (mesh != nullptr && coord != nullptr) {
+				meshesToQuery_.push_back(OcclusionInstance(mesh, coord));
+				previouslyVisibleEntities_.push_back(PreviouslyVisible(mesh, &(*it)));
+			}
 		}
+
 		++it;
 	}
 }
@@ -154,9 +164,14 @@ void OcclusionCullingSystem::postUpdate(float dt) {
 	while (!queriesBuffer_.empty()) {
 		if (getQueryDataIfAvaible(queriesBuffer_.front(), &query_data)) {
 			if (query_data > 0) {
-				MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(queriesBuffer_.front().ownerId_);
-				if (mesh != nullptr) {
-					mesh->setVisiblility(true);
+				BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByEntityId<BoundingVolumeComponent>(queriesBuffer_.front().ownerId_);
+				if (bv_comp != nullptr) {
+					if (bv_comp->isInsideFrusutm()) {
+						MeshComponent * mesh = ENGINE.getComponentManager().getComponentByEntityId<MeshComponent>(queriesBuffer_.front().ownerId_);
+						if (mesh != nullptr) {
+							mesh->setVisiblility(true);
+						}
+					}
 				}
 			}
 			else {
