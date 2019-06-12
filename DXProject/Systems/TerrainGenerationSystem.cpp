@@ -8,16 +8,18 @@
 #include "../Components/BlocksDataComponent.h"
 #include "../Components/WorldCoordinateComponent.h"
 #include "../Components/TerrainNeighboursComponent.h"
-#include "../Events/TerrainChunkChanged.h"
-
 
 #include "../Events/VoxelDataRequest.h"
+#include "../Events/TerrainChunkChanged.h"
 
-TerrainGenerationSystem::TerrainGenerationSystem() :  IEventListener(ENGINE.getEventHandler()) { //TODO parametize 
-	std::function<void(const TerrainChunkRequest*) > f = [&](const TerrainChunkRequest* e) {
+TerrainGenerationSystem::TerrainGenerationSystem() : IEventListener(ENGINE.getEventHandler()) {
+	registerEventCallback<TerrainChunkRequest>([&](const TerrainChunkRequest* e) {
 		onTerrainChunkRequest(e);
-	};
-	registerEventCallback<TerrainChunkRequest>(f);
+	});
+
+	registerEventCallback<TerrainChunkDestroyedEvent>([&](const TerrainChunkDestroyedEvent * e) {
+		onTerrainChunkDestroyedEvent(e);
+	});
 }
 
 TerrainGenerationSystem::~TerrainGenerationSystem() {
@@ -55,6 +57,7 @@ void TerrainGenerationSystem::update(float dt) {
 
 		auto found = activeTerrainChunks_.find(TerrainCoord(coord));
 		if (found != activeTerrainChunks_.end()) {
+			eraseAsNeightbour(found->second);
 			ENGINE.getEntityManager().eraseEntity<TerrainChunk>(found->second);
 			activeTerrainChunks_.erase(found);
 		}
@@ -80,7 +83,7 @@ void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coo
 		left_eid = left->second;
 		TerrainNeightboursComponent* left_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(left->second);
 		left_comp->right_ = id;
-		ENGINE.sendEvent<TerrainChunkChanged>(left->second);
+		ENGINE.sendEvent< TerrainChunkChanged>(left->second);
 	}
 
 	auto right = activeTerrainChunks_.find(TerrainCoord(coord.x + 1, coord.y, coord.z));
@@ -88,7 +91,8 @@ void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coo
 		right_eid = right->second;
 		TerrainNeightboursComponent* right_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(right->second);
 		right_comp->left_ = id;
-		ENGINE.sendEvent<TerrainChunkChanged>(right->second);
+		ENGINE.sendEvent< TerrainChunkChanged>(right->second);
+
 	}
 
 	auto top = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y + 1, coord.z));
@@ -96,7 +100,8 @@ void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coo
 		top_eid = top->second;
 		TerrainNeightboursComponent* top_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(top->second);
 		top_comp->bottom_ = id;
-		ENGINE.sendEvent<TerrainChunkChanged>(top->second);
+		ENGINE.sendEvent< TerrainChunkChanged>(top->second);
+
 	}
 
 	auto bottom = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y - 1, coord.z));
@@ -104,7 +109,8 @@ void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coo
 		bottom_eid = bottom->second;
 		TerrainNeightboursComponent* bottom_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(bottom->second);
 		bottom_comp->top_ = id;
-		ENGINE.sendEvent<TerrainChunkChanged>(bottom->second);
+		ENGINE.sendEvent< TerrainChunkChanged>(bottom->second);
+
 	}
 
 	auto front = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y, coord.z + 1));
@@ -112,7 +118,8 @@ void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coo
 		front_eid = front->second;
 		TerrainNeightboursComponent* front_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(front->second);
 		front_comp->back_ = id;
-		ENGINE.sendEvent<TerrainChunkChanged>(front->second);
+		ENGINE.sendEvent< TerrainChunkChanged>(front->second);
+
 	}
 
 	auto back = activeTerrainChunks_.find(TerrainCoord(coord.x, coord.y, coord.z - 1));
@@ -120,11 +127,46 @@ void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coo
 		back_eid = back->second;
 		TerrainNeightboursComponent* back_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(back->second);
 		back_comp->front_ = id;
-		ENGINE.sendEvent<TerrainChunkChanged>(back->second);
+		ENGINE.sendEvent< TerrainChunkChanged>(back->second);
+
 	}
 
 	ENGINE.getComponentManager().addComponent<TerrainNeightboursComponent>(id, left_eid, right_eid, top_eid, bottom_eid, front_eid, back_eid);
 
+}
+
+void TerrainGenerationSystem::eraseAsNeightbour(EntityId id) {
+	TerrainNeightboursComponent * current_neight = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(id);
+	if (current_neight->left_ != EntityId::getInvalidHandle()) {
+		TerrainNeightboursComponent * left_neight = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(current_neight->left_);
+		left_neight->right_ = EntityId::getInvalidHandle();
+		ENGINE.sendEvent<TerrainChunkChanged>(current_neight->left_);
+	}
+	if (current_neight->right_ != EntityId::getInvalidHandle()) {
+		TerrainNeightboursComponent * right_neight = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(current_neight->right_);
+		right_neight->left_ = EntityId::getInvalidHandle();
+		ENGINE.sendEvent<TerrainChunkChanged>(current_neight->right_);
+	}
+	if (current_neight->top_ != EntityId::getInvalidHandle()) {
+		TerrainNeightboursComponent * top_neight = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(current_neight->top_);
+		top_neight->bottom_ = EntityId::getInvalidHandle();
+		ENGINE.sendEvent<TerrainChunkChanged>(current_neight->top_);
+	}
+	if (current_neight->bottom_ != EntityId::getInvalidHandle()) {
+		TerrainNeightboursComponent * bottom_neight = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(current_neight->bottom_);
+		bottom_neight->top_ = EntityId::getInvalidHandle();
+		ENGINE.sendEvent<TerrainChunkChanged>(current_neight->bottom_);
+	}
+	if (current_neight->front_ != EntityId::getInvalidHandle()) {
+		TerrainNeightboursComponent * front_neight = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(current_neight->front_);
+		front_neight->back_ = EntityId::getInvalidHandle();
+		ENGINE.sendEvent<TerrainChunkChanged>(current_neight->front_);
+	}
+	if (current_neight->back_ != EntityId::getInvalidHandle()) {
+		TerrainNeightboursComponent * back_neight = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(current_neight->back_);
+		back_neight->front_ = EntityId::getInvalidHandle();
+		ENGINE.sendEvent<TerrainChunkChanged>(current_neight->back_);
+	}
 }
 
 void TerrainGenerationSystem::onTerrainChunkRequest(const TerrainChunkRequest * e) {

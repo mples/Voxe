@@ -14,6 +14,21 @@
 #include "../Events/CameraDestroyed.h"
 
 class FrustumCullingSystem : public System<FrustumCullingSystem>, public IEventListener {
+	struct FrustumCullingInstance {
+		FrustumCullingInstance(BoundingVolumeComponent * bv) : id_(bv->getId()), boundingBox_(bv->getBoundingVolume()) {}
+		FrustumCullingInstance(ComponentId c_id) : id_(c_id) {}
+		bool operator==(const FrustumCullingInstance& other) {
+			return id_ == other.id_;
+		}
+		bool operator!=(const FrustumCullingInstance& other) {
+			return id_ != other.id_;
+		}
+		BoundingBox & getBoundingVolume() {
+			return boundingBox_;
+		}
+		BoundingBox boundingBox_;
+		ComponentId id_;
+	};
 public:
 	FrustumCullingSystem();
 	~FrustumCullingSystem();
@@ -31,7 +46,7 @@ private:
 	void onCameraCreated(const CameraCreated * e);
 	void onCameraDestroyed(const CameraDestroyed * e);
 
-	Octree<BoundingVolumeComponent> octree_;
+	Octree<FrustumCullingInstance> octree_;
 	IGameCamera * activeCamera_;
 	std::vector<ComponentId> boundingVolumesToInsert_;
 	std::vector<ComponentId> boundingVolumesToRemove_;

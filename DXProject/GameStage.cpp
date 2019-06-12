@@ -13,9 +13,9 @@ GameStage::~GameStage() {
 }
 
 void GameStage::init() {
-	//for (int x = -9; x < 9; x++) {
-	//	for (int y = -9; y < 9; y++) {
-	//		for (int z = -9; z < 9; z++) {
+	//for (int x = -1; x < 1; x++) {
+	//	for (int y = -1; y < 1; y++) {
+	//		for (int z = -1; z < 1; z++) {
 	//			ENGINE.sendEvent<TerrainChunkRequest>(x, y, z);
 	//		}
 	//	}

@@ -28,6 +28,8 @@ public:
 private:
 	void insertTerrainNeightbours(EntityId id, XMINT3 & coord);
 
+	void eraseAsNeightbour(EntityId id);
+
 	void onTerrainChunkRequest(const TerrainChunkRequest* e);
 
 	void onTerrainChunkDestroyedEvent(const TerrainChunkDestroyedEvent * e);

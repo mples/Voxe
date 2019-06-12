@@ -24,6 +24,12 @@ class TerrainMeshGenerationSystem : public System<TerrainMeshGenerationSystem>, 
 		BlocksDataComponent * bottom_;
 		BlocksDataComponent * front_;
 		BlocksDataComponent * back_;
+		bool leftChanged_ = false;
+		bool rightChanged_ = false;
+		bool topChanged_ = false;
+		bool bottomChanged_ = false;
+		bool frontChanged_ = false;
+		bool backChanged_ = false;
 	};
 public:
 	TerrainMeshGenerationSystem();
@@ -37,9 +43,9 @@ private:
 
 	void onDirectXDeviceCreated(const DirectXDeviceCreated * e);
 
-	void calculateVertices(UINT x, UINT y, UINT z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices, BlocksDataComponent * blocks_com, NeightbourData neight_data);
+	void calculateVertices(UINT x, UINT y, UINT z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
 
-	void calculateMeshData(std::vector<Vertex> &vertices, std::vector<DWORD> &indices, BlocksDataComponent * blocks_com, NeightbourData neight_data);
+	void calculateMeshData(std::vector<Vertex> &vertices, std::vector<DWORD> &indices, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
 
 	void insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 	void insertPositiveX(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
@@ -50,12 +56,12 @@ private:
 	void insertNegativeZ(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 	void insertPositiveZ(float x, float y, float z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices);
 
-	bool isObscuredNegativeX(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data);
-	bool isObscuredPositiveX(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data);
-	bool isObscuredNegativeY(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data);
-	bool isObscuredPositiveY(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data);
-	bool isObscuredNegativeZ(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data);
-	bool isObscuredPositiveZ(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData neight_data);
+	bool isObscuredNegativeX(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
+	bool isObscuredPositiveX(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
+	bool isObscuredNegativeY(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
+	bool isObscuredPositiveY(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
+	bool isObscuredNegativeZ(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
+	bool isObscuredPositiveZ(UINT x, UINT y, UINT z, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
 
 
 	const XMFLOAT3 POS_X_NORMAL = XMFLOAT3(1.0f, 0.0f, 0.0f);

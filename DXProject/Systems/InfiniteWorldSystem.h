@@ -6,7 +6,6 @@
 #include "../Events/CameraCreated.h"
 #include "../Events/CameraDestroyed.h"
 #include "../Entities/TerrainChunk.h"
-#include "../Events/VoxelDataGeneratedEvent.h"
 
 #include <memory>
 #include <vector>
@@ -26,13 +25,12 @@ public:
 private:
 	void onCameraCreated(const CameraCreated * e);
 	void onCameraDestroyed(const CameraDestroyed * e);
-	void onVoxelDataGeneratedEvent(const VoxelDataGeneratedEvent * e);
 
 	XMINT3 hashWorldCoord(XMINT3 coord);
 
 	Array3D<std::vector<EntityId>, 3, 3, 3> activeWorldChunks_;
 	IGameCamera * activeCamera_;
-	int size_ = 4;
+	int size_ = 6;
 	std::vector<EntityId> terrainChunksGenerated_;
 	XMFLOAT3 originPosition_;
 	XMINT3 originCoord_;

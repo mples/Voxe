@@ -5,6 +5,7 @@
 
 #include "../Systems/FrustumCullingSystem.h"
 #include "../Systems/OcclusionCullingSystem.h"
+#include "../Events/TerrainChunkDestroyedEvent.h"
 
 XMMATRIX GameCamera::IDENTITY_MATRIX = XMMatrixIdentity();
 
@@ -24,7 +25,7 @@ GameCamera::GameCamera() : cameraComponent_(nullptr) {
 	context_.addRangeMapping(Range::LOOK_X, RawAxis(AxisType::RAW_INPUT_MOUSE_X));
 	context_.addRangeMapping(Range::LOOK_Y, RawAxis(AxisType::RAW_INPUT_MOUSE_Y));
 
-	static float camera_speed = 0.05f;
+	static float camera_speed = 0.5f;
 
 	INPUT.addFrontContext(&context_);
 	InputCallback callback = [&](MappedInput& input) {
@@ -98,7 +99,7 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 	InputCallback callback = [&](MappedInput& input) {
 		auto cull = input.actions_.find(Action::CULL);
 		if (cull != input.actions_.end()) {
-			static bool cull_flag = true;
+			/*static bool cull_flag = true;
 			if(cull_flag) {
 				ENGINE.getSystemManager().deactivateSystem<OcclusionCullingSystem>();
 				cull_flag = false;
@@ -106,7 +107,10 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 			else {
 				ENGINE.getSystemManager().activateSystem<OcclusionCullingSystem>();
 				cull_flag = true;
-			}
+			}*/
+
+			ENGINE.sendEvent<TerrainChunkDestroyedEvent>(XMINT3(0, 0, 0));
+			ENGINE.sendEvent<TerrainChunkDestroyedEvent>(XMINT3(0, 0, -1));
 			input.actions_.erase(cull);
 		}
 

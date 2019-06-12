@@ -9,17 +9,17 @@ public:
 	Octree(BoundingBox bounding_box);
 	Octree(BoundingBox bounding_box, std::vector<T*> objects);
 	~Octree();
-	void insert(T* object);
-	void remove(T* object);
-	std::vector<T*> collides(BoundingFrustum& frustum);
+	void insert(T object);
+	void remove(T object);
+	std::vector<T> collides(BoundingFrustum& frustum);
 	static bool equalsBoundingBox(BoundingBox a, BoundingBox b);
 	BoundingBox & getBoundingBox();
 
 	int size();
 private:
-	void insertIntoNode(T* object, Node<T>* node);
+	void insertIntoNode(T object, Node<T>* node);
 	void splitNode(Node<T>* node);
-	bool removeFromNode(T* object, Node<T>* node);
+	bool removeFromNode(T object, Node<T>* node);
 	ContainmentType nodeContains(BoundingFrustum & frustum, Node<T> * node);
 	void extend();
 	Node<T> * calculateNewRoot();
@@ -29,7 +29,7 @@ private:
 	const int MAX_OUTSIDE_POINT_COUNT = 128;
 	const int MIN_OUTSIDE_POINT_COUNT = 16;
 	Node<T>* root_;
-	std::vector<T*> outsideObjects_;
+	std::vector<T> outsideObjects_;
 };
 
 template<typename T>
@@ -56,9 +56,9 @@ Octree<T>::~Octree() {
 }
 
 template<typename T>
-void Octree<T>::insert(T * object) {
+void Octree<T>::insert(T object) {
 
-	if (ContainmentType::DISJOINT == root_->boundingBox_.Contains(object->getBoundingVolume())) {
+	if (ContainmentType::DISJOINT == root_->boundingBox_.Contains(object.getBoundingVolume())) {
 		outsideObjects_.push_back(object);
 		if (outsideObjects_.size() > MAX_OUTSIDE_POINT_COUNT) {
 			extend();
@@ -72,7 +72,7 @@ void Octree<T>::insert(T * object) {
 	while (!queue.empty()) {
 		Node<T>* node = queue.front();
 		queue.pop();
-		ContainmentType contains = node->boundingBox_.Contains(object->getBoundingVolume());
+		ContainmentType contains = node->boundingBox_.Contains(object.getBoundingVolume());
 		switch (contains) {
 		case ContainmentType::DISJOINT:
 			continue;
@@ -106,7 +106,7 @@ void Octree<T>::insert(T * object) {
 }
 
 template<typename T>
-void Octree<T>::remove(T * object) {
+void Octree<T>::remove(T object) {
 	auto it = std::find(outsideObjects_.begin(), outsideObjects_.end(), object);
 	if (it != outsideObjects_.end()) {
 		outsideObjects_.erase(it);
@@ -118,7 +118,7 @@ void Octree<T>::remove(T * object) {
 	while (!queue.empty()) {
 		Node<T>* node = queue.front();
 		queue.pop();
-		if (ContainmentType::DISJOINT != node->boundingBox_.Contains(object->getBoundingVolume() )) {
+		if (ContainmentType::DISJOINT != node->boundingBox_.Contains(object.getBoundingVolume() )) {
 			if (removeFromNode(object, node)) {
 				return;
 			}
@@ -135,12 +135,12 @@ void Octree<T>::remove(T * object) {
 }
 
 template<typename T>
-std::vector<T*> Octree<T>::collides(BoundingFrustum & frustum) {
+std::vector<T> Octree<T>::collides(BoundingFrustum & frustum) {
 	std::queue<Node<T>*> queue;
 	queue.push(root_);
-	std::vector<T*> result;
-	for (T* o : outsideObjects_) {
-		if (ContainmentType::DISJOINT != frustum.Contains(o->getBoundingVolume())) {
+	std::vector<T> result;
+	for (T& o : outsideObjects_) {
+		if (ContainmentType::DISJOINT != frustum.Contains(o.getBoundingVolume())) {
 			result.push_back(o);
 		}
 	}
@@ -148,8 +148,8 @@ std::vector<T*> Octree<T>::collides(BoundingFrustum & frustum) {
 		Node<T>* node = queue.front();
 		queue.pop();
 		if (ContainmentType::DISJOINT != frustum.Contains(node->boundingBox_)) {
-			for (T* obj : node->objects_) {
-				if (ContainmentType::DISJOINT != frustum.Contains(obj->getBoundingVolume())) {
+			for (T& obj : node->objects_) {
+				if (ContainmentType::DISJOINT != frustum.Contains(obj.getBoundingVolume())) {
 					result.push_back(obj);
 				}
 			}
@@ -180,7 +180,7 @@ inline int Octree<T>::size() {
 }
 
 template<typename T>
-void Octree<T>::insertIntoNode(T * object, Node<T>* node) {
+void Octree<T>::insertIntoNode(T object, Node<T>* node) {
 	node->objects_.push_back(object);
 	if (node->objects_.size() > node->MAX_OBJ_COUNT && node->isLeaf_) {
 		if (node->boundingBox_.Extents.x / 2.0f <= node->MIN_DIMENSION) {
@@ -188,12 +188,12 @@ void Octree<T>::insertIntoNode(T * object, Node<T>* node) {
 		}
 		splitNode(node);
 
-		std::vector<T*> new_objects;
+		std::vector<T> new_objects;
 
 		for (int i = 0; i < node->objects_.size(); i++) {
 			bool added = false;
 			for (int j = 0; j < node->children_.size(); j++) {
-				if (ContainmentType::CONTAINS == node->children_[j]->boundingBox_.Contains(node->objects_[i]->getBoundingVolume())) {
+				if (ContainmentType::CONTAINS == node->children_[j]->boundingBox_.Contains(node->objects_[i].getBoundingVolume())) {
 					//node->children_[j]-> insertI (objects_[i]);
 					insertIntoNode(node->objects_[i], node->children_[j]);
 					added = true;
@@ -232,7 +232,7 @@ void Octree<T>::splitNode(Node<T>* node) {
 }
 
 template<typename T>
-bool Octree<T>::removeFromNode(T * object, Node<T>* node) {
+bool Octree<T>::removeFromNode(T object, Node<T>* node) {
 	auto del_obj = std::find(node->objects_.begin(), node->objects_.end(), object);
 	if (del_obj != node->objects_.end()) {
 		node->objects_.erase(del_obj);
@@ -260,9 +260,9 @@ void Octree<T>::extend() {
 		}
 	}
 
-	std::vector<T*> objects_to_insert = outsideObjects_;
+	std::vector<T> objects_to_insert = outsideObjects_;
 	outsideObjects_.clear();
-	for (T* obj : objects_to_insert) {
+	for (T& obj : objects_to_insert) {
 		insert(obj);
 	}
 }
@@ -277,15 +277,15 @@ inline Node<T>* Octree<T>::calculateNewRoot() {
 		//ARRAYSIZE(corners);
 	assert(corners_count == 8);
 	std::array<Node<T>*, 8> potential_roots;
-	std::array<std::vector<T*>, 8> pot_roots_elements = {};
+	std::array<std::vector<T>, 8> pot_roots_elements = {};
 	for (int i = 0; i < corners_count; i++) {
 		potential_roots[i] = new Node<T>(BoundingBox(corners[i], XMFLOAT3(ext_dim, ext_dim, ext_dim)));
 	}
 
 	int new_root_index = 0;
-	for (T* obj : outsideObjects_) {
+	for (T& obj : outsideObjects_) {
 		for (int i = 0; i < potential_roots.size(); i++) {
-			if (ContainmentType::DISJOINT != potential_roots[i]->boundingBox_.Contains(obj->getBoundingVolume())) {
+			if (ContainmentType::DISJOINT != potential_roots[i]->boundingBox_.Contains(obj.getBoundingVolume())) {
 				pot_roots_elements[i].push_back(obj);
 				if (new_root_index != i && pot_roots_elements[i].size() > pot_roots_elements[new_root_index].size()) {
 					new_root_index = i;
@@ -336,7 +336,7 @@ void Octree<T>::shrink() {
 		Node<T>* node = queue.front();
 		queue.pop();
 		if (node != new_root) {
-			for (T* obj : node->objects_) {
+			for (T& obj : node->objects_) {
 				outsideObjects_.push_back(obj);
 			}
 		}
