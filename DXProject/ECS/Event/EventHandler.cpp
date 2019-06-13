@@ -14,11 +14,6 @@ void EventHandler::clearEventsBuffer() {
 	eventsBuffer_.clear();
 
 
-	/*IEvent* e;
-	while (eventsBuffer_.pop(e)) {
-		delete e;
-	}*/
-
 }
 
 void EventHandler::clearEventsDispatcherMap() {
@@ -35,20 +30,12 @@ void EventHandler::dispatchEvents() {
 	}
 	clearEventsBuffer();
 
-	//IEvent* event;
-	//while (eventsBuffer_.pop(event)) {
-	//	assert(event != nullptr);
-	//	auto found = eventDispatchersMap_.find(event->getTypeId());
-	//	if (found != eventDispatchersMap_.end()) {
-	//		found->second->dispatch(event);
-	//		delete event;
-	//	}
-	//}
 
 }
 
 void EventHandler::removeEventCallback(IEventDelegate * event_delegate) {
 	EventTypeId event_type_id = event_delegate->getEventTypeId();
+	std::lock_guard<std::mutex> lock(mutex_);
 
 	auto delegate_it = eventDispatchersMap_.find(event_type_id);
 	if (delegate_it != eventDispatchersMap_.end()) {

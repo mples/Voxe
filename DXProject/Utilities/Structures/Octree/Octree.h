@@ -57,7 +57,6 @@ Octree<T>::~Octree() {
 
 template<typename T>
 void Octree<T>::insert(T object) {
-
 	if (ContainmentType::DISJOINT == root_->boundingBox_.Contains(object.getBoundingVolume())) {
 		outsideObjects_.push_back(object);
 		if (outsideObjects_.size() > MAX_OUTSIDE_POINT_COUNT) {
@@ -73,17 +72,31 @@ void Octree<T>::insert(T object) {
 		Node<T>* node = queue.front();
 		queue.pop();
 		ContainmentType contains = node->boundingBox_.Contains(object.getBoundingVolume());
+
 		switch (contains) {
 		case ContainmentType::DISJOINT:
 			continue;
 		case ContainmentType::INTERSECTS:
-			if (node->parent_ != nullptr) {
-				insertIntoNode(object, node->parent_);
-				return;
+			if (node->isLeaf_) {
+				if (node->parent_ == nullptr) {
+					insertIntoNode(object, node);
+					return;
+				}
+				else {
+					for (Node<T>* n : node->parent_->children_) {
+						ContainmentType contains = n->boundingBox_.Contains(object.getBoundingVolume());
+						if(contains == ContainmentType::INTERSECTS) {
+							insertIntoNode(object, n);
+						}
+					}
+					return;
+				}
+
 			}
 			else {
-				insertIntoNode(object, node);
-				return;
+				for (int i = 0; i < node->children_.size(); i++) {
+					queue.push(node->children_[i]);
+				}
 			}
 			break;
 		case ContainmentType::CONTAINS:
@@ -118,9 +131,31 @@ void Octree<T>::remove(T object) {
 	while (!queue.empty()) {
 		Node<T>* node = queue.front();
 		queue.pop();
-		if (ContainmentType::DISJOINT != node->boundingBox_.Contains(object.getBoundingVolume() )) {
-			if (removeFromNode(object, node)) {
+		ContainmentType contains = node->boundingBox_.Contains(object.getBoundingVolume());
+		if (ContainmentType::CONTAINS == contains) {
+			if (node->isLeaf_ && removeFromNode(object, node)) {
 				return;
+			}
+			else if (ContainmentType::INTERSECTS == contains) {
+				if (node->isLeaf_) {
+					if (node->parent_ == nullptr && removeFromNode(object, node)) {
+						return;
+					}
+					else {
+						for (Node<T>* n : node->parent_->children_) {
+							ContainmentType contains = n->boundingBox_.Contains(object.getBoundingVolume());
+							if (contains == ContainmentType::INTERSECTS) {
+								removeFromNode(object, node);
+							}
+						}
+						return;
+					}
+				}
+				else {
+					for (int i = 0; i < node->children_.size(); i++) {
+						queue.push(node->children_[i]);
+					}
+				}
 			}
 			else {
 				if (!node->isLeaf_) {
@@ -150,7 +185,12 @@ std::vector<T> Octree<T>::collides(BoundingFrustum & frustum) {
 		if (ContainmentType::DISJOINT != frustum.Contains(node->boundingBox_)) {
 			for (T& obj : node->objects_) {
 				if (ContainmentType::DISJOINT != frustum.Contains(obj.getBoundingVolume())) {
+					/*auto found = std::find(result.begin(), result.end(), obj);
+					if (found == result.end()) {
+						result.push_back(obj);
+					}*/
 					result.push_back(obj);
+
 				}
 			}
 			if (!node->isLeaf_) {
@@ -188,30 +228,18 @@ void Octree<T>::insertIntoNode(T object, Node<T>* node) {
 		}
 		splitNode(node);
 
-		std::vector<T> new_objects;
-
 		for (int i = 0; i < node->objects_.size(); i++) {
-			bool added = false;
 			for (int j = 0; j < node->children_.size(); j++) {
-				if (ContainmentType::CONTAINS == node->children_[j]->boundingBox_.Contains(node->objects_[i].getBoundingVolume())) {
-					//node->children_[j]-> insertI (objects_[i]);
+				ContainmentType contains = node->children_[j]->boundingBox_.Contains(node->objects_[i].getBoundingVolume());
+				if (ContainmentType::CONTAINS == contains) {
 					insertIntoNode(node->objects_[i], node->children_[j]);
-					added = true;
-					continue;
+				}
+				else if (ContainmentType::INTERSECTS == contains) {
+					insertIntoNode(node->objects_[i], node->children_[j]);
 				}
 			}
-			if (!added) {
-				new_objects.push_back(node->objects_[i]);
-			}
 		}
-		if (node->objects_.size() == new_objects.size()) { // if all objects intersects then we should not split the node
-			for (auto child : node->children_) {
-				assert(countOfObjects(child) == 0);
-				delete child;
-			}
-			node->isLeaf_ = true;
-		}
-		node->objects_ = new_objects;
+		node->objects_.clear();
 	}
 	return;
 }

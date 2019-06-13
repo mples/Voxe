@@ -1,5 +1,5 @@
 #pragma once
-
+#include <mutex>
 #include <unordered_map>
 #include "../../Utilities/Structures/ThreadSafeQueue.h"
 #include "EventDispatcher.h"
@@ -18,6 +18,7 @@ public:
 
 		EventType* e = new EventType(std::forward<ARGS>(args)...);
 
+		std::lock_guard<std::mutex> lock(mutex_);
 		eventsBuffer_.push_back(e);
 		/*if (eventsBuffer_.push(e)) {
 			return true;
@@ -32,6 +33,7 @@ public:
 	void addEventCallback(IEventDelegate* event_delegate) {
 		EventTypeId event_type_id = EventType::TYPE_ID;
 
+		std::lock_guard<std::mutex> lock(mutex_);
 		auto delegate_it = eventDispatchersMap_.find(event_type_id);
 		if (delegate_it == eventDispatchersMap_.end()) {
 			std::pair<EventTypeId, IEventDispatcher*> new_dispatcher(event_type_id, new EventDispatcher<EventType>());
@@ -54,5 +56,6 @@ private:
 	std::unordered_map<EventTypeId, IEventDispatcher*> eventDispatchersMap_;
 	std::vector<IEvent*> eventsBuffer_;
 	//ThreadSafeQueue<IEvent*, 1024> eventsBuffer_;
+	std::mutex mutex_;
 
 };

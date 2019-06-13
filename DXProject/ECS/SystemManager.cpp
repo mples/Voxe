@@ -69,7 +69,7 @@ void SystemManager::update(float dt) {
 
 			system_ptr->postUpdate(dt);
 		}
-		/*if (system_ptr->getTypeId() == RenderSystem::SYSTEM_TYPE_ID || system_ptr->getTypeId() == OcclusionCullingSystem::SYSTEM_TYPE_ID || system_ptr->getTypeId() == TerrainMeshGenerationSystem::SYSTEM_TYPE_ID) {
+		/*if (system_ptr->getTypeId() == RenderSystem::SYSTEM_TYPE_ID || system_ptr->getTypeId() == OcclusionCullingSystem::SYSTEM_TYPE_ID ) {
 			if (system_it.second->active_ && system_it.second->updateReady_) {
 				system_ptr->preUpdate(dt);
 
