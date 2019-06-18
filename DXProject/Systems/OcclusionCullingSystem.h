@@ -79,4 +79,7 @@ private:
 	std::vector<OcclusionInstance> meshesToQuery_;
 	std::queue<OcclusionQuery> queriesBuffer_;
 	std::vector<PreviouslyVisible> previouslyVisibleEntities_;
+
+	int bufferWidth_ = 128;
+	int bufferHeight_ = 128;
 };

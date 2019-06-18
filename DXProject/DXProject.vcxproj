@@ -207,6 +207,7 @@
     <ClCompile Include="Utilities\StringHelper.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
     <ClCompile Include="Utilities\Timer.cpp" />
+    <ClCompile Include="Voxel\VoxelRayCast.cpp" />
     <ClCompile Include="WindowContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +252,7 @@
     <ClInclude Include="Events\TerrainChunkChanged.h" />
     <ClInclude Include="Events\TerrainChunkDestroyedEvent.h" />
     <ClInclude Include="Events\TerrainChunkRequest.h" />
+    <ClInclude Include="Events\VoxelChangeRequest.h" />
     <ClInclude Include="Events\VoxelDataGeneratedEvent.h" />
     <ClInclude Include="Events\VoxelDataRequest.h" />
     <ClInclude Include="Systems\InfiniteWorldSystem.h" />
@@ -318,6 +320,7 @@
     <ClInclude Include="Graphics\Texture.h" />
     <ClInclude Include="Utilities\Timer.h" />
     <ClInclude Include="Voxel\TerrainCoord.h" />
+    <ClInclude Include="Voxel\VoxelRayCast.h" />
     <ClInclude Include="WindowContainer.h" />
   </ItemGroup>
   <ItemGroup>

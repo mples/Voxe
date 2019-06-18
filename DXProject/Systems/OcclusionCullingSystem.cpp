@@ -220,8 +220,8 @@ void OcclusionCullingSystem::initialize() {
 		assert(msaa_quality > 0);
 
 		D3D11_TEXTURE2D_DESC dsbd;
-		dsbd.Width = 64; //TODO parametize
-		dsbd.Height = 64;
+		dsbd.Width = bufferWidth_;
+		dsbd.Height = bufferHeight_;
 		dsbd.MipLevels = 1;
 		dsbd.ArraySize = 1;
 		dsbd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -257,8 +257,8 @@ void OcclusionCullingSystem::initialize() {
 
 		viewport_.TopLeftX = 0;
 		viewport_.TopLeftY = 0;
-		viewport_.Height = static_cast<float>(64);
-		viewport_.Width = static_cast<float>(64);
+		viewport_.Height = static_cast<float>(bufferHeight_);
+		viewport_.Width = static_cast<float>(bufferWidth_);
 		viewport_.MinDepth = 0.0f;
 		viewport_.MaxDepth = 1.0f;
 

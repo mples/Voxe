@@ -6,6 +6,9 @@
 #include "../Systems/FrustumCullingSystem.h"
 #include "../Systems/OcclusionCullingSystem.h"
 #include "../Events/TerrainChunkDestroyedEvent.h"
+#include "../Events/VoxelChangeRequest.h"
+
+#include "../Voxel/VoxelRayCast.h"
 
 XMMATRIX GameCamera::IDENTITY_MATRIX = XMMatrixIdentity();
 
@@ -108,11 +111,21 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 				ENGINE.getSystemManager().activateSystem<OcclusionCullingSystem>();
 				cull_flag = true;
 			}*/
-
-			ENGINE.sendEvent<TerrainChunkDestroyedEvent>(XMINT3(0, 0, 0));
-			ENGINE.sendEvent<TerrainChunkDestroyedEvent>(XMINT3(0, 0, -1));
+			XMVECTOR camera_front_vec = cameraComponent_->getForwardVector();
+			XMFLOAT3 camera_f;
+			XMStoreFloat3(&camera_f, camera_front_vec);
+			XMINT3 chunk_coord;
+			XMINT3 voxel_coord;
+			if (VoxelRayCast::rayCast(cameraComponent_->getPos(), camera_f, 10000.0f, chunk_coord, voxel_coord)) {
+				ENGINE.sendEvent<VoxelChangeRequest>(chunk_coord, voxel_coord, BlockType::AIR);
+			}
+			
 			input.actions_.erase(cull);
 		}
+
+		char s[256];
+		sprintf(s, "Current dt:  %f\n", input.dt_);
+		OutputDebugStringA(s);
 
 		auto move_left = input.actions_.find(Action::MOVE_LEFT);
 		if (move_left != input.actions_.end()) {

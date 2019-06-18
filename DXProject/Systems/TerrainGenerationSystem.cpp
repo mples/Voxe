@@ -20,6 +20,10 @@ TerrainGenerationSystem::TerrainGenerationSystem() : IEventListener(ENGINE.getEv
 	registerEventCallback<TerrainChunkDestroyedEvent>([&](const TerrainChunkDestroyedEvent * e) {
 		onTerrainChunkDestroyedEvent(e);
 	});
+
+	registerEventCallback<VoxelChangeRequest>([&](const VoxelChangeRequest* e) {
+		onVoxelChangeRequest(e);
+	});
 }
 
 TerrainGenerationSystem::~TerrainGenerationSystem() {
@@ -65,9 +69,26 @@ void TerrainGenerationSystem::update(float dt) {
 		entitiesToDestroy_.pop_front();
 		generated_chunks++;
 	}
+
+	for (VoxelChangeData & voxel_data : voxelChangeRequests_) {
+		EntityId chunk_id = getTerrainChunk(voxel_data.chunkCoord_);
+		BlocksDataComponent * blocks_comp = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(chunk_id);
+		if (blocks_comp) {
+			blocks_comp->setBlock(voxel_data.voxelCoord_, voxel_data.type_);
+		}
+	}
+	voxelChangeRequests_.clear();
 }
 
 void TerrainGenerationSystem::postUpdate(float dt) {
+}
+
+EntityId TerrainGenerationSystem::getTerrainChunk(XMINT3 coord) {
+	return activeTerrainChunks_.at(TerrainCoord(coord));
+}
+
+EntityId TerrainGenerationSystem::getTerrainChunk(int x, int y, int z) {
+	return activeTerrainChunks_.at(TerrainCoord(x,y,z));
 }
 
 void TerrainGenerationSystem::insertTerrainNeightbours(EntityId id, XMINT3 & coord) {
@@ -175,4 +196,8 @@ void TerrainGenerationSystem::onTerrainChunkRequest(const TerrainChunkRequest * 
 
 void TerrainGenerationSystem::onTerrainChunkDestroyedEvent(const TerrainChunkDestroyedEvent * e) {
 	entitiesToDestroy_.push_back(e->coord_);
+}
+
+void TerrainGenerationSystem::onVoxelChangeRequest(const VoxelChangeRequest * e) {
+	voxelChangeRequests_.push_back(VoxelChangeData(e->chunkCoord_, e->voxelCoord_, e->type_));
 }

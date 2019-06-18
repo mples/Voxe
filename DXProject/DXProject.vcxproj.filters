@@ -183,6 +183,9 @@
     <ClCompile Include="Systems\InfiniteWorldSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Voxel\VoxelRayCast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderWindow.h">
@@ -510,6 +513,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events\TerrainChunkDestroyedEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Voxel\VoxelRayCast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\VoxelChangeRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -26,13 +26,6 @@ FrustumCullingSystem::~FrustumCullingSystem() {
 }
 
 void FrustumCullingSystem::preUpdate(float dt) {
-	auto it = ENGINE.getComponentManager().begin<BoundingVolumeComponent>();
-	auto end = ENGINE.getComponentManager().end<BoundingVolumeComponent>();
-	while (it != end) {
-		it->setInsindeFrustum(false);
-		++it;
-	}
-
 	for (ComponentId & c_id : boundingVolumesToInsert_) {
 		BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(c_id);
 		if (bv_comp != nullptr) {
@@ -60,6 +53,13 @@ void FrustumCullingSystem::update(float dt) {
 	char s[256];
 	sprintf(s, "Visible Chunks: %u\n", visible_volumes.size());
 	OutputDebugStringA(s);
+
+	auto it = ENGINE.getComponentManager().begin<BoundingVolumeComponent>();
+	auto end = ENGINE.getComponentManager().end<BoundingVolumeComponent>();
+	while (it != end) {
+		it->setInsindeFrustum(false);
+		++it;
+	}
 
 	for (FrustumCullingInstance& fc_instance : visible_volumes) {
 		BoundingVolumeComponent * bv_comp = ENGINE.getComponentManager().getComponentByComponentId<BoundingVolumeComponent>(fc_instance.id_);
