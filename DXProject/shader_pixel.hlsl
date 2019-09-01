@@ -1,5 +1,5 @@
 cbuffer frame_buffer : register(b0) {
-    float eyePos;
+    float3 eyePos;
 }
 
 cbuffer light_buffer : register(b1) {
@@ -19,6 +19,13 @@ cbuffer light_buffer : register(b1) {
     float lightAttenuationB;
     float lightAttenuationC;
     float pad;
+}
+
+cbuffer fog_buffer : register(b2)
+{
+    float3 fogColor;
+    float fogStart;
+    float fogEnd;
 }
 
 struct PS_INPUT {
@@ -54,7 +61,13 @@ float4 main(PS_INPUT input) : SV_TARGET {
     float3 specular = attenuation * spec_factor * specularColor;
 
     float3 final_color = pixel_color * (ambient + diffuse) + specular;
+
     //return float4(final_color, 1.0f);
-    //return float4(1.0f, 0.0f, 0.0f, 1.0f);
-    return float4(pixel_color, 1.0f);
+
+    float d = length(eyePos- input.in_world_pos);
+
+    float fogFactor = clamp((d - fogStart) / (fogEnd - fogStart), 0, 1);
+
+
+    return lerp(float4(pixel_color, 1.0f), float4(fogColor, 1.0f), fogFactor);
 }

@@ -18,7 +18,19 @@ RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width
 	}
 
 	HRESULT hr = objectBufferVS_.initialize(device_.Get(), deviceContext_.Get());
-	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer.");
+	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer - objectBufferVS_.");
+
+	hr = frameBufferPS_.initialize(device_.Get(), deviceContext_.Get());
+	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer - frameBufferPS_.");
+
+	hr = fogBuffer_.initialize(device_.Get(), deviceContext_.Get());
+	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer - fogBuffer_.");
+
+	//deafault values for fog rendering
+	fogBuffer_.data_.fogColor_ = XMFLOAT3(0.6f, 0.8f, 1.0f);
+	fogBuffer_.data_.fogStart_ = 32.0f;
+	fogBuffer_.data_.fogEnd_ = 96.0f;
+	fogBuffer_.applyChanges();
 
 	invalidTexture_ = new Texture(device_.Get(), Color(0, 0, 0));
 
@@ -27,6 +39,9 @@ RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width
 	});
 	registerEventCallback<CameraDestroyed>([&](const CameraDestroyed* e) {
 		onCameraDestroyedEvent(e);
+	});
+	registerEventCallback<FogChangeRequest>([&](const FogChangeRequest* e) {
+		onFogChangeRequest(e);
 	});
 }
 
@@ -236,7 +251,6 @@ void RenderSystem::initializeDirectX(HWND hwnd) {
 
 		spriteBatch_ = std::make_unique<DirectX::SpriteBatch>(deviceContext_.Get());
 		spriteFont_ = std::make_unique<DirectX::SpriteFont>(device_.Get(), L"Data/Fonts/arial_16.spritefont");
-
 	}
 	catch (COMException ex) {
 		ErrorLogger::log(ex);
@@ -354,9 +368,14 @@ bool RenderSystem::initializeShaders() {
 }
 
 void RenderSystem::drawObject(MeshComponent * mesh, WorldCoordinateComponent* coord) {
+	deviceContext_->PSSetConstantBuffers(2, 1, fogBuffer_.getAddressOf());
+
 	deviceContext_->VSSetConstantBuffers(0, 1, objectBufferVS_.getAddressOf());
 	if (activeCamera_ != nullptr) {
 		objectBufferVS_.data_.mvpMatrix_ = coord->getWorldMatrix() * activeCamera_->getViewMatrix() * activeCamera_->getProjectionMatrix();
+		frameBufferPS_.data_.eyePos_ = activeCamera_->getCameraPosition();
+		frameBufferPS_.applyChanges();
+		deviceContext_->PSSetConstantBuffers(0, 1, frameBufferPS_.getAddressOf());
 	}
 	else {
 		objectBufferVS_.data_.mvpMatrix_ = coord->getWorldMatrix();
@@ -377,6 +396,13 @@ void RenderSystem::drawObject(MeshComponent * mesh, WorldCoordinateComponent* co
 
 	deviceContext_->DrawIndexed(mesh->getIndexBuffer().indicesCount(), 0, 0);
 
+}
+
+void RenderSystem::onFogChangeRequest(const FogChangeRequest * e) {
+	fogBuffer_.data_.fogColor_ = e->fogColor_;
+	fogBuffer_.data_.fogStart_ = e->fogStart_;
+	fogBuffer_.data_.fogEnd_ = e->fogEnd_;
+	fogBuffer_.applyChanges();
 }
 
 void RenderSystem::onCameraCreatedEvent(const CameraCreated * e) {

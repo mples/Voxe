@@ -251,6 +251,7 @@
     <ClInclude Include="Events\CameraCreated.h" />
     <ClInclude Include="Events\CameraDestroyed.h" />
     <ClInclude Include="Events\DirectXDeviceCreated.h" />
+    <ClInclude Include="Events\FogChangeRequest.h" />
     <ClInclude Include="Events\TerrainChunkChanged.h" />
     <ClInclude Include="Events\TerrainChunkDestroyedEvent.h" />
     <ClInclude Include="Events\TerrainChunkRequest.h" />

@@ -28,3 +28,9 @@ struct CB_PS_point_light{
 struct CB_PS_frame_buffer {
 	DirectX::XMFLOAT3 eyePos_;
 };
+
+struct CB_PS_fog_buffer {
+	DirectX::XMFLOAT3 fogColor_;
+	float fogStart_;
+	float fogEnd_;
+};

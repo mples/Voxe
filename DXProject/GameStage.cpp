@@ -7,6 +7,7 @@
 
 #include "Events/CameraCreated.h"
 #include "Generation/SimpleGenerator.h"
+#include "Events/FogChangeRequest.h"
 #include <d3d11.h>
 
 GameStage::GameStage() {
@@ -26,6 +27,7 @@ void GameStage::init() {
 	VoxelDataGenerationSystem * gen_sys = ENGINE.getSystemManager().getSystem<VoxelDataGenerationSystem>();
 	gen_sys->setGenerator(gen);
 
+	ENGINE.sendEvent<FogChangeRequest>(DirectX::XMFLOAT3(0.25f, 0.25f, 1.0f), 32.0f, 96.0f);
 	//for (int x = -5; x < 5; x++) {
 	//	for (int y = -2; y < -1; y++) {
 	//		for (int z = -5; z < 5; z++) {

@@ -530,6 +530,9 @@
     <ClInclude Include="Events\BlockTextureAtlasCreated.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Events\FogChangeRequest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader_vertex.hlsl">
