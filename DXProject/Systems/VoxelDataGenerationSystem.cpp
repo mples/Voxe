@@ -2,7 +2,7 @@
 #include "../Components/BlocksDataComponent.h"
 #include "../Components/WorldCoordinateComponent.h"
 #include "../Events/VoxelDataGeneratedEvent.h"
-VoxelDataGenerationSystem::VoxelDataGenerationSystem() : noise_(1234, 4, 50.0, 0.2, -5), generator_(&noise_), IEventListener(ENGINE.getEventHandler()) { //TODO parameters
+VoxelDataGenerationSystem::VoxelDataGenerationSystem() : IEventListener(ENGINE.getEventHandler()), generator_(nullptr) {
 	std::function<void(const VoxelDataRequest*) > f = [&](const VoxelDataRequest* e) {
 		onVoxelDataRequest(e);
 	};
@@ -10,10 +10,15 @@ VoxelDataGenerationSystem::VoxelDataGenerationSystem() : noise_(1234, 4, 50.0, 0
 }
 
 VoxelDataGenerationSystem::~VoxelDataGenerationSystem() {
+	if (generator_ != nullptr) {
+		delete generator_;
+	}
 }
 
 void VoxelDataGenerationSystem::update(float dt) {
-
+	if (generator_ == nullptr) {
+		return;
+	}
 	int generated_count = 0;
 
 	while (!chunksToGenerateData_.empty()) {
@@ -25,7 +30,7 @@ void VoxelDataGenerationSystem::update(float dt) {
 		Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> blocks(BlockType::AIR);
 		WorldCoordinateComponent * coord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(e_id);
 		if (coord_comp != nullptr) {
-			generator_.generate(blocks, coord_comp->getCoord());
+			generator_->generate(blocks, coord_comp->getCoord());
 			ENGINE.getComponentManager().addComponent<BlocksDataComponent>(e_id, blocks);
 			ENGINE.sendEvent<VoxelDataGeneratedEvent>(e_id);
 
@@ -38,6 +43,14 @@ void VoxelDataGenerationSystem::update(float dt) {
 
 	}
 
+}
+
+void VoxelDataGenerationSystem::setGenerator(Generator * gen) {
+	if (generator_ != nullptr) {
+		delete generator_;
+	}
+
+	generator_ = gen;
 }
 
 

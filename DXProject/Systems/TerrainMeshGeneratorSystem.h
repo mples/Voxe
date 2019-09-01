@@ -6,6 +6,7 @@
 #include "../Events/VoxelDataGeneratedEvent.h"
 #include "../Events/DirectXDeviceCreated.h"
 #include "../Events/TerrainChunkChanged.h"
+#include "../Events/BlockTextureAtlasCreated.h"
 #include "../Entities/TerrainChunk.h"
 #include "../Components/BlocksDataComponent.h"
 #include "../Components/TerrainNeighboursComponent.h"
@@ -43,6 +44,8 @@ private:
 
 	void onDirectXDeviceCreated(const DirectXDeviceCreated * e);
 
+	void onBlockTextureAtlasCreated(const BlockTextureAtlasCreated * e);
+
 	void calculateVertices(UINT x, UINT y, UINT z, BlockType type, std::vector<Vertex> &vertices, std::vector<DWORD> &indices, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
 
 	void calculateMeshData(std::vector<Vertex> &vertices, std::vector<DWORD> &indices, BlocksDataComponent * blocks_com, NeightbourData& neight_data);
@@ -75,6 +78,7 @@ private:
 
 	std::list<EntityId> entitiesToUpdateMesh_;
 	std::list<EntityId> entitiesToCreateMesh_;
+	BlocksTextureAtlas * textureAtlas_;
 
 	unsigned int MAX_CHUNK_GENERATED_PER_UDPATE = 2;
 };

@@ -168,6 +168,7 @@
     <ClCompile Include="ECS\SystemManager.cpp" />
     <ClCompile Include="Entities\GameCamera.cpp" />
     <ClCompile Include="Entities\TerrainChunk.cpp" />
+    <ClCompile Include="Graphics\BlocksTextureAtlas.cpp" />
     <ClCompile Include="Systems\FrustumCullingSystem.cpp" />
     <ClCompile Include="Systems\InfiniteWorldSystem.cpp" />
     <ClCompile Include="Systems\OcclusionCullingSystem.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Entities\GameCamera.h" />
     <ClInclude Include="Entities\IGameCamera.h" />
     <ClInclude Include="Entities\TerrainChunk.h" />
+    <ClInclude Include="Events\BlockTextureAtlasCreated.h" />
     <ClInclude Include="Events\BoundingVolumeCreated.h" />
     <ClInclude Include="Events\BoundingVolumeDestroyed.h" />
     <ClInclude Include="Events\CameraCreated.h" />
@@ -255,6 +257,7 @@
     <ClInclude Include="Events\VoxelChangeRequest.h" />
     <ClInclude Include="Events\VoxelDataGeneratedEvent.h" />
     <ClInclude Include="Events\VoxelDataRequest.h" />
+    <ClInclude Include="Graphics\BlocksTextureAtlas.h" />
     <ClInclude Include="Systems\InfiniteWorldSystem.h" />
     <ClInclude Include="Utilities\SpatialHash.h" />
     <ClInclude Include="ECS\System.h" />

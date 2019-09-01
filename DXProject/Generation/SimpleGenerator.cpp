@@ -7,6 +7,10 @@ SimpleGenerator::SimpleGenerator(Noise* noise) : Generator(noise) {
 
 
 SimpleGenerator::~SimpleGenerator() {
+	if (noise_ != nullptr) {
+		delete noise_;
+	}
+
 }
 
 void SimpleGenerator::generate(Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM, TERRAIN_CHUNK_DIM> & blocks, int x, int y, int z) {
@@ -17,7 +21,7 @@ void SimpleGenerator::generate(Array3D<BlockType, TERRAIN_CHUNK_DIM, TERRAIN_CHU
 			int terr_height = std::roundf(height);
 
 			for (int k = 0; (y * (int)TERRAIN_CHUNK_DIM + k <= terr_height && k < (int)TERRAIN_CHUNK_DIM); ++k) {
-				blocks.at(i,k,j) = BlockType::GRASS;
+				blocks.at(i,k,j) = BlockType::GRASS_DIRT;
 			}
 
 		}

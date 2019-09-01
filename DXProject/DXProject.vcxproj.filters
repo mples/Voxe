@@ -186,6 +186,9 @@
     <ClCompile Include="Voxel\VoxelRayCast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\BlocksTextureAtlas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderWindow.h">
@@ -519,6 +522,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events\VoxelChangeRequest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\BlocksTextureAtlas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\BlockTextureAtlasCreated.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

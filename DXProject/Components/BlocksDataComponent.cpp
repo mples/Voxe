@@ -52,37 +52,37 @@ BlockType BlocksDataComponent::getBlock(XMINT3 coord) {
 void BlocksDataComponent::setBlock(XMINT3 coord, BlockType type) {
 	if (getBlock(coord) != type) {
 		if(coord.x == 0) {
-			TerrainNeightboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(getOwner());
+			TerrainNeighboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(getOwner());
 			if (neightbours && neightbours->left_ != ComponentId::getInvalidHandle()) {
 				ENGINE.sendEvent<TerrainChunkChanged>(neightbours->left_);
 			}
 		}
 		else if (coord.x == TERRAIN_CHUNK_DIM - 1) {
-			TerrainNeightboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(getOwner());
+			TerrainNeighboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(getOwner());
 			if (neightbours && neightbours->right_ != ComponentId::getInvalidHandle()) {
 				ENGINE.sendEvent<TerrainChunkChanged>(neightbours->right_);
 			}
 		}
 		if (coord.y == 0) {
-			TerrainNeightboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(getOwner());
+			TerrainNeighboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(getOwner());
 			if (neightbours && neightbours->bottom_ != ComponentId::getInvalidHandle()) {
 				ENGINE.sendEvent<TerrainChunkChanged>(neightbours->bottom_);
 			}
 		}
 		else if (coord.y == TERRAIN_CHUNK_DIM - 1) {
-			TerrainNeightboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(getOwner());
+			TerrainNeighboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(getOwner());
 			if (neightbours && neightbours->top_ != ComponentId::getInvalidHandle()) {
 				ENGINE.sendEvent<TerrainChunkChanged>(neightbours->top_);
 			}
 		}
 		if (coord.z == 0) {
-			TerrainNeightboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(getOwner());
+			TerrainNeighboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(getOwner());
 			if (neightbours && neightbours->back_ != ComponentId::getInvalidHandle()) {
 				ENGINE.sendEvent<TerrainChunkChanged>(neightbours->back_);
 			}
 		}
 		else if (coord.z == TERRAIN_CHUNK_DIM - 1) {
-			TerrainNeightboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(getOwner());
+			TerrainNeighboursComponent * neightbours = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(getOwner());
 			if (neightbours && neightbours->front_ != ComponentId::getInvalidHandle()) {
 				ENGINE.sendEvent<TerrainChunkChanged>(neightbours->front_);
 			}

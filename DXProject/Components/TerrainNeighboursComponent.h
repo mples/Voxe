@@ -2,10 +2,10 @@
 #include "../ECS/Component.h"
 #include "../ECS/IEntity.h"
 
-class TerrainNeightboursComponent : public Component<TerrainNeightboursComponent> {
+class TerrainNeighboursComponent : public Component<TerrainNeighboursComponent> {
 public:
-	TerrainNeightboursComponent(EntityId l, EntityId r, EntityId t, EntityId bottom, EntityId f, EntityId back);
-	~TerrainNeightboursComponent();
+	TerrainNeighboursComponent(EntityId l, EntityId r, EntityId t, EntityId bottom, EntityId f, EntityId back);
+	~TerrainNeighboursComponent();
 
 	EntityId left_;
 	EntityId right_;

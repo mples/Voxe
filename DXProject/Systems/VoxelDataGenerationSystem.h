@@ -14,11 +14,12 @@ public:
 	~VoxelDataGenerationSystem();
 
 	virtual void update(float dt) override;
+
+	void setGenerator(Generator * gen);
 private:
 	void onVoxelDataRequest(const VoxelDataRequest* e);
 
-	SimpleGenerator generator_;
-	PerlinNoise noise_;
+	Generator * generator_;
 	std::list<EntityId> chunksToGenerateData_;
 
 	unsigned int MAX_CHUNK_GENERATED_PER_UDPATE = 2;

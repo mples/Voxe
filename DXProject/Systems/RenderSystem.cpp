@@ -1,8 +1,9 @@
 #include "RenderSystem.h"
 #include "../Engine.h"
 #include "../Events/DirectXDeviceCreated.h"
+#include "../Events/BlockTextureAtlasCreated.h"
 
-RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width), 
+RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width),
 																windowHeight_(height), 
 																enableMsaa_(true), 
 																IEventListener(ENGINE.getEventHandler() ),
@@ -19,27 +20,27 @@ RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width
 	HRESULT hr = objectBufferVS_.initialize(device_.Get(), deviceContext_.Get());
 	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer.");
 
-	texture_ = new Texture(device_.Get(), L"Data/Textures/grass.jpg");
+	invalidTexture_ = new Texture(device_.Get(), Color(0, 0, 0));
 
-	invalidTexture_ = new Texture(device_.Get(), Color(255, 0, 0));
-
-	std::function<void(const CameraCreated*) > onCameraCreated = [&](const CameraCreated* e) {
+	registerEventCallback<CameraCreated>([&](const CameraCreated* e) {
 		onCameraCreatedEvent(e);
-	};
-	std::function<void(const CameraDestroyed*) > onCameraDestroyed = [&](const CameraDestroyed* e) {
+	});
+	registerEventCallback<CameraDestroyed>([&](const CameraDestroyed* e) {
 		onCameraDestroyedEvent(e);
-	};
-	registerEventCallback<CameraCreated>(onCameraCreated);
-	registerEventCallback<CameraDestroyed>(onCameraDestroyed);
+	});
 }
 
 RenderSystem::~RenderSystem() {
+	if(blocksTextureAtlas_ != nullptr)
+		delete blocksTextureAtlas_;
+	if(invalidTexture_ != nullptr)
+		delete invalidTexture_;
 }
 
 void RenderSystem::preUpdate(float dt) {
 	deviceContext_->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), depthStencilView_.Get());
 
-	float bg_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float bg_color[] = { 0.25f, 0.25f, 1.0f, 1.0f };
 
 	deviceContext_->ClearRenderTargetView(renderTargetView_.Get(), bg_color);
 	deviceContext_->ClearDepthStencilView(depthStencilView_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -86,6 +87,11 @@ void RenderSystem::update(float dt) {
 
 void RenderSystem::postUpdate(float dt) {
 	swapChain_->Present(0, NULL);
+}
+
+void RenderSystem::createTextureAtlas(std::wstring texture_atlas_path, const std::vector<BlockType> block_types) {
+	blocksTextureAtlas_ = new BlocksTextureAtlas(device_.Get(), texture_atlas_path, block_types);
+	ENGINE.sendEvent<BlockTextureAtlasCreated>(blocksTextureAtlas_);
 }
 
 void RenderSystem::initializeDirectX(HWND hwnd) {
@@ -275,7 +281,8 @@ void RenderSystem::initializeRenderState() {
 
 		D3D11_SAMPLER_DESC sampl_desc;
 		ZeroMemory(&sampl_desc, sizeof(D3D11_SAMPLER_DESC));
-		sampl_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		//sampl_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		sampl_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 		sampl_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 		sampl_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 		sampl_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -357,7 +364,13 @@ void RenderSystem::drawObject(MeshComponent * mesh, WorldCoordinateComponent* co
 	objectBufferVS_.data_.modelMatrix_ = coord->getWorldMatrix();
 	objectBufferVS_.applyChanges();
 
-	deviceContext_->PSSetShaderResources(0, 1, texture_->getResourceViewAddress());
+	if (blocksTextureAtlas_) {
+		deviceContext_->PSSetShaderResources(0, 1, blocksTextureAtlas_->getResourceViewAddress());
+	}
+	else {
+		deviceContext_->PSSetShaderResources(0, 1, invalidTexture_->getResourceViewAddress());
+	}
+
 	UINT offset = 0;
 	deviceContext_->IASetVertexBuffers(0, 1, mesh->getVertexBuffer().getAddressOf(), mesh->getVertexBuffer().stridePtr(), &offset);
 	deviceContext_->IASetIndexBuffer(mesh->getIndexBuffer().get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
@@ -379,3 +392,4 @@ void RenderSystem::onCameraCreatedEvent(const CameraCreated * e) {
 void RenderSystem::onCameraDestroyedEvent(const CameraDestroyed * e) {
 	activeCamera_ = nullptr;
 }
+

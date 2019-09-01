@@ -2,7 +2,7 @@
 #include "../Engine.h"
 #include "../Events/TerrainChunkChanged.h"
 
-TerrainNeightboursComponent::TerrainNeightboursComponent(EntityId l, EntityId r, EntityId t, EntityId bottom, EntityId f, EntityId back) 
+TerrainNeighboursComponent::TerrainNeighboursComponent(EntityId l, EntityId r, EntityId t, EntityId bottom, EntityId f, EntityId back) 
 : left_(l),
 right_(r),
 top_(t),
@@ -12,5 +12,5 @@ back_(back)
 {
 }
 
-TerrainNeightboursComponent::~TerrainNeightboursComponent() {
+TerrainNeighboursComponent::~TerrainNeighboursComponent() {
 }

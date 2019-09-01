@@ -7,6 +7,7 @@
 #include "../Graphics/AdapterReader.h"
 #include "../ECS/System.h"
 #include "../Graphics/Texture.h"
+#include "../Graphics/BlocksTextureAtlas.h"
 #include "../Graphics/VertexShader.h"
 #include "../Graphics/PixelShader.h"
 #include "../Graphics/ConstantBuffer.h"
@@ -16,8 +17,10 @@
 #include "../Components/WorldCoordinateComponent.h"
 
 #include "../ECS/Event/IEventListener.h"
+
 #include "../Events/CameraCreated.h"
 #include "../Events/CameraDestroyed.h"
+
 #include "../Entities/GameCamera.h"
 
 class RenderSystem : public System<RenderSystem>, public IEventListener {
@@ -30,6 +33,8 @@ public:
 	virtual void update(float dt) override;
 
 	virtual void postUpdate(float dt) override;
+
+	void createTextureAtlas(std::wstring texture_atlas_path, const std::vector<BlockType> block_types);
 private:
 	void initializeDirectX(HWND hwnd);
 	void initializeRenderState();
@@ -69,9 +74,9 @@ private:
 
 	ConstantBuffer<CB_VS_object_buffer> objectBufferVS_;
 
-	Texture * texture_;
-
 	Texture * invalidTexture_;
+
+	BlocksTextureAtlas * blocksTextureAtlas_;
 
 	IGameCamera * activeCamera_;
 };

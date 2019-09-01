@@ -4,26 +4,27 @@
 #include "../Components/WorldCoordinateComponent.h"
 #include <DirectXCollision.h>
 
-TerrainMeshGenerationSystem::TerrainMeshGenerationSystem() : device_(nullptr), IEventListener(ENGINE.getEventHandler()) {
-	std::function<void(const VoxelDataGeneratedEvent*)> voxel_data_callback = [&](const VoxelDataGeneratedEvent* e) {
+TerrainMeshGenerationSystem::TerrainMeshGenerationSystem() : device_(nullptr), textureAtlas_(nullptr), IEventListener(ENGINE.getEventHandler()) {
+	registerEventCallback<VoxelDataGeneratedEvent>([&](const VoxelDataGeneratedEvent* e) {
 		onVoxelDataGeneratedEvent(e);
-	};
-	std::function<void(const TerrainChunkChanged*)> chunk_changed_callback = [&](const TerrainChunkChanged* e) {
+	});
+	registerEventCallback<TerrainChunkChanged>([&](const TerrainChunkChanged * e) {
 		onTerrainChunkChanged(e);
-	};
-	std::function<void(const DirectXDeviceCreated*)> device_created_callback = [&](const DirectXDeviceCreated* e) {
+	});
+	registerEventCallback<DirectXDeviceCreated>([&](const DirectXDeviceCreated * e) {
 		onDirectXDeviceCreated(e);
-	};
-	registerEventCallback<VoxelDataGeneratedEvent>(voxel_data_callback);
-	registerEventCallback<TerrainChunkChanged>(chunk_changed_callback);
-	registerEventCallback<DirectXDeviceCreated>(device_created_callback);
+	});
+
+	registerEventCallback<BlockTextureAtlasCreated>([&](const BlockTextureAtlasCreated * e) {
+		onBlockTextureAtlasCreated(e);
+	});
 }
 
 TerrainMeshGenerationSystem::~TerrainMeshGenerationSystem() {
 }
 
 void TerrainMeshGenerationSystem::update(float dt) {
-	if (device_ == nullptr) {
+	if (device_ == nullptr || textureAtlas_ == nullptr) {
 		return;
 	}
 
@@ -49,19 +50,14 @@ void TerrainMeshGenerationSystem::update(float dt) {
 					ENGINE.getComponentManager().eraseComponent<BoundingVolumeComponent>(e_id);
 				}
 				entitiesToUpdateMesh_.pop_front();
-				//updated_count++;
 			}
 			else {
-				//WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(e_id);
-
 				if (bv_com == nullptr || mesh == nullptr) {
 					entitiesToUpdateMesh_.pop_front();
-					//entitiesToCreateMesh_.push_back(e_id);
-					//updated_count++;
 					continue;
 				}
 
-				TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(e_id);
+				TerrainNeighboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(e_id);
 				if (neight_comp != nullptr) {
 					NeightbourData neight_data;
 					neight_data.left_ = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(neight_comp->left_);
@@ -97,8 +93,6 @@ void TerrainMeshGenerationSystem::update(float dt) {
 		}
 		else {
 			entitiesToUpdateMesh_.pop_front();
-
-			//break;
 		}
 	}
 
@@ -114,7 +108,7 @@ void TerrainMeshGenerationSystem::update(float dt) {
 		WorldCoordinateComponent * wc_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(e_id);
 
 		BlocksDataComponent * blocks_com = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(e_id);
-		TerrainNeightboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeightboursComponent>(e_id);
+		TerrainNeighboursComponent * neight_comp = ENGINE.getComponentManager().getComponentByEntityId<TerrainNeighboursComponent>(e_id);
 		if (blocks_com != nullptr && neight_comp != nullptr) {
 
 			NeightbourData neight_data;
@@ -165,9 +159,6 @@ void TerrainMeshGenerationSystem::update(float dt) {
 			entitiesToCreateMesh_.pop_front();
 		}
 	}
-	//entitiesToCreateMesh_.clear();
-
-	//entitiesToUpdateMesh_.clear();
 }
 
 void TerrainMeshGenerationSystem::onVoxelDataGeneratedEvent(const VoxelDataGeneratedEvent * e) {
@@ -191,6 +182,16 @@ void TerrainMeshGenerationSystem::onDirectXDeviceCreated(const DirectXDeviceCrea
 	}
 	else {
 		assert(0 && "Trying to set already set device pointer");
+	}
+
+}
+
+void TerrainMeshGenerationSystem::onBlockTextureAtlasCreated(const BlockTextureAtlasCreated * e) {
+	if (textureAtlas_ == nullptr) {
+		textureAtlas_ = e->atlasPtr_;
+	}
+	else {
+		assert(0);
 	}
 
 }
@@ -231,10 +232,11 @@ void TerrainMeshGenerationSystem::calculateVertices(UINT x, UINT y, UINT z, Bloc
 
 void TerrainMeshGenerationSystem::insertNegativeX(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
 	UINT last_index = vertices.size();
-	vertices.push_back(Vertex(XMFLOAT3(x, y, z), XMFLOAT2(1.0f, 1.0f), NEG_X_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x, y, z + 1), XMFLOAT2(0.0f, 1.0f), NEG_X_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z), XMFLOAT2(1.0f, 0.0f), NEG_X_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z + 1), XMFLOAT2(0.0f, 0.0f), NEG_X_NORMAL));
+
+	vertices.push_back(Vertex(XMFLOAT3(x, y, z), textureAtlas_->getTextureCoord(type, TextureSide::LEFT, TextureVertex::_01), NEG_X_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x, y, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::LEFT, TextureVertex::_00), NEG_X_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z), textureAtlas_->getTextureCoord(type, TextureSide::LEFT, TextureVertex::_11), NEG_X_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::LEFT, TextureVertex::_10), NEG_X_NORMAL));
 
 	indices.push_back(last_index + 0);
 	indices.push_back(last_index + 1);
@@ -247,10 +249,11 @@ void TerrainMeshGenerationSystem::insertNegativeX(float x, float y, float z, Blo
 
 void TerrainMeshGenerationSystem::insertPositiveX(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
 	UINT last_index = vertices.size();
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z), XMFLOAT2(0.0f, 1.0f), POS_X_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z + 1), XMFLOAT2(1.0f, 1.0f), POS_X_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z + 1), XMFLOAT2(1.0f, 0.0f), POS_X_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z), XMFLOAT2(0.0f, 0.0f), POS_X_NORMAL));
+
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z), textureAtlas_->getTextureCoord(type, TextureSide::RIGHT, TextureVertex::_00), POS_X_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::RIGHT, TextureVertex::_01), POS_X_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::RIGHT, TextureVertex::_11), POS_X_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z), textureAtlas_->getTextureCoord(type, TextureSide::RIGHT, TextureVertex::_10), POS_X_NORMAL));
 
 	indices.push_back(last_index + 0);
 	indices.push_back(last_index + 2);
@@ -263,10 +266,11 @@ void TerrainMeshGenerationSystem::insertPositiveX(float x, float y, float z, Blo
 
 void TerrainMeshGenerationSystem::insertNegativeY(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
 	UINT last_index = vertices.size();
-	vertices.push_back(Vertex(XMFLOAT3(x, y, z), XMFLOAT2(1.0f, 1.0f), NEG_Y_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z), XMFLOAT2(0.0f, 1.0f), NEG_Y_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z + 1), XMFLOAT2(0.0f, 0.0f), NEG_Y_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x, y, z + 1), XMFLOAT2(1.0f, 0.0f), NEG_Y_NORMAL));
+
+	vertices.push_back(Vertex(XMFLOAT3(x, y, z), textureAtlas_->getTextureCoord(type, TextureSide::BOTTOM, TextureVertex::_11), NEG_Y_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z), textureAtlas_->getTextureCoord(type, TextureSide::BOTTOM, TextureVertex::_01), NEG_Y_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::BOTTOM, TextureVertex::_00), NEG_Y_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x, y, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::BOTTOM, TextureVertex::_10), NEG_Y_NORMAL));
 
 	indices.push_back(last_index + 0);
 	indices.push_back(last_index + 1);
@@ -279,10 +283,11 @@ void TerrainMeshGenerationSystem::insertNegativeY(float x, float y, float z, Blo
 
 void TerrainMeshGenerationSystem::insertPositiveY(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
 	UINT last_index = vertices.size();
-	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z), XMFLOAT2(0.0f, 1.0f), POS_Y_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z), XMFLOAT2(1.0f, 1.0f), POS_Y_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z + 1), XMFLOAT2(1.0f, 0.0f), POS_Y_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z + 1), XMFLOAT2(0.0f, 0.0f), POS_Y_NORMAL));
+
+	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z), textureAtlas_->getTextureCoord(type, TextureSide::TOP, TextureVertex::_01), POS_Y_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z), textureAtlas_->getTextureCoord(type, TextureSide::TOP, TextureVertex::_11), POS_Y_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::TOP, TextureVertex::_10), POS_Y_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::TOP, TextureVertex::_00), POS_Y_NORMAL));
 
 	indices.push_back(last_index + 0);
 	indices.push_back(last_index + 2);
@@ -295,10 +300,11 @@ void TerrainMeshGenerationSystem::insertPositiveY(float x, float y, float z, Blo
 
 void TerrainMeshGenerationSystem::insertNegativeZ(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
 	UINT last_index = vertices.size();
-	vertices.push_back(Vertex(XMFLOAT3(x, y, z), XMFLOAT2(0.0f, 1.0f), NEG_Z_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z), XMFLOAT2(1.0f, 1.0f), NEG_Z_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z), XMFLOAT2(1.0f, 0.0f), NEG_Z_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z), XMFLOAT2(0.0f, 0.0f), NEG_Z_NORMAL));
+
+	vertices.push_back(Vertex(XMFLOAT3(x, y, z), textureAtlas_->getTextureCoord(type, TextureSide::BACK, TextureVertex::_00), NEG_Z_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z), textureAtlas_->getTextureCoord(type, TextureSide::BACK, TextureVertex::_01), NEG_Z_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z), textureAtlas_->getTextureCoord(type, TextureSide::BACK, TextureVertex::_11), NEG_Z_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z), textureAtlas_->getTextureCoord(type, TextureSide::BACK, TextureVertex::_10), NEG_Z_NORMAL));
 
 	indices.push_back(last_index + 0);
 	indices.push_back(last_index + 2);
@@ -311,10 +317,11 @@ void TerrainMeshGenerationSystem::insertNegativeZ(float x, float y, float z, Blo
 
 void TerrainMeshGenerationSystem::insertPositiveZ(float x, float y, float z, BlockType type, std::vector<Vertex>& vertices, std::vector<DWORD>& indices) {
 	UINT last_index = vertices.size();
-	vertices.push_back(Vertex(XMFLOAT3(x, y, z + 1), XMFLOAT2(1.0f, 1.0f), POS_Z_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z + 1), XMFLOAT2(1.0f, 0.0f), POS_Z_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z + 1), XMFLOAT2(0.0f, 0.0f), POS_Z_NORMAL));
-	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z + 1), XMFLOAT2(0.0f, 1.0f), POS_Z_NORMAL));
+
+	vertices.push_back(Vertex(XMFLOAT3(x, y, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::FRONT, TextureVertex::_01), POS_Z_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::FRONT, TextureVertex::_00), POS_Z_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x + 1, y + 1, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::FRONT, TextureVertex::_10), POS_Z_NORMAL));
+	vertices.push_back(Vertex(XMFLOAT3(x, y + 1, z + 1), textureAtlas_->getTextureCoord(type, TextureSide::FRONT, TextureVertex::_11), POS_Z_NORMAL));
 
 	indices.push_back(last_index + 0);
 	indices.push_back(last_index + 1);

@@ -24,6 +24,7 @@ public:
 	bool isBusy();
 	void wait();
 
+private:
 
 	ThreadSafeQueue<Job, 256> jobQueue_;
 	unsigned int currentCount_;
@@ -31,9 +32,7 @@ public:
 	unsigned int threadsCount_;
 	std::condition_variable wakeCondition_;
 	std::mutex wakeMutex_;
-private:
 	inline void poll();
-
 };
 
 #define JOB_SYSTEM JobSystem::getInstance()

@@ -53,7 +53,7 @@ public:
 		return reinterpret_cast<T*>(address);
 	}
 
-	void freeMemory(T* object) {
+	void freeMemory(T* object) { //TODO make a list of free addresses
 		object->~T();
 		*((T **)object) = firstDeleted_;
 		firstDeleted_ = object;
@@ -131,7 +131,7 @@ public:
 
 		}
 
-		inline iterator& operator++() {
+		inline iterator& operator++() { //TODO check for deleted objects
 			if (currentBlock_->nextBlock_ == nullptr && objectIndex_ > currentBlock_->elementsInBlock_) {
 				
 				//end ?
