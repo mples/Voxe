@@ -31,7 +31,6 @@ private:
 
 	static BoundingFrustum NOT_INITIALIZED_FRUSTUM;
 
-	//TODO refector that
 	InputContext context_;
 };
 

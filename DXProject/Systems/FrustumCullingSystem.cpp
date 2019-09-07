@@ -50,10 +50,6 @@ void FrustumCullingSystem::update(float dt) {
 
 	std::vector<FrustumCullingInstance> visible_volumes = octree_.collides(activeCamera_->getWorldSpaceFrustum());
 
-	char s[256];
-	sprintf(s, "Visible Chunks: %u\n", visible_volumes.size());
-	OutputDebugStringA(s);
-
 	auto it = ENGINE.getComponentManager().begin<BoundingVolumeComponent>();
 	auto end = ENGINE.getComponentManager().end<BoundingVolumeComponent>();
 	while (it != end) {
@@ -66,7 +62,6 @@ void FrustumCullingSystem::update(float dt) {
 		if (bv_comp) {
 			bv_comp->setInsindeFrustum(true);
 		}
-		//fc_instance.bvComp_->setInsindeFrustum(true);
 	}
 }
 

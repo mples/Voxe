@@ -62,12 +62,10 @@ float4 main(PS_INPUT input) : SV_TARGET {
 
     float3 final_color = pixel_color * (ambient + diffuse) + specular;
 
-    //return float4(final_color, 1.0f);
-
     float d = length(eyePos- input.in_world_pos);
 
     float fogFactor = clamp((d - fogStart) / (fogEnd - fogStart), 0, 1);
 
 
-    return lerp(float4(pixel_color, 1.0f), float4(fogColor, 1.0f), fogFactor);
+    return lerp(float4(final_color, 1.0f), float4(fogColor, 1.0f), fogFactor);
 }

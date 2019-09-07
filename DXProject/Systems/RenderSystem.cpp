@@ -26,6 +26,28 @@ RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width
 	hr = fogBuffer_.initialize(device_.Get(), deviceContext_.Get());
 	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer - fogBuffer_.");
 
+	hr = pointLightBuffer_.initialize(device_.Get(), deviceContext_.Get());
+	COM_ERROR_IF_FAILED(hr, L"Falied to initialize constant buffer - pointLightBuffer_.");
+
+	//default values for pointlight
+	pointLightBuffer_.data_.ambientColor_ = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	pointLightBuffer_.data_.ambientStrength_ = 0.7f;
+
+	pointLightBuffer_.data_.diffuseColor_ = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	pointLightBuffer_.data_.diffuseStrength_ = 1.0f;
+
+	pointLightBuffer_.data_.specularColor_ = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	pointLightBuffer_.data_.specularStrength_ = 1.0f;
+
+	pointLightBuffer_.data_.lightAttenuationA_ = 0.0f;
+	pointLightBuffer_.data_.lightAttenuationB_ = 0.1f;
+	pointLightBuffer_.data_.lightAttenuationC_ = 0.0f;
+
+	pointLightBuffer_.data_.pos_ = XMFLOAT3(0.0f, 25.0f, -5.0f);
+	pointLightBuffer_.data_.range_ = 160.0f;
+
+	pointLightBuffer_.applyChanges();
+
 	//deafault values for fog rendering
 	fogBuffer_.data_.fogColor_ = XMFLOAT3(0.6f, 0.8f, 1.0f);
 	fogBuffer_.data_.fogStart_ = 32.0f;
@@ -42,6 +64,9 @@ RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width
 	});
 	registerEventCallback<FogChangeRequest>([&](const FogChangeRequest* e) {
 		onFogChangeRequest(e);
+	});
+	registerEventCallback<SetPointLightRequest>([&](const SetPointLightRequest* e) {
+		onSetPointLightRequest(e);
 	});
 }
 
@@ -79,25 +104,17 @@ void RenderSystem::update(float dt) {
 	auto it = ENGINE.getComponentManager().begin<MeshComponent>();
 	auto end = ENGINE.getComponentManager().end<MeshComponent>();
 
-	int drawn_meshes = 0;
 	while (it != end) {
 		if (it->getVisiblility() == true) {
 			WorldCoordinateComponent * wcoord_comp = ENGINE.getComponentManager().getComponentByEntityId<WorldCoordinateComponent>(it->getOwner());
 			if (wcoord_comp != nullptr) {
 				drawObject(&(*it), wcoord_comp);
-				drawn_meshes++;
 			}
 
 
 		}
 		++it;
 	}
-	char s[256];
-	sprintf(s, "Meshes drawn: %u\n", drawn_meshes);
-	OutputDebugStringA(s);
-
-
-
 }
 
 void RenderSystem::postUpdate(float dt) {
@@ -369,6 +386,7 @@ bool RenderSystem::initializeShaders() {
 
 void RenderSystem::drawObject(MeshComponent * mesh, WorldCoordinateComponent* coord) {
 	deviceContext_->PSSetConstantBuffers(2, 1, fogBuffer_.getAddressOf());
+	deviceContext_->PSSetConstantBuffers(1, 1, pointLightBuffer_.getAddressOf());
 
 	deviceContext_->VSSetConstantBuffers(0, 1, objectBufferVS_.getAddressOf());
 	if (activeCamera_ != nullptr) {
@@ -396,6 +414,22 @@ void RenderSystem::drawObject(MeshComponent * mesh, WorldCoordinateComponent* co
 
 	deviceContext_->DrawIndexed(mesh->getIndexBuffer().indicesCount(), 0, 0);
 
+}
+
+void RenderSystem::onSetPointLightRequest(const SetPointLightRequest * e) {
+	pointLightBuffer_.data_.ambientColor_ = e->color_;
+	pointLightBuffer_.data_.ambientStrength_ = e->ambStrenght_;
+
+	pointLightBuffer_.data_.diffuseColor_ = e->color_;
+	pointLightBuffer_.data_.diffuseStrength_ = e->diffStrenght_;
+
+	pointLightBuffer_.data_.specularColor_ = e->color_;
+	pointLightBuffer_.data_.specularStrength_ = e->specStrenght_;
+
+	pointLightBuffer_.data_.pos_ = e->position_;
+	pointLightBuffer_.data_.range_ = e->range_;
+
+	pointLightBuffer_.applyChanges();
 }
 
 void RenderSystem::onFogChangeRequest(const FogChangeRequest * e) {

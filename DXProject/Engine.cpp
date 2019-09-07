@@ -79,7 +79,6 @@ void Engine::update() {
 
 
 	systemManager_.update(dt);
-	//JOB_SYSTEM.wait();
 	eventHandler_.dispatchEvents();
 
 	INPUT.processInput(dt);

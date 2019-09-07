@@ -7,7 +7,9 @@
 
 #include "Events/CameraCreated.h"
 #include "Generation/SimpleGenerator.h"
+#include "Events/SetPointLightRequest.h"
 #include "Events/FogChangeRequest.h"
+
 #include <d3d11.h>
 
 GameStage::GameStage() {
@@ -27,16 +29,9 @@ void GameStage::init() {
 	VoxelDataGenerationSystem * gen_sys = ENGINE.getSystemManager().getSystem<VoxelDataGenerationSystem>();
 	gen_sys->setGenerator(gen);
 
-	ENGINE.sendEvent<FogChangeRequest>(DirectX::XMFLOAT3(0.25f, 0.25f, 1.0f), 32.0f, 96.0f);
-	//for (int x = -5; x < 5; x++) {
-	//	for (int y = -2; y < -1; y++) {
-	//		for (int z = -5; z < 5; z++) {
-	//			ENGINE.sendEvent<TerrainChunkRequest>(x, y, z);
-	//		}
-	//	}
-	//}
-	//ENGINE.sendEvent<TerrainChunkRequest>(0, 0, 0);
-	ENGINE.getEntityManager().createEntity<GameCamera>(90.0f, 800 / 800, 0.1f, 100.0f, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 5.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	ENGINE.sendEvent<FogChangeRequest>(DirectX::XMFLOAT3(0.5f, 0.25f, 1.0f), 52.0f, 96.0f);
+
+	ENGINE.getEntityManager().createEntity<GameCamera>(90.0f, 800 / 800, 0.1f, 96.0f, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 5.0f, -5.0f), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 }
 

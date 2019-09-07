@@ -22,7 +22,6 @@ bool VoxelRayCast::rayCast(XMFLOAT3 origin, XMFLOAT3 direction, float distance, 
 	EntityId chunk_id = terrain_system->getTerrainChunk(origin_chunk);
 
 	BlocksDataComponent *blocks_data = ENGINE.getComponentManager().getComponentByEntityId<BlocksDataComponent>(chunk_id);
-	//TerrainChunk * chunk = ENGINE.getEntityManager().getEntity<TerrainChunk>(chunk_id);
 
 	int step_x = 0;
 	if (direction.x > 0) {
@@ -53,32 +52,6 @@ bool VoxelRayCast::rayCast(XMFLOAT3 origin, XMFLOAT3 direction, float distance, 
 	XMINT3 current_chunk_coord = origin_chunk;
 
 
-	/*float max_x_dist = std::numeric_limits<float>::max();
-	float max_x_dist2 = std::numeric_limits<float>::max();
-	float delta_dist_x = std::numeric_limits<float>::max();
-	if (direction.x != 0.0f) {
-		max_x_dist = ((origin_chunk.x + step_x) * static_cast<float>(TERRAIN_CHUNK_DIM) - origin.x) / direction.x;
-		max_x_dist2 = ((origin_chunk.x + step_x + step_x) * static_cast<float>(TERRAIN_CHUNK_DIM) - (origin_chunk.x + step_x)) / direction.x;
-		delta_dist_x = max_x_dist2 - max_x_dist;
-	}
-	float max_y_dist = std::numeric_limits<float>::max();
-	float max_y_dist2 = std::numeric_limits<float>::max();
-	float delta_dist_y = std::numeric_limits<float>::max();;
-	if (direction.y != 0.0f) {
-		max_y_dist = ((origin_chunk.y + step_y) * static_cast<float>(TERRAIN_CHUNK_DIM) - origin.y) / direction.y;
-		max_y_dist2 = ((origin_chunk.y + step_y + step_y) * static_cast<float>(TERRAIN_CHUNK_DIM) - (origin_chunk.y + step_y)) / direction.y;
-		delta_dist_y = max_y_dist2 - max_y_dist;
-	}
-	float max_z_dist = std::numeric_limits<float>::max();
-	float max_z_dist2 = std::numeric_limits<float>::max();
-	float delta_dist_z = std::numeric_limits<float>::max();
-	if (direction.z != 0.0f) {
-		max_z_dist = ((origin_chunk.z + step_z) * static_cast<float>(TERRAIN_CHUNK_DIM) - origin.z) / direction.z;
-		max_z_dist2 = ((origin_chunk.z + step_z + step_z) * static_cast<float>(TERRAIN_CHUNK_DIM) - (origin_chunk.z + step_z)) / direction.z;
-		delta_dist_z = max_z_dist2 - max_z_dist;
-	}*/
-
-
 	float max_x_dist = std::numeric_limits<float>::max();
 	float max_x_dist2 = std::numeric_limits<float>::max();
 	float delta_dist_x = std::numeric_limits<float>::max();
@@ -106,9 +79,6 @@ bool VoxelRayCast::rayCast(XMFLOAT3 origin, XMFLOAT3 direction, float distance, 
 
 	bool found_flag = false;
 	while (current_distance <= distance) {
-		char s[256];
-		sprintf(s, "Ray cast chunk: %u, %u, %u\n", current_chunk_coord.x, current_chunk_coord.y, current_chunk_coord.z);
-		OutputDebugStringA(s);
 
 		EntityId chunk_id = terrain_system->getTerrainChunk(current_chunk_coord);
 
@@ -117,9 +87,6 @@ bool VoxelRayCast::rayCast(XMFLOAT3 origin, XMFLOAT3 direction, float distance, 
 			if (blocks_data->getBlock(current_voxel_coord) != BlockType::AIR) {
 				out_chunk_coord = current_chunk_coord;
 				out_voxel_coord = current_voxel_coord;
-				/*out_coord = XMINT3((current_chunk_coord.x * TERRAIN_CHUNK_DIM) + current_voxel_coord.x,
-										(current_chunk_coord.y * TERRAIN_CHUNK_DIM) + current_voxel_coord.y,
-										(current_chunk_coord.z * TERRAIN_CHUNK_DIM) + current_voxel_coord.z);*/
 				found_flag = true;
 				break;
 			}

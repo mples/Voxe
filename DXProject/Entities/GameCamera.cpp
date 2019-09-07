@@ -102,15 +102,6 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 	InputCallback callback = [&](MappedInput& input) {
 		auto cull = input.actions_.find(Action::CULL);
 		if (cull != input.actions_.end()) {
-			/*static bool cull_flag = true;
-			if(cull_flag) {
-				ENGINE.getSystemManager().deactivateSystem<OcclusionCullingSystem>();
-				cull_flag = false;
-			}
-			else {
-				ENGINE.getSystemManager().activateSystem<OcclusionCullingSystem>();
-				cull_flag = true;
-			}*/
 			XMVECTOR camera_front_vec = cameraComponent_->getForwardVector();
 			XMFLOAT3 camera_f;
 			XMStoreFloat3(&camera_f, camera_front_vec);
@@ -122,10 +113,6 @@ GameCamera::GameCamera(float fov_degrees, float aspect_ratio, float near_plane, 
 			
 			input.actions_.erase(cull);
 		}
-
-		char s[256];
-		sprintf(s, "Current dt:  %f\n", input.dt_);
-		OutputDebugStringA(s);
 
 		auto move_left = input.actions_.find(Action::MOVE_LEFT);
 		if (move_left != input.actions_.end()) {

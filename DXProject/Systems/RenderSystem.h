@@ -21,6 +21,7 @@
 #include "../Events/CameraCreated.h"
 #include "../Events/CameraDestroyed.h"
 #include "../Events/FogChangeRequest.h"
+#include "../Events/SetPointLightRequest.h"
 
 #include "../Entities/GameCamera.h"
 
@@ -43,6 +44,7 @@ private:
 
 	void drawObject(MeshComponent * mesh, WorldCoordinateComponent* coord);
 
+	void onSetPointLightRequest(const SetPointLightRequest * e);
 	void onFogChangeRequest(const FogChangeRequest * e);
 	void onCameraCreatedEvent(const CameraCreated * e);
 	void onCameraDestroyedEvent(const CameraDestroyed * e);
@@ -79,6 +81,8 @@ private:
 	ConstantBuffer<CB_PS_fog_buffer> fogBuffer_;
 
 	ConstantBuffer<CB_PS_frame_buffer> frameBufferPS_;
+
+	ConstantBuffer<CB_PS_point_light> pointLightBuffer_;
 
 	Texture * invalidTexture_;
 

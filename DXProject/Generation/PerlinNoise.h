@@ -10,7 +10,7 @@ public:
 	PerlinNoise(unsigned int seed, unsigned int octaves_num, float amplitude, float freq, float offset);
 	~PerlinNoise();
 
-	float eval(float x, float y) override;
+	float eval(float x, float y);
 	float noise(float x, float y) override;
 private:
 	static const unsigned int SIZE = 256;

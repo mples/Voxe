@@ -30,7 +30,7 @@ private:
 
 	Array3D<std::vector<EntityId>, 3, 3, 3> activeWorldChunks_;
 	IGameCamera * activeCamera_;
-	int size_ = 2;
+	int size_ = 4;
 	std::vector<EntityId> terrainChunksGenerated_;
 	XMFLOAT3 originPosition_;
 	XMINT3 originCoord_;

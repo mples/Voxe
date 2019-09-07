@@ -61,7 +61,6 @@ void InfiniteWorldSystem::update(float dt) {
 	XMStoreFloat3(&move_dist, moved_distance);
 
 	if (move_dist.x > static_cast<float>((size_ / 2) * TERRAIN_CHUNK_DIM)) {
-		OutputDebugStringA("Right entends.\n");
 		
 		for (int x = originCoord_.x - (1.5 * size_); x < originCoord_.x - (0.5 * size_); x++) {
 			for (int y = originCoord_.y - (1.5 * size_); y < originCoord_.y + (1.5 * size_); y++) {
@@ -84,7 +83,6 @@ void InfiniteWorldSystem::update(float dt) {
 
 	}
 	else if (move_dist.x < -1.0f * static_cast<float>((size_ / 2) * TERRAIN_CHUNK_DIM)) {
-		OutputDebugStringA("Left entends.\n");
 
 		for (int x = originCoord_.x + (0.5 * size_); x < originCoord_.x + (1.5 * size_); x++) {
 			for (int y = originCoord_.y - (1.5 * size_); y < originCoord_.y + (1.5 * size_); y++) {
@@ -106,7 +104,6 @@ void InfiniteWorldSystem::update(float dt) {
 		}
 	}
 	else if (move_dist.y > static_cast<float>((size_ / 2) * TERRAIN_CHUNK_DIM)) {
-		OutputDebugStringA("Up entends.\n");
 
 		for (int x = originCoord_.x - (1.5 * size_); x < originCoord_.x + (1.5 * size_); x++) {
 			for (int y = originCoord_.y - (1.5 * size_); y < originCoord_.y - (0.5 * size_); y++) {
@@ -129,7 +126,6 @@ void InfiniteWorldSystem::update(float dt) {
 
 	}
 	else if (move_dist.y < -1.0f * static_cast<float>((size_ / 2) * TERRAIN_CHUNK_DIM)) {
-		OutputDebugStringA("Down entends.\n");
 
 		for (int x = originCoord_.x - (1.5 * size_); x < originCoord_.x + (1.5 * size_); x++) {
 			for (int y = originCoord_.y + (0.5 * size_); y < originCoord_.y + (1.5 * size_); y++) {
@@ -152,7 +148,6 @@ void InfiniteWorldSystem::update(float dt) {
 
 	}
 	else if (move_dist.z > static_cast<float>((size_ / 2) * TERRAIN_CHUNK_DIM)) {
-		OutputDebugStringA("Front entends.\n");
 
 		for (int x = originCoord_.x - (1.5 * size_); x < originCoord_.x + (1.5 * size_); x++) {
 			for (int y = originCoord_.y - (1.5 * size_); y < originCoord_.y + (1.5 * size_); y++) {
@@ -175,7 +170,6 @@ void InfiniteWorldSystem::update(float dt) {
 
 	}
 	else if (move_dist.z < -1.0f * static_cast<float>((size_ / 2) * TERRAIN_CHUNK_DIM)) {
-		OutputDebugStringA("Back entends.\n");
 
 		for (int x = originCoord_.x - (1.5 * size_); x < originCoord_.x + (1.5 * size_); x++) {
 			for (int y = originCoord_.y - (1.5 * size_); y < originCoord_.y + (1.5 * size_); y++) {
