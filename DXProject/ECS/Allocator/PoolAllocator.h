@@ -2,6 +2,7 @@
 #include "DefaultAllocator.h"
 #include <stdexcept>
 #include <new>
+#include <list>
 
 
 template<typename T>
@@ -53,7 +54,7 @@ public:
 		return reinterpret_cast<T*>(address);
 	}
 
-	void freeMemory(T* object) { //TODO make a list of free addresses
+	void freeMemory(T* object) {
 		object->~T();
 		*((T **)object) = firstDeleted_;
 		firstDeleted_ = object;
@@ -85,6 +86,8 @@ private:
 
 	void* currentMemory_;
 	T* firstDeleted_;
+	std::list<T*> deletedObjects_;
+
 	size_t blockCapacity_;
 	MemoryBlock firstBlock_;
 	MemoryBlock* lastBlock_;
@@ -131,10 +134,8 @@ public:
 
 		}
 
-		inline iterator& operator++() { //TODO check for deleted objects
+		inline iterator& operator++() { 
 			if (currentBlock_->nextBlock_ == nullptr && objectIndex_ > currentBlock_->elementsInBlock_) {
-				
-				//end ?
 				return *this;
 			}
 			objectIndex_++;
@@ -145,7 +146,6 @@ public:
 					objectIndex_ = 0;
 				}
 				else {
-					//end ?
 					return *this;
 				}
 			}

@@ -20,7 +20,6 @@ class ComponentManager {
 		ComponentPoolAllocator() : PoolAllocator<T>() {}
 
 		void freeComponent(IComponent * component) override {
-			//component->~IComponent();
 			this->freeMemory(dynamic_cast<T*>(component));
 		}
 	};
@@ -69,7 +68,6 @@ public:
 	T* getComponentByEntityId(const EntityId e_id) {
 		std::lock_guard<std::mutex> lock(mutex_);
 		IComponent* component = entityComponentMap_[e_id.getIndex()][T::COMPONENT_TYPE_ID];
-		//assert(component != nullptr);
 		return dynamic_cast<T*>(component);
 	}
 
@@ -77,7 +75,6 @@ public:
 	T* getComponentByComponentId(const ComponentId c_id) {
 		std::lock_guard<std::mutex> lock(mutex_);
 		IComponent* component = componentLookUpTable_[c_id];
-		//assert(component != nullptr);
 		return dynamic_cast<T*>(component);
 	}
 
@@ -103,7 +100,6 @@ private:
 		if (found != entityComponentMap_.end()) {
 			result = componentLookUpTable_.acquireHandle(component);
 
-			//assert( (found->second.count(component->getTypeId()) == 0) && "Cannot add two components of the same type to one entity");
 			found->second[T::COMPONENT_TYPE_ID] = component;
 		}
 		else {

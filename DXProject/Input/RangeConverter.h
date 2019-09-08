@@ -16,8 +16,6 @@ public:
 		else if (val > maxInput_)
 			val = maxInput_;
 
-		//double interpol = (val - minInput_) / (maxInput_ - minInput_);
-		//return static_cast<RangeType>(sensitivity_ * ((interpol * (maxOutput_ - minOutput_)) + minOutput_));
 		return static_cast<RangeType>( val * sensitivity_);
 	}
 private:

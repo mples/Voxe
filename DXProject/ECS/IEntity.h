@@ -77,5 +77,3 @@ protected:
 private:
 	ComponentManager * componentManager_;
 };
-
-//const EntityId IEntity::INVALID_ID = Handle::INVALID_HANDLE;

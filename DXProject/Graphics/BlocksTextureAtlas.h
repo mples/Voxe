@@ -46,6 +46,5 @@ private:
 	int width_;
 	int height_;
 
-	//std::unordered_map<BlockType, std::vector<XMFLOAT2>> coordinateMap_;
 	std::unordered_map<BlockType, XMFLOAT2> coordinateMap_;
 };

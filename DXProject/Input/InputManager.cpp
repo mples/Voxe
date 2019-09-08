@@ -52,8 +52,7 @@ void InputManager::dispatchEvents() {
 	while (!MOUSE.isEventBufferEmpty()) {
 		MouseEvent mouse_event = MOUSE.readEvent();
 		switch (mouse_event.getType()) {
-		case MouseEvent::Type::RAW_MOVE: {
-			if (MOUSE.isRightButtonDown()) { //debug
+			case MouseEvent::Type::RAW_MOVE: {
 				RawAxis raw_mouse_x(AxisType::RAW_INPUT_MOUSE_X, mouse_event.getPosX());
 				mapper_.axisMoved(raw_mouse_x);
 				RawAxis raw_mouse_y(AxisType::RAW_INPUT_MOUSE_Y, mouse_event.getPosY());
@@ -61,11 +60,5 @@ void InputManager::dispatchEvents() {
 				break;
 			}
 		}
-		}
-		if (mouse_event.getType() == MouseEvent::RAW_MOVE) {
-			//gfxEngine_.camera_.adjustRot(mouse_event.getPosY() * 0.01f, mouse_event.getPosX() * 0.01f, 0.0f);
-		}
-
-
 	}
 }

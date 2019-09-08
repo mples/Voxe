@@ -544,6 +544,5 @@
     <FxCompile Include="shader_pixel.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
-    <FxCompile Include="occlusion_culling_vs.hlsl" />
   </ItemGroup>
 </Project>

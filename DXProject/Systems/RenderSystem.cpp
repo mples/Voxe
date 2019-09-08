@@ -298,7 +298,6 @@ void RenderSystem::initializeRenderState() {
 		device_->CreateDepthStencilState(&ds_desc, depthStencilState_.GetAddressOf());
 		COM_ERROR_IF_FAILED(hr, L"Failed to create ID3D11DepthStencilState.");
 
-		//TODO delete debugging
 		D3D11_DEPTH_STENCIL_DESC ds_off_desc;
 		ZeroMemory(&ds_off_desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 

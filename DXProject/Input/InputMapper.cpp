@@ -44,12 +44,6 @@ void InputMapper::addCallback(InputCallback callback, InputCallbackPriority prio
 }
 
 void InputMapper::removeCallback(InputCallback  callback) {
-	for (auto it = callbacks_.begin(); it != callbacks_.end(); ++it) {
-		//TODO
-		/*if (it->second.target_type == callback.target_type) {
-			callbacks_.erase(it);
-		}*/
-	}
 }
 
 void InputMapper::dispatch(float dt) {

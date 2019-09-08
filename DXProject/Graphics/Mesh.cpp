@@ -27,12 +27,6 @@ Mesh::~Mesh() {
 }
 
 void Mesh::draw() {
-	//for (auto texture : textures_) {
-	//	/*if (texture.getType() == aiTextureType::aiTextureType_DIFFUSE) {
-	//		deviceContext_->PSSetShaderResources(0, 1, texture.getResourceViewAddress());
-	//		break;
-	//	}*/
-	//}
 	deviceContext_->PSSetShaderResources(0, 1, textures_[0].getResourceViewAddress());
 
 	UINT offset = 0;

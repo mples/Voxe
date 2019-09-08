@@ -2,13 +2,7 @@
 
 
 
-InputContext::InputContext() {
-	//RawButton button(87, 17, 1, 0);
-	/*RawButton button(87);
-	actionMap_.insert(std::make_pair(button, Action::MOVE_FRONT) );
-	RawAxis x_axis (AxisType::MOUSE_X);
-	rangeMap_.insert(std::make_pair(x_axis, Range::LOOK_X));*/
-}
+InputContext::InputContext() {}
 
 InputContext::~InputContext() {}
 
@@ -58,7 +52,6 @@ void InputContext::addRangeConverter(Range range, RangeConverter range_converter
 }
 
 double InputContext::convert(Range range, double value) {
-	//TODO templating
 	auto found = rangeConverters_.find(range);
 	if (found == rangeConverters_.end()) {
 		return static_cast<double>(value);

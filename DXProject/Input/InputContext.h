@@ -24,7 +24,6 @@ public:
 
 	double convert(Range range, double value);
 private:
-	//TODO change to keycod insted of RawButton objects
 	std::unordered_map<KeyboardEvent, Action> actionMap_;
 	std::unordered_map<KeyboardEvent, State> stateMap_;
 	std::unordered_map<RawAxis, Range> rangeMap_;
