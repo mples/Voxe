@@ -1,16 +1,17 @@
 #include "GameStage.h"
-#include "Engine.h"
-#include "Events/TerrainChunkRequest.h"
-#include "Entities/GameCamera.h"
-#include "Systems/RenderSystem.h"
-#include "Systems/VoxelDataGenerationSystem.h"
-
-#include "Events/CameraCreated.h"
-#include "Generation/SimpleGenerator.h"
-#include "Events/SetPointLightRequest.h"
-#include "Events/FogChangeRequest.h"
-
 #include <d3d11.h>
+
+#include "../Engine.h"
+#include "../Events/TerrainChunkRequest.h"
+#include "../Entities/GameCamera.h"
+#include "../Systems/RenderSystem.h"
+#include "../Systems/VoxelDataGenerationSystem.h"
+
+#include "../Events/CameraCreated.h"
+#include "../Generation/SimpleGenerator.h"
+#include "../Events/SetPointLightRequest.h"
+#include "../Events/FogChangeRequest.h"
+
 
 GameStage::GameStage() {
 }

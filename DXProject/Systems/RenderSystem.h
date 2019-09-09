@@ -23,7 +23,7 @@
 #include "../Events/FogChangeRequest.h"
 #include "../Events/SetPointLightRequest.h"
 
-#include "../Entities/GameCamera.h"
+#include "../Entities/IGameCamera.h"
 
 class RenderSystem : public System<RenderSystem>, public IEventListener {
 public:

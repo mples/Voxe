@@ -1,5 +1,5 @@
 #pragma once
-#include "Stage\Stage.h"
+#include "../Stage/Stage.h"
 
 class GameStage : public Stage {
 public:

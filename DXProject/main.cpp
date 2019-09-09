@@ -1,5 +1,5 @@
 #include "Engine.h"
-#include "GameStage.h"
+#include "Game/GameStage.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstace,
 	_In_opt_ HINSTANCE hPrevInstance,

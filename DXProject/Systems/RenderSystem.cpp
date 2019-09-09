@@ -2,6 +2,7 @@
 #include "../Engine.h"
 #include "../Events/DirectXDeviceCreated.h"
 #include "../Events/BlockTextureAtlasCreated.h"
+#include "../Entities/GameCamera.h"
 
 RenderSystem::RenderSystem(HWND hwd, int width, int height) : windowWidth_(width),
 																windowHeight_(height), 

@@ -176,7 +176,7 @@
     <ClCompile Include="Systems\TerrainGenerationSystem.cpp" />
     <ClCompile Include="Systems\TerrainMeshGeneratorSystem.cpp" />
     <ClCompile Include="Systems\VoxelDataGenerationSystem.cpp" />
-    <ClCompile Include="GameStage.cpp" />
+    <ClCompile Include="Game\GameStage.cpp" />
     <ClCompile Include="Generation\PerlinNoise.cpp" />
     <ClCompile Include="Generation\SimpleGenerator.cpp" />
     <ClCompile Include="Graphics\Color.cpp" />
@@ -272,7 +272,7 @@
     <ClInclude Include="Utilities\Structures\Array2D.h" />
     <ClInclude Include="Utilities\Structures\Array3D.h" />
     <ClInclude Include="Voxel\BlockType.h" />
-    <ClInclude Include="GameStage.h" />
+    <ClInclude Include="Game\GameStage.h" />
     <ClInclude Include="Generation\Generator.h" />
     <ClInclude Include="Generation\Noise.h" />
     <ClInclude Include="Generation\PerlinNoise.h" />
